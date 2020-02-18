@@ -59,14 +59,14 @@
                 </div>
                 <div style="margin-left: 20px;"></div>
                 <nav style="margin-top: -5px;">
-                    <div class="nav nav-fill about-btn-container" id="nav-tab" role="tablist">
-                        <button class="about-btn about-btn-active" id="nav-general-tab" data-toggle="tab"
-                            href="#nav-general" role="tab" aria-controls="nav-general"
-                            aria-selected="true">General</button>
-                        <button class="about-btn" id="nav-experience-tab" data-toggle="tab" href="#nav-experience"
-                            role="tab" aria-controls="nav-experience" aria-selected="false">Experience</button>
-                        <button class="about-btn" id="nav-hobbies-tab" data-toggle="tab" href="#nav-hobbies" role="tab"
-                            aria-controls="nav-hobbies" aria-selected="false">Hobbbies</button>
+                    <div id="about-btn-container" class="nav nav-fill about-btn-container" id="nav-tab" role="tablist">
+                        <a class="about-btn about-btn-active" id="nav-general-tab"
+                            data-toggle="tab" href="#nav-general" role="tab" aria-controls="nav-general"
+                            aria-selected="true">General</a>
+                        <a class="about-btn" id="nav-experience-tab" data-toggle="tab" href="#nav-experience" role="tab"
+                            aria-controls="nav-experience" aria-selected="false">Experience</a>
+                        <a class="about-btn" id="nav-hobbies-tab" data-toggle="tab" href="#nav-hobbies" role="tab"
+                            aria-controls="nav-hobbies" aria-selected="false">Hobbbies</a>
                     </div>
                 </nav>
             </div>
@@ -75,13 +75,10 @@
                 <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
                     <div class="tab-pane fade show active" id="nav-general" role="tabpanel"
                         aria-labelledby="nav-general-tab">
-                        <center>
-                            <h1 class="tab-title">General</h1>
-                        </center>
                         <br />
                         <p class="tab-content">
                             Hello! My name is Jitze Jan Kerkstra.<br />
-                            I am a 2nd year student at NHL Stenden Hogeschool studying ICT.<br /><br />
+                            I am a 2nd year ICT student at NHL Stenden Hogeschool.<br /><br />
 
                             From idea to design to deployment, I always put in my 100% in every step of the process, I'm
                             driven to make each project my best and want it to be something to be proud of.<br />
@@ -89,114 +86,17 @@
                             reflect these traits in my own work.<br />
 
                             When it comes to programming I have a lot of valuable experience in different languages and
-                            frameworks and I'm driven to learn more.<br /><br />
+                            frameworks and I'm determined to learn more.<br /><br />
 
                             But I know actions speak more than words so please check out what my website has to offer.
                         </p>
                     </div>
                     <div class="tab-pane fade" id="nav-experience" role="tabpanel" aria-labelledby="nav-experience-tab">
-                        <center>
-                            <h1 class="tab-title">Experience</h1 class="tab-title">
-                        </center>
                         <br />
                         <p class="tab-content">
-                            <span style="font-weight: bold;">Programming Languages:</span><br />
-                            <table class="table table-borderless table-dark">
-                                <thead>
-                                    <tr>
-                                        <th scope="col"></th>
-                                        <th scope="col">Language</th>
-                                        <th scope="col">Grade
-                                            <a data-toggle="tooltip" data-placement="top"
-                                                title="Based on school grades and/or experience">
-                                                <i id="info-circle-grading" style="position: absolute; font-size: 10px;"
-                                                    class="fa fa-info-circle"></i>
-                                            </a>
-                                        </th>
-                                        <th scope="col">Projects</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th scope="row"><img class="custom-icon"
-                                                src="/src/icons/programming_languages/csharp_logo.png" /></th>
-                                        <td>C#</td>
-                                        <td>8/10</td>
-                                        <td>
-                                            <ul>
-                                                <li>
-                                                    <a href="#">Themed Forum Page</a>
-                                                </li>
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"><img class="custom-icon"
-                                                src="/src/icons/programming_languages/cplusplus_logo.png" /></th>
-                                        <td>C++</td>
-                                        <td>7/10</td>
-                                        <td>
-                                            <ul>
-                                                <li>
-                                                    <a href="#">Application Speed-up</a>
-                                                </li>
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"><img class="custom-icon" style="height: 40px !important;"
-                                                src="/src/icons/programming_languages/java_logo.png" /></th>
-                                        <td>Java</td>
-                                        <td>8/10</td>
-                                        <td>
-                                            <ul>
-                                                <li>
-                                                    <a href="#">3D Warehouse Simulator</a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">Spigot Plugin-in</a>
-                                                </li>
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"><img class="custom-icon"
-                                                src="/src/icons/programming_languages/python_logo.png" /></th>
-                                        <td>Python</td>
-                                        <td>7/10</td>
-                                        <td>
-                                            <ul>
-                                                <li>
-                                                    <a href="#">RPI Dashboard</a>
-                                                </li>
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"><img class="custom-icon"
-                                                src="/src/icons/programming_languages/php_logo.png" /></th>
-                                        <td>PHP</td>
-                                        <td>8/10</td>
-                                        <td>
-                                            <ul>
-                                                <li>
-                                                    <a href="#">Go4Secure</a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">Secure WebApplication</a>&nbsp;&nbsp;<span
-                                                        id="ongoing">ongoing</span>
-                                                </li>
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
                         </p>
                     </div>
                     <div class="tab-pane fade" id="nav-hobbies" role="tabpanel" aria-labelledby="nav-hobbies-tab">
-                        <center>
-                            <h1 class="tab-title">Hobbies</h1 class="tab-title">
-                        </center>
                         <br />
                         <p class="tab-content">
                             Tortor dignissim convallis aenean et tortor at. Purus in mollis nunc sed. Dui id ornare arcu
@@ -235,13 +135,15 @@
             <div>
                 <p class="tab-content">
                     As a programmer, having your own website is almost a must in getting yourself seen.<br />
-                    Besides fulfilling that purpose do I want this website to also be something I can learn from, so expect this
+                    Besides fulfilling that purpose do I want this website to also be something I can learn from, so
+                    expect this
                     website to be updated regularly with new features.
                 </p>
             </div>
             <div style="padding-bottom: 200px;"></div>
         </div>
     </div>
+    <script src="/js/index.js" />
     <!-- ---- -->
 </body>
 <footer>
