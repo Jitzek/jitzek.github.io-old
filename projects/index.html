@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- include.js uses jquery.min.js, be sure to include them both (in the righ order) -->
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/jquery/include.js"></script>
+</head>
+
+<body>
+    <img src="#" hidden onerror="global_include()" />
+    <img src="#" hidden onerror="include()" />
+    <div>
+        <img css-include="../css/projects" />
+        <img css-include="../css/navbar" />
+        <!-- ------------------- -->
+
+        <!-- Includes the navbar (include.js) -->
+        <div class="container">
+            <div html-include="../html/includes/navbar"></div>
+        </div>
+        <div>
+            <h1 style="color: white;">Main Projects Page</h1>
+        </div>
+    </div>
+</body>
+<footer>
+    
+</footer>
+</html>

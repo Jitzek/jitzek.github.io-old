@@ -1,0 +1,46 @@
+body {
+  background-image: url(../src/simplistic-mountain-1.jpg);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+  height: 100%;
+  font-family: "Quicksand", sans-serif;
+  font-size: 18px;
+}
+
+#project-img {
+  width: 100%;
+  height: auto;
+}
+
+@media only screen and (max-width: 800px) {
+  #project-img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.custom-heading {
+  font-size: 56px !important;
+  font-weight: bolder !important;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+}
+
+.heading {
+  opacity: 0.9;
+}
+
+.heading-subtitle {
+  color: white;
+  text-shadow: 0 0 10px rgb(112, 111, 182);
+  font-weight: bold;
+}
+
+.project-paragraph {
+  color: white;
+}
+
+.accent {
+  color: rgb(73, 255, 216);
+}

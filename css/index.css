@@ -1,0 +1,122 @@
+body {
+  background-image: url(../src/simplistic-mountain-1.jpg);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+  height: 100%;
+  font-family: "Quicksand", sans-serif;
+  font-size: 18px;
+}
+
+.heading {
+  color: white;
+  opacity: 0.9;
+}
+
+.heading-title {
+  text-shadow: 0 0 20px #b66f97;
+  font-weight: bolder;
+}
+
+@keyframes glitch {
+  from {
+
+  }
+  to {
+
+  }
+}
+
+.heading-subtitle {
+  text-shadow: 0 0 20px #000;
+  font-weight: bold;
+}
+
+.body {
+  color: white;
+  opacity: 0.85;
+}
+
+.about-box {
+  display: flex;
+}
+@media only screen and (max-width: 800px) {
+  .about-box {
+    display: contents;
+  }
+}
+
+.tab-title {
+  font-weight: bold;
+}
+
+.tab-content {
+  font-weight: normal;
+}
+
+.about-btn-container {
+  display: flex;
+}
+
+@media only screen and (min-width: 801px) {
+  .about-btn-box {
+    margin-left: 30px;
+  }
+}
+@media only screen and (max-width: 400px) {
+  .about-btn-container {
+    text-align: center;
+    display: block;
+  }
+  .about-title-box {
+    text-align: center;
+  }
+}
+
+.about-btn {
+  background-color: #1f1a53;
+  color: white;
+  border: solid #1b184e;
+  height: 45px;
+  width: 110px;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+.about-btn:hover {
+  background-color: rgba(31, 26, 83, 0.8);
+}
+
+.about-btn-active {
+  background-color: #192556;
+  color: white;
+  border: solid #1b184e;
+  height: 45px;
+  width: 110px;
+}
+.about-btn-active:hover {
+  background-color: #192556d0;
+}
+
+.custom-icon {
+  height: 30px;
+  width: auto;
+}
+
+#pl {
+  font-size: 30px;
+  font-weight: bolder;
+}
+
+#info-circle-grading {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+#info-circle-grading:hover {
+  color: white;
+}
+
+#ongoing {
+  font-size: 14px;
+  color: orange;
+}

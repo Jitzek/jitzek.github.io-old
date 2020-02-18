@@ -1,0 +1,120 @@
+#social-icon {
+  color: whitesmoke;
+  opacity: 0.9;
+  font-size: 40px;
+}
+
+#social-icon:hover {
+  opacity: 1;
+}
+
+#navbarSupportedContent {
+  padding-left: 15%;
+}
+
+@media only screen and (max-width: 990px) {
+  #navbarSupportedContent {
+    padding-left: 0;
+  }
+}
+
+@media only screen and (max-width: 380px) {
+  .name span {
+    display: none;
+  }
+
+  .name::after {
+    content: "JJK";
+  }
+}
+
+.name-link:hover:hover {
+  text-decoration: none;
+}
+
+.name-link:hover #name-br {
+  text-shadow: 0 0 20px white;
+}
+
+.name {
+  font-size: 26px;
+  color: white;
+}
+
+#name-br {
+  display: inline;
+  background-color: rgba(255, 255, 255, 0.4);
+  margin: 6px;
+  padding-left: 2px;
+  box-shadow: 0 0 0px rgba(255, 255, 255, 0.4);
+  animation: shine 2s forwards 1.5s, pulse 4s forwards 4s infinite;
+}
+
+#surname {
+  color: rgba(255, 255, 255, 0.4);
+  position: absolute;
+  margin-top: -30px;
+  animation-name: reveal;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+}
+
+.social-img {
+  width: 40px;
+  height: auto;
+  opacity: 0.9;
+}
+
+.social-img:hover {
+  opacity: 1;
+}
+
+.dropdown-label {
+  color: white;
+}
+
+.dropdown-item {
+  color: white !important;
+  text-shadow: 0 0 20px #000;
+}
+
+.dropdown-item:hover {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  text-shadow: 0 0 5px #b66f97;
+}
+
+/*
+ * Animations
+*/
+@keyframes shine {
+  from {
+    box-shadow: 0 0 0px rgba(255, 255, 255, 0.4);
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+  to {
+    box-shadow: 0 0 10px white;
+    background-color: white;
+  }
+}
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 10px white;
+  }
+  40% {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 10px white;
+  }
+}
+@keyframes reveal {
+  from {
+    margin-left: 0px;
+    opacity: 0;
+  }
+  to {
+    margin-left: 120px;
+    opacity: 1;
+  }
+}

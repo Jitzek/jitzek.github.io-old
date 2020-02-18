@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- include.js uses jquery.min.js, be sure to include them both (in the righ order) -->
+    <script src="js/jquery/jquery.min.js"></script>
+    <script src="js/jquery/include.js"></script>
+</head>
+
+<body>
+    <img src="#" hidden onerror="global_include()" />
+    <img src="#" hidden onerror="include()" />
+    <!-- Heading -->
+    <div style="font-family: 'Quicksand', sans-serif;">
+        <!-- CSS Files to be included (include.js) -->
+        <div css-include="css/index" />
+        <div css-include="css/navbar" />
+        <!-- ------------------- -->
+
+        <!-- Includes the navbar (include.js) -->
+        <div class="container">
+            <div html-include="html/includes/navbar"></div>
+        </div>
+        <!-- ------------------- -->
+
+        <div style="margin-top: 200px;"></div>
+        <div class="container heading">
+            <center>
+                <h1 class="heading-title">From Design to Deployment</h1>
+            </center>
+            <br />
+            <center>
+                <p class="heading-subtitle">
+                    2nd year ICT student at NHL Stenden Hogeschool
+                    <br />
+                    <br />
+                    <span style="text-shadow: 0 0 5px black;">"</span>I haven't found the time to
+                    specialize myself, I'm having too much fun trying new things.<span
+                        style="text-shadow: 0 0 5px black;">"</span>
+                </p>
+            </center>
+        </div>
+        <div style="padding-bottom: 580px;"></div>
+    </div>
+    <!-- ----- -->
+    <!-- Body -->
+    <div style="background-image: 
+                linear-gradient(
+                    to right,
+                    #262662 15%, #343273 40%, #383578 60%, #262662 90%
+                    );">
+        <div style="padding-top: 60px;"></div>
+        <div class="container body">
+            <div class="about-box">
+                <div class="about-title-box">
+                    <h1>About Me</h1>
+                </div>
+                <div style="margin-left: 20px;"></div>
+                <nav style="margin-top: -5px;">
+                    <div class="nav nav-fill about-btn-container" id="nav-tab" role="tablist">
+                        <button class="about-btn about-btn-active" id="nav-general-tab" data-toggle="tab"
+                            href="#nav-general" role="tab" aria-controls="nav-general"
+                            aria-selected="true">General</button>
+                        <button class="about-btn" id="nav-experience-tab" data-toggle="tab" href="#nav-experience"
+                            role="tab" aria-controls="nav-experience" aria-selected="false">Experience</button>
+                        <button class="about-btn" id="nav-hobbies-tab" data-toggle="tab" href="#nav-hobbies" role="tab"
+                            aria-controls="nav-hobbies" aria-selected="false">Hobbbies</button>
+                    </div>
+                </nav>
+            </div>
+            <div style="margin-bottom: 20px;"></div>
+            <div>
+                <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-general" role="tabpanel"
+                        aria-labelledby="nav-general-tab">
+                        <center>
+                            <h1 class="tab-title">General</h1>
+                        </center>
+                        <br />
+                        <p class="tab-content">
+                            Hello! My name is Jitze Jan Kerkstra.<br />
+                            I am a 2nd year student at NHL Stenden Hogeschool studying ICT.<br /><br />
+
+                            From idea to design to deployment, I always put in my 100% in every step of the process, I'm
+                            driven to make each project my best and want it to be something to be proud of.<br />
+                            I've always had a fascination for security, reliability and friendly design and I try to
+                            reflect these traits in my own work.<br />
+
+                            When it comes to programming I have a lot of valuable experience in different languages and
+                            frameworks and I'm driven to learn more.<br /><br />
+
+                            But I know actions speak more than words so please check out what my website has to offer.
+                        </p>
+                    </div>
+                    <div class="tab-pane fade" id="nav-experience" role="tabpanel" aria-labelledby="nav-experience-tab">
+                        <center>
+                            <h1 class="tab-title">Experience</h1 class="tab-title">
+                        </center>
+                        <br />
+                        <p class="tab-content">
+                            <span style="font-weight: bold;">Programming Languages:</span><br />
+                            <table class="table table-borderless table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th scope="col">Language</th>
+                                        <th scope="col">Grade
+                                            <a data-toggle="tooltip" data-placement="top"
+                                                title="Based on school grades and/or experience">
+                                                <i id="info-circle-grading" style="position: absolute; font-size: 10px;"
+                                                    class="fa fa-info-circle"></i>
+                                            </a>
+                                        </th>
+                                        <th scope="col">Projects</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row"><img class="custom-icon"
+                                                src="/src/icons/programming_languages/csharp_logo.png" /></th>
+                                        <td>C#</td>
+                                        <td>8/10</td>
+                                        <td>
+                                            <ul>
+                                                <li>
+                                                    <a href="#">Themed Forum Page</a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"><img class="custom-icon"
+                                                src="/src/icons/programming_languages/cplusplus_logo.png" /></th>
+                                        <td>C++</td>
+                                        <td>7/10</td>
+                                        <td>
+                                            <ul>
+                                                <li>
+                                                    <a href="#">Application Speed-up</a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"><img class="custom-icon" style="height: 40px !important;"
+                                                src="/src/icons/programming_languages/java_logo.png" /></th>
+                                        <td>Java</td>
+                                        <td>8/10</td>
+                                        <td>
+                                            <ul>
+                                                <li>
+                                                    <a href="#">3D Warehouse Simulator</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">Spigot Plugin-in</a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"><img class="custom-icon"
+                                                src="/src/icons/programming_languages/python_logo.png" /></th>
+                                        <td>Python</td>
+                                        <td>7/10</td>
+                                        <td>
+                                            <ul>
+                                                <li>
+                                                    <a href="#">RPI Dashboard</a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"><img class="custom-icon"
+                                                src="/src/icons/programming_languages/php_logo.png" /></th>
+                                        <td>PHP</td>
+                                        <td>8/10</td>
+                                        <td>
+                                            <ul>
+                                                <li>
+                                                    <a href="#">Go4Secure</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">Secure WebApplication</a>&nbsp;&nbsp;<span
+                                                        id="ongoing">ongoing</span>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </p>
+                    </div>
+                    <div class="tab-pane fade" id="nav-hobbies" role="tabpanel" aria-labelledby="nav-hobbies-tab">
+                        <center>
+                            <h1 class="tab-title">Hobbies</h1 class="tab-title">
+                        </center>
+                        <br />
+                        <p class="tab-content">
+                            Tortor dignissim convallis aenean et tortor at. Purus in mollis nunc sed. Dui id ornare arcu
+                            odio ut sem nulla. A diam maecenas sed enim ut. Viverra adipiscing at in tellus integer
+                            feugiat
+                            scelerisque varius morbi. Viverra maecenas accumsan lacus vel facilisis volutpat est velit
+                            egestas. Bibendum est ultricies integer quis auctor elit sed vulputate. Nulla aliquet enim
+                            tortor at auctor urna nunc. Purus faucibus ornare suspendisse sed nisi lacus. Viverra nibh
+                            cras
+                            pulvinar mattis nunc sed. Neque viverra justo nec ultrices dui sapien. Laoreet sit amet
+                            cursus
+                            sit amet dictum sit amet justo. Massa sed elementum tempus egestas sed sed risus pretium
+                            quam.
+                            Odio facilisis mauris sit amet massa.
+                            <br /> <br />
+                            Laoreet id donec ultrices tincidunt arcu non sodales neque sodales. Nisl pretium fusce id
+                            velit.
+                            Commodo odio aenean sed adipiscing diam donec. Bibendum neque egestas congue quisque egestas
+                            diam in arcu cursus. Amet cursus sit amet dictum sit. Habitasse platea dictumst vestibulum
+                            rhoncus est pellentesque elit. Sit amet justo donec enim. Enim diam vulputate ut pharetra.
+                            Cras
+                            ornare arcu dui vivamus arcu felis bibendum ut tristique. Id nibh tortor id aliquet lectus
+                            proin. Ac feugiat sed lectus vestibulum mattis ullamcorper velit sed. Morbi tincidunt augue
+                            interdum velit euismod in pellentesque massa placerat.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div style="padding-bottom: 200px;"></div>
+            <div class="about-box">
+                <div class="about-title-box">
+                    <h1>About this Website</h1>
+                </div>
+            </div>
+            <div style="margin-bottom: 20px;"></div>
+            <div>
+                <p class="tab-content">
+                    As a programmer, having your own website is almost a must in getting yourself seen.<br />
+                    Besides fulfilling that purpose do I want this website to also be something I can learn from, so expect this
+                    website to be updated regularly with new features.
+                </p>
+            </div>
+            <div style="padding-bottom: 200px;"></div>
+        </div>
+    </div>
+    <!-- ---- -->
+</body>
+<footer>
+    <div html-include="html/includes/footer"></div>
+</footer>
+
+</html>

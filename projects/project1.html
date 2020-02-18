@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- include.js uses jquery.min.js, be sure to include them both (in the righ order) -->
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/jquery/include.js"></script>
+</head>
+
+<body style="font-family: 'Quicksand', sans-serif;">
+    <img src="#" hidden onerror="global_include()" />
+    <img src="#" hidden onerror="include()" />
+    <div>
+        <img css-include="../css/project1" />
+        <img css-include="../css/navbar" />
+        <!-- ------------------- -->
+
+        <!-- Includes the navbar (include.js) -->
+        <div class="container">
+            <div html-include="../html/includes/navbar"></div>
+        </div>
+    </div>
+    <div style="background-image: 
+                linear-gradient(
+                to right,
+              #764cac70, #6b3da0 30%, #523472
+    );">
+        <div style="margin-top: 30px;"></div>
+        <div style="padding-top: 100px;"></div>
+        <div class="container heading">
+            <center>
+                <div class="custom-heading">
+                    <span style="color: #003277;">
+                        L
+                    </span>
+                    <span style="margin-left: -15px;"></span>
+                    <span style="color: #FAEB1E;">
+                        ibra
+                    </span>
+                    <span style="margin-left: -15px;"></span>
+                    <span style="color: #003277;">
+                        man
+                    </span>
+                    <span style="color: white; text-shadow: 0 0 7px rgb(255, 7, 172);">Simulatie</span>
+                </div>
+                <h2 class="heading-subtitle">3D Warehouse Simulator</h2>
+            </center>
+        </div>
+        <div class="container project-paragraph">
+            <div style="padding-top: 100px;"></div>
+            <img id="project-img" src="../src/Libraman_Cover_cropped.jpg" />
+            <div style="padding-top: 100px;"></div>
+            <h1>Project Description</h1>
+            <br />
+            <p>
+                For this project we were tasked with making a simulation of an automated Warehouse
+                where robots drive around refilling and emptying trucks,
+                these robots need to work together so communication between them was important.
+                <br /><br />
+                <h2>Requirements</h2>
+                <ul class="list-group">
+                    <li class="list-group-item" style="background-color: #00000007;">
+                        The Project had to be made by <span class="accent">a group of 2 - 4 people</span><br />
+                    </li>
+                    <li class="list-group-item" style="background-color: #00000011;">
+                        We had to make use of <span class="accent">Java</span> and <span class="accent">Three.js</span>
+                        (<span class="accent">Javascript</span>/<span class="accent">Typscript</span>)<br />
+                    </li>
+                    <li class="list-group-item" style="background-color: #00000007;">
+                        The system had to include a <span class="accent">client</span> and <span
+                            class="accent">server</span>, The server simulates the world which the
+                        client can see live
+                    </li>
+                    <li class="list-group-item" style="background-color: #00000011;">
+                        The system had to make use of a <span class="accent">MVC</span> design pattern<br />
+                    </li>
+                    <li class="list-group-item" style="background-color: #00000007;">
+                        The Robots had to be able to find their way through the warehouse using <span
+                            class="accent">pathfinding</span>
+                        implementing a <span class="accent">shortest path algoritm</span><br />
+                    </li>
+                </ul>
+                <br />
+                Trucks arrive in at the warehouse and need to bring products with them (our products also carry a
+                category that determines to which shelf they belong to), these products need to be stored in the
+                warehouse.<br />
+                Once the Truck has been emptied by the Robots it will be refilled by the Robots.
+            </p>
+            <div style="padding-top: 100px;"></div>
+            <h1>Approach</h1>
+            <br />
+            <p>
+                I decided to team up with a good friend of mine for this project.<br />
+                We prepared a Google Drive for all our documents and a git repository (Github) with the provided
+                code.<br />
+                The provided code had already implemented Three.js and offered us a square plain with a moveable camera
+                and a moving square representing a Robot.<br /><br />
+
+                We decided it would be best to design the warehouse first, the result can be found in the images tab of this project.
+            </p>
+            <div style="padding-top: 50px;"></div>
+            <div class="embed-responsive embed-responsive-16by9">
+                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/YZFMJr2pooQ" frameborder="0"
+                    allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+                </iframe>
+            </div>
+            <div style="padding-top: 50px;"></div>
+        </div>
+    </div>
+</body>
+<footer>
+    <div html-include="includes/footer"></div>
+</footer>
+
+</html>
