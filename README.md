@@ -5,4 +5,6 @@
 Changelog:
 
 18/02/2020
-Initial Commit
+- Initial Commit
+- Updated About Me Buttons
+- Added 404 Page
