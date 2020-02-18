@@ -19,15 +19,6 @@ body {
   font-weight: bolder;
 }
 
-@keyframes glitch {
-  from {
-
-  }
-  to {
-
-  }
-}
-
 .heading-subtitle {
   text-shadow: 0 0 20px #000;
   font-weight: bold;
@@ -40,11 +31,6 @@ body {
 
 .about-box {
   display: flex;
-}
-@media only screen and (max-width: 800px) {
-  .about-box {
-    display: contents;
-  }
 }
 
 .tab-title {
@@ -59,43 +45,40 @@ body {
   display: flex;
 }
 
-@media only screen and (min-width: 801px) {
-  .about-btn-box {
-    margin-left: 30px;
-  }
-}
-@media only screen and (max-width: 400px) {
-  .about-btn-container {
-    text-align: center;
-    display: block;
-  }
-  .about-title-box {
-    text-align: center;
-  }
-}
-
 .about-btn {
-  background-color: #1f1a53;
-  color: white;
-  border: solid #1b184e;
-  height: 45px;
-  width: 110px;
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.6);
+  position: center;
   margin-top: 10px;
   margin-left: 10px;
+  padding: 5px;
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.15)
+  );
+  border: rgba(255, 255, 255, 0.1) solid 1px;
 }
 .about-btn:hover {
-  background-color: rgba(31, 26, 83, 0.8);
+  color: white;
+  text-decoration: none;
+  text-shadow: 0 0 3px rgba(255, 255, 255, 0.4);
+  animation: about-btn-hover 0.25s forwards;
 }
 
 .about-btn-active {
-  background-color: #192556;
   color: white;
-  border: solid #1b184e;
-  height: 45px;
-  width: 110px;
+  position: center;
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.25)
+  );
 }
 .about-btn-active:hover {
-  background-color: #192556d0;
+  color: inherit;
+  text-shadow: inherit;
+  animation: inherit;
 }
 
 .custom-icon {
@@ -119,4 +102,39 @@ body {
 #ongoing {
   font-size: 14px;
   color: orange;
+}
+
+/*
+ * Animations
+*/
+@keyframes about-btn-hover {
+  from {
+    background-color: rgba(255, 255, 255, 0);
+  }
+  to {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+/*
+ * Responsiveness
+*/
+@media only screen and (max-width: 800px) {
+  .about-box {
+    display: contents;
+  }
+}
+@media only screen and (min-width: 801px) {
+  .about-btn-box {
+    margin-left: 30px;
+  }
+}
+@media only screen and (max-width: 400px) {
+  .about-btn-container {
+    text-align: center;
+    display: block;
+  }
+  .about-title-box {
+    text-align: center;
+  }
 }

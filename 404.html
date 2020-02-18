@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- include.js uses jquery.min.js, be sure to include them both (in the righ order) -->
+    <script src="js/jquery/jquery.min.js"></script>
+    <script src="js/jquery/include.js"></script>
+</head>
+
+<body>
+    <img src="#" hidden onerror="global_include()" />
+    <img src="#" hidden onerror="include()" />
+    <div css-include="css/404" />
+    <div class="error-404">
+        <div class="error-code m-b-10 m-t-20">404</div>
+        <h2 class="font-bold">That page can’t be found.</h2>
+
+        <div class="error-desc">
+            Sorry, but the page you are looking for was either not found or does not exist. <br />
+            Try refreshing the page or click the button below to go back to the Homepage.
+            <div><br />
+                <a href="/" class="btn btn-primary">Return to Homepage</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
