@@ -9,6 +9,9 @@ body {
   font-size: 18px;
 }
 
+/*
+ * Heading
+*/
 .heading {
   color: white;
   opacity: 0.9;
@@ -24,6 +27,9 @@ body {
   font-weight: bold;
 }
 
+/*
+ *** About Me ***
+*/
 .body {
   color: white;
   opacity: 0.85;
@@ -86,22 +92,70 @@ body {
   width: auto;
 }
 
-#pl {
-  font-size: 30px;
-  font-weight: bolder;
+/*
+ * About Me - Experience
+*/
+.pr-btn {
+  animation: pr-btn-init 0.5s forwards;
+  background-color: rgba(255, 255, 255, 0) !important;
+}
+.pr-btn:hover {
+  animation: pr-btn-hover 0.5s forwards;
+  border: solid rgba(0, 0, 0, 0) !important;
 }
 
-#info-circle-grading {
-  color: rgba(255, 255, 255, 0.75);
+#csharp {
+  background: url("../src/icons/programming_languages/csharp_logo.png")
+    no-repeat center;
+  border: solid rgba(140, 72, 143, 0.5) 2px;
+}
+#csharp:hover {
+  background-color: rgba(140, 72, 143, 0.5) !important;
 }
 
-#info-circle-grading:hover {
-  color: white;
+#cplusplus {
+  background: url("../src/icons/programming_languages/cplusplus_logo.png")
+    no-repeat center;
+  border: solid rgba(93, 139, 195, 0.5) 2px;
+}
+#cplusplus:hover {
+  background-color: rgba(93, 139, 195, 0.5) !important;
 }
 
-#ongoing {
-  font-size: 14px;
-  color: orange;
+#java {
+  background: url("../src/icons/programming_languages/java_logo.png") no-repeat
+    center;
+  border: solid rgba(78, 118, 155, 0.5) 2px;
+}
+#java:hover {
+  background-color: rgba(78, 118, 155, 0.5) !important;
+}
+
+#python {
+  background: url("../src/icons/programming_languages/python_logo.png")
+    no-repeat center;
+  border: solid rgba(52, 109, 162, 0.5) 2px;
+}
+#python:hover {
+  background-color: rgba(52, 109, 162, 0.5) !important;
+}
+
+#php {
+  background: url("../src/icons/programming_languages/php_logo.png")
+    no-repeat center;
+  border: solid rgba(225, 225, 234, 0.5) 2px;
+}
+#php:hover {
+  background-color: rgba(225, 225, 234, 0.5) !important;
+}
+
+#haskell {
+  background: url("../src/icons/programming_languages/haskell_logo.png")
+    no-repeat center;
+  border: solid rgba(136, 119, 184, 0.5) 2px;
+}
+#haskell:hover {
+  background-color: rgba(136, 119, 184, 0.5) !important;
 }
 
 /*
@@ -113,6 +167,22 @@ body {
   }
   to {
     background-color: rgba(0, 0, 0, 0.1);
+  }
+}
+@keyframes pr-btn-init {
+  from {
+    padding: 50px;
+  }
+  to {
+    padding: 30px;
+  }
+}
+@keyframes pr-btn-hover {
+  from {
+    padding: 30px;
+  }
+  to {
+    padding: 50px;
   }
 }
 
@@ -132,7 +202,6 @@ body {
 @media only screen and (max-width: 400px) {
   .about-btn-container {
     text-align: center;
-    display: block;
   }
   .about-title-box {
     text-align: center;
