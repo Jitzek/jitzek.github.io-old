@@ -27,6 +27,10 @@ body {
   font-weight: bold;
 }
 
+.head-to-body-divider {
+  padding-bottom: 520px;
+}
+
 /*
  *** About Me ***
 */
@@ -104,6 +108,11 @@ body {
   border: solid rgba(0, 0, 0, 0) !important;
 }
 
+.pr-btn-active {
+  animation: pr-btn-hover 0.5s forwards;
+  border: solid rgba(0, 0, 0, 0) !important;
+}
+
 #csharp {
   background: url("../src/icons/programming_languages/csharp_logo.png")
     no-repeat center;
@@ -141,8 +150,8 @@ body {
 }
 
 #php {
-  background: url("../src/icons/programming_languages/php_logo.png")
-    no-repeat center;
+  background: url("../src/icons/programming_languages/php_logo.png") no-repeat
+    center;
   border: solid rgba(225, 225, 234, 0.5) 2px;
 }
 #php:hover {
@@ -156,6 +165,11 @@ body {
 }
 #haskell:hover {
   background-color: rgba(136, 119, 184, 0.5) !important;
+}
+
+.pr-tab {
+  display: none;
+  position: absolute;
 }
 
 /*
@@ -189,6 +203,11 @@ body {
 /*
  * Responsiveness
 */
+@media only screen and (max-width: 400px) {
+  .head-to-body-divider {
+    padding-bottom: 220px;
+  }
+}
 @media only screen and (max-width: 800px) {
   .about-box {
     display: contents;
