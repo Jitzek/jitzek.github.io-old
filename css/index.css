@@ -60,7 +60,7 @@ body {
   color: rgba(255, 255, 255, 0.6);
   position: center;
   margin-top: 10px;
-  margin-left: 10px;
+  margin-right: 10px;
   padding: 5px;
   background-image: linear-gradient(
     rgba(255, 255, 255, 0.05),
@@ -99,17 +99,17 @@ body {
 /*
  * About Me - Experience
 */
+.pr-tab {
+  display: none;
+}
+
 .pr-btn {
   animation: pr-btn-init 0.5s forwards;
   background-color: rgba(255, 255, 255, 0) !important;
 }
-.pr-btn:hover {
-  animation: pr-btn-hover 0.5s forwards;
-  border: solid rgba(0, 0, 0, 0) !important;
-}
 
 .pr-btn-active {
-  animation: pr-btn-hover 0.5s forwards;
+  animation: pr-btn-active 0.5s forwards;
   border: solid rgba(0, 0, 0, 0) !important;
 }
 
@@ -167,9 +167,63 @@ body {
   background-color: rgba(136, 119, 184, 0.5) !important;
 }
 
-.pr-tab {
-  display: none;
-  position: absolute;
+.pr-div {
+  padding: 20px;
+  animation: pr-div-init 0.75s forwards;
+}
+
+.csharp-div {
+  border: solid rgba(140, 72, 143, 1) 2px;
+  background-image: linear-gradient(
+    to right,
+    rgba(140, 72, 143, 0.15) 0%,
+    rgba(140, 72, 143, 0) 15%
+  );
+}
+
+.cplusplus-div {
+  border: solid rgba(93, 139, 195, 1.0)  2px;
+  background-image: linear-gradient(
+    to right,
+    rgba(93, 139, 195, 0.15) 0%,
+    rgba(93, 139, 195, 0.0)  15%
+  );
+}
+
+.java-div {
+  border: solid rgba(78, 118, 155, 1.0)  2px;
+  background-image: linear-gradient(
+    to right,
+    rgba(78, 118, 155, 0.15) 0%,
+    rgba(78, 118, 155, 0.0)  15%
+  );
+}
+
+.python-div {
+  border: solid rgba(52, 109, 162, 1.0)  2px;
+  background-image: linear-gradient(
+    to right,
+    rgba(52, 109, 162, 0.15) 0%,
+    rgba(52, 109, 162, 0.0)  15%
+  );
+}
+
+.php-div {
+  border: solid rgba(225, 225, 234, 1.0)  2px;
+  background-image: linear-gradient(
+    to right,
+    rgba(225, 225, 234, 0.15) 0%,
+    rgba(225, 225, 234, 0.0)  15%
+  );
+}
+
+.haskell-div {
+  border: solid rgba(136, 119, 184, 1.0)  2px;
+  background-image: linear-gradient(
+    to right,
+    rgba(136, 119, 184, 0.15) 0%,
+    rgba(136, 119, 184, 0.0)  15%
+  );
 }
 
 /*
@@ -191,7 +245,7 @@ body {
     padding: 30px;
   }
 }
-@keyframes pr-btn-hover {
+@keyframes pr-btn-active {
   from {
     padding: 30px;
   }
@@ -199,11 +253,19 @@ body {
     padding: 50px;
   }
 }
+@keyframes pr-div-init {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 
 /*
  * Responsiveness
 */
-@media only screen and (max-width: 400px) {
+@media only screen and (max-height: 800px) and (max-width: 400px) {
   .head-to-body-divider {
     padding-bottom: 220px;
   }
@@ -224,5 +286,43 @@ body {
   }
   .about-title-box {
     text-align: center;
+  }
+}
+@media only screen and (max-width: 750px) {
+  .pr-col {
+    width: 10% !important;
+    padding-left: 0px;
+    margin-right: 36px;
+  }
+  .pr-btn {
+    animation: none;
+    background-color: rgba(255, 255, 255, 0) !important;
+    padding: 30px !important;
+    background-size: 50px !important;
+  }
+  .pr-btn-active {
+    animation: none;
+    border: solid rgba(0, 0, 0, 0) !important;
+    padding: 29px !important;
+    background-color: rgba(255, 255, 255, 0.25) !important;
+  }
+}
+@media (min-width: 750px) and (max-width: 990px) {
+  .pr-col {
+    width: 10% !important;
+    padding-left: 0px;
+    margin-right: 30px;
+  }
+  .pr-btn {
+    animation: none;
+    background-color: rgba(255, 255, 255, 0) !important;
+    padding: 41px !important;
+    background-size: 70px !important;
+  }
+  .pr-btn-active {
+    animation: none;
+    border: solid rgba(0, 0, 0, 0) !important;
+    padding: 40px !important;
+    background-color: rgba(255, 255, 255, 0.25) !important;
   }
 }
