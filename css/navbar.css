@@ -12,7 +12,6 @@
   padding-left: 15%;
 }
 
-
 .name-link:hover:hover {
   text-decoration: none;
 }
@@ -26,6 +25,18 @@
   color: white;
 }
 
+.firstname {
+  overflow:hidden;
+  font-size: 26px;
+}
+
+#firstname {
+  color: white;
+}
+#firstname:hover {
+  text-decoration: none;
+}
+
 #name-br {
   display: inline;
   background-color: rgba(255, 255, 255, 0.4);
@@ -35,13 +46,24 @@
   animation: shine 2s forwards 1.5s, pulse 4s forwards 4s infinite;
 }
 
+.lastname {
+  width: 120px;
+  animation: reveal 7s forwards;
+  overflow:hidden;
+}
+
 #surname {
   color: rgba(255, 255, 255, 0.4);
-  position: absolute;
-  margin-top: -30px;
-  animation-name: reveal;
-  animation-duration: 2s;
-  animation-fill-mode: forwards;
+  font-size: 26px;
+}
+#surname:hover {
+  text-decoration: none;
+}
+
+.lastname span {
+  margin-left:-355px;
+  animation: slidein 7s forwards;
+  overflow:hidden;
 }
 
 .social-img {
@@ -69,7 +91,6 @@
   text-shadow: 0 0 5px #b66f97;
 }
 
-
 /*
  * Responsiveness
 */
@@ -89,6 +110,23 @@
   }
 }
 
+@media only screen and (max-width: 380px) {
+  #firstname {
+    font-size: 0px;
+  }
+  #firstname::after {
+    font-size: 26px;
+    content: "JJ";
+  }
+
+  #surname {
+    font-size: 0px;
+  }
+  #surname::after {
+    font-size: 26px;
+    content: "K";
+  }
+}
 
 /*
  * Animations
@@ -114,7 +152,7 @@
     box-shadow: 0 0 10px white;
   }
 }
-@keyframes reveal {
+/*@keyframes reveal {
   from {
     margin-left: 0px;
     opacity: 0;
@@ -122,5 +160,40 @@
   to {
     margin-left: 120px;
     opacity: 1;
+  }
+}*/
+@keyframes slidein {
+  0% {
+    margin-left: -800px;
+  }
+  20% {
+    margin-left: -800px;
+  }
+  35% {
+    margin-left: 0px;
+  }
+  100% {
+    margin-left: 0px;
+  }
+}
+
+@keyframes reveal {
+  0% {
+    opacity: 0;
+    width: 120px;
+  }
+  20% {
+    opacity: 1;
+    width: 120px;
+  }
+  30% {
+    width: 120px;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    width: 120px;
   }
 }
