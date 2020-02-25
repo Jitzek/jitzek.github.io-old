@@ -34,6 +34,7 @@ for (var i = 0; i < pr_btns.length; i++) {
 
         // If there is an active class
         if (current_pr_btn.length > 0) {
+            // Hide element that has the id: "[Button ID]-tab"
             if (document.getElementById(current_pr_btn[0].id + "-tab")) {
                 document.getElementById(current_pr_btn[0].id + "-tab").style.display = "none";
             }
@@ -46,6 +47,7 @@ for (var i = 0; i < pr_btns.length; i++) {
             // Add the active class to the clicked button
             this.className += " pr-btn-active";
 
+            // Display element that has the id: "[Button ID]-tab"
             if (document.getElementById(current_pr_btn[0].id + "-tab")) {
                 document.getElementById(current_pr_btn[0].id + "-tab").style.display = "inline";
             }
