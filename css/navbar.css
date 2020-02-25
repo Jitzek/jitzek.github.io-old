@@ -80,6 +80,10 @@
   color: white;
 }
 
+.dropdown-menu {
+  background-image: linear-gradient(to bottom, rgb(60, 37, 124), #4C2F73, #574380);
+}
+
 .dropdown-item {
   color: white !important;
   text-shadow: 0 0 20px #000;

@@ -15,11 +15,13 @@ body {
 .heading {
   color: white;
   opacity: 0.9;
+  height: 80vh;
 }
 
 .heading-title {
   text-shadow: 0 0 20px #b66f97;
   font-weight: bolder;
+  font-size: 40px;
 }
 
 .heading-subtitle {
@@ -158,13 +160,13 @@ body {
   background-color: rgba(225, 225, 234, 0.5) !important;
 }
 
-#haskell {
-  background: url("../src/icons/programming_languages/haskell_logo.png")
+#javascript {
+  background: url("../src/icons/programming_languages/javascript_logo.png")
     no-repeat center;
-  border: solid rgba(136, 119, 184, 0.5) 2px;
+  border: solid rgba(224, 189, 63, 0.5) 2px;
 }
-#haskell:hover {
-  background-color: rgba(136, 119, 184, 0.5) !important;
+#javascript:hover {
+  background-color: rgba(224, 189, 63, 0.5) !important;
 }
 
 .pr-div {
@@ -217,13 +219,23 @@ body {
   );
 }
 
-.haskell-div {
-  border: solid rgba(136, 119, 184, 1.0)  2px;
+.javascript-div {
+  border: solid rgba(224, 189, 63, 1.0)  2px;
   background-image: linear-gradient(
     to right,
-    rgba(136, 119, 184, 0.15) 0%,
-    rgba(136, 119, 184, 0.0)  15%
+    rgba(224, 189, 63, 0.15) 0%,
+    rgba(224, 189, 63, 0.0)  15%
   );
+}
+
+.project-anchor {
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+.project-anchor:hover {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 1.0);
+  text-shadow: 0 0 14px rgba(255, 255, 255, 0.4);
 }
 
 /*
@@ -265,11 +277,6 @@ body {
 /*
  * Responsiveness
 */
-@media only screen and (max-height: 800px) and (max-width: 400px) {
-  .head-to-body-divider {
-    padding-bottom: 220px;
-  }
-}
 @media only screen and (max-width: 800px) {
   .about-box {
     display: contents;
