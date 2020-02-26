@@ -115,6 +115,9 @@
 }
 
 @media only screen and (max-width: 380px) {
+  .lastname {
+    width: 20px;
+  }
   #firstname {
     font-size: 0px;
   }
@@ -184,20 +187,16 @@
 @keyframes reveal {
   0% {
     opacity: 0;
-    width: 120px;
   }
   20% {
     opacity: 1;
-    width: 120px;
   }
   30% {
-    width: 120px;
   }
   80% {
     opacity: 1;
   }
   100% {
     opacity: 1;
-    width: 120px;
   }
 }
