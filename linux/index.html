@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- include.js uses jquery.min.js, be sure to include them both (in the righ order) -->
+    <script src="/js/jquery/jquery.min.js" type="text/javascript"></script>
+    <script src="/js/jquery/include.js" type="text/javascript"></script>
+    <script src="/js/console.js" type="text/javascript"></script>
+</head>
+
+<body>
+    <img src="#" hidden onerror="global_include()" />
+    <img src="#" hidden onerror="include()" />
+    <div style="font-family: 'Quicksand', sans-serif;">
+        <!-- CSS Files to be included (include.js) -->
+        <div css-include="/css/linux" />
+        <div css-include="/css/navbar" />
+        <!-- ------------------- -->
+
+        <!-- Includes the navbar (include.js) -->
+        <div class="container" style="height: auto;">
+            <div html-include="/html/includes/navbar"></div>
+        </div>
+        <!-- ------------------- -->
+    </div>
+    <div style="margin-bottom: 50px;"></div>
+    <div class="initial-console">
+        <span class="initial-console c1">
+            <p>Uncompressing Linux...</p>
+        </span>
+        <span class="initial-console c2">
+            <p>done, booting the kernel.</p>
+        </span>
+        <br><br><br><br>
+        <span class="initial-console c3">
+            <p>Preparing Terminal... please wait.</p>
+        </span>
+        <br />
+    </div>
+    <br />
+    <div class="console">
+        <div id="terminal" class="console-history">
+            <p id="terminal-line" style="color: rgb(230, 230, 230);">type help to get a list of commands</p>
+            <!--<pre>
+            <span style="color: #CF7496;"> 888888 888888 888    d8P  </span>
+            <span style="color: #F99F9F;">    "88b   "88b 888   d8P   </span>
+            <span style="color: #FAB69F;">     888    888 888  d8P    </span>
+            <span style="color: #F7D0A8;">     888    888 888d88K     </span>
+            <span style="color: #E0BDAE;">     888    888 8888888b    </span>
+            <span style="color: #CDA3B4">     888    888 888  Y88b   </span>
+            <span style="color: #C095B0;">     88P    88P 888   Y88b  </span>
+            <span style="color: #C56D92;">     888    888 888    Y88b </span>
+            <span style="color: #AA5C8D;">   .d88P  .d88P             </span>
+            <span style="color: #A1588F"> .d88P" .d88P"              </span>
+            <span style="color: #8B4E87;">888P"  888P"                </span>
+            </pre>-->
+        </div>
+        <div class="console-input">
+            <label id="terminal-label" class="console-input-label">jitzek@jitzek:$</label> &nbsp;
+            <input id="terminal-input" class="console-input-field" type="text" onkeydown="sendCommand(event)" />
+        </div>
+    </div>
+</body>
+<footer>
+    <div html-include="html/includes/footer"></div>
+</footer>
+
+</html>

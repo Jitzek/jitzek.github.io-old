@@ -9,6 +9,10 @@ body {
   font-size: 18px;
 }
 
+.home {
+  color: white !important;
+}
+
 /*
  * Heading
 */
