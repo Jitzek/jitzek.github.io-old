@@ -1,3 +1,5 @@
+const VERSION = 0.1;
+
 var input = "#ABEDF7";
 var blue = "#038CFC";
 var white = "FFFFFF";
@@ -50,17 +52,21 @@ var root = new Object; root.name = "/usr/local"; root.type = "directory"; root.p
 
 var Projects = new Object; Projects.name = "Projects"; Projects.type = "directory"; Projects.path = root.path + '/' + Projects.name;
 
-var project1 = new Object; project1.name = "project1"; project1.content = "This file is executable (./[FILE])"; project1.type = "file"; project1.exec = true; project1.path = Projects.path + '/' + project1.name;
+var test = new Object; test.name = "test"; test.type = "directory"; test.path = Projects.path + '/' + test.name;
+
+var project1 = new Object; project1.name = "project1"; project1.content = "This file is executable (./FILE)"; project1.type = "file"; project1.exec = true; project1.path = Projects.path + '/' + project1.name;
+var project2 = new Object; project2.name = "project2"; project2.content = "This file is executable (./FILE)"; project2.type = "file"; project2.exec = true; project2.path = test.path + '/' + project1.name;
 
 var readme = new Object;
 readme.name = "readme.txt"; readme.content =
     "<span>[Introduction]</span><br>" +
-    "<span>Hello and welcome to my linux style terminal (version 0.1), this terminal is simulated and will not accept most common linux commands.</span><br>" +
+    `<span>Hello and welcome to my linux style terminal (version ${VERSION}), this terminal is simulated and will not accept most common linux commands.</span><br>` +
     "<span>Navigating through this terminal's file system will give you access to various projects that can be reached by executing them (./FILE)</span><br>" +
     "<span>Though I am not completely certain what purpose this page will bring in the future I hope you will enjoy it anyways</span><br><br>";
 readme.type = "file"; readme.exec = false; readme.path = root + '/' + readme.name;
 
-Projects.content = [project1];
+test.content = [project2];
+Projects.content = [test, project1];
 root.content = [Projects, readme];
 var current_dir = root;
 /* -------------------------------- */
@@ -116,26 +122,27 @@ function handleCommonCommands(input) {
         default:
             break;
     }
-    getFile(current_dir, current_dir, args[0]);
-    if (current_dir.content.includes(current_file)) {
+    getFile(current_dir, root, args[0]);
+    if (current_dir.content.includes(current_file) && current_file.name.length == args[0].length) {
         return;
     }
-    if (args[0][0] == '.' && args[0][1] == '/' || current_file) {
+    if (current_file) {
+        if (current_file.exec) {
+            //
+        }
+    }
+    else if (args[0][0] == '.' && args[0][1] == '/') {
         if (args.length > 1) {
             sendError("expected one argument, got " + args.length);
         }
-        args[0] = args[0].slice(2, args[0].length);
-        if (!current_file) {
-            getFile(current_dir, root, args[0]);
-            if (!current_file) {
-                getFile(current_dir, current_dir, '/' + args[0]);
+        var filename = args[0].slice(2, args[0].length);
+        current_dir.content.forEach(element => {
+            if (element.name == filename) {
+                if (element.exec) {
+                    //
+                }
             }
-        }
-        if (current_file) {
-            if (current_file.exec) {
-                //
-            }
-        }
+        });
         return;
     }
 }
@@ -145,28 +152,38 @@ function getFile(or_parent, parent, filename) {
     if (parent.type != 'directory') {
         return;
     }
-    parent.content.forEach(file => {
-        if (file.type == 'file') {
+    parent.content.forEach(element => {
+        if (element.type == 'file') {
             // File is in same directory
-            if (file.name == filename && or_parent == parent) {
-                current_file = file;
-                console.log('1');
+            if (element.name == filename && or_parent == parent) {
+                current_file = element;
                 return;
             }
             // Recursion took place, subjective path given (e.g. Projects/project1)
-            if (parent.path + '/' + file.name == or_parent.path + '/' + filename) {
-                current_file = file;
-                console.log('2');
+            if (parent.path + '/' + element.name == or_parent.path + '/' + filename) {
+                current_file = element;
                 return;
             }
             // Recursion took place, full path given (e.g. /usr/local/Projects/project1)
-            if (parent.path + '/' + file.name == filename) {
-                current_file = file;
-                console.log('3');
+            if (parent.path + '/' + element.name == filename) {
+                current_file = element;
                 return;
             }
         }
     });
+    if (or_parent == parent) {
+        if (filename[0] == '.' && filename[1] == '/') {
+            filename = filename.slice(2, filename.length);
+            parent.content.forEach(element => {
+                if (element.type == 'file') {
+                    if (element.name == filename) {
+                        current_file = element;
+                        return;
+                    }
+                }
+            });
+        }
+    }
     parent.content.forEach(element => {
         getFile(or_parent, element, filename);
         return;
@@ -211,7 +228,7 @@ function exec_cat(args) {
     }
     getFile(current_dir, root, args[1]);
     if (!current_file) {
-        sendError(args[1] + " Is not a file or doesn't exist");
+        sendError(args[1] + " Was not found");
         return;
     }
     document.getElementById('terminal').innerHTML += "<p id=\"terminal-line\" style=\"color: " + white + ";\">" + current_file.content + "</p>";
@@ -249,7 +266,6 @@ function exec_cd(args) {
 }
 
 function exec_sysinfo() {
-
     var cUpTime = convertUpTime();
     var sUpTime = '';
     if (cUpTime[0] > 0) {
@@ -275,7 +291,7 @@ function exec_sysinfo() {
             "\n" +
             "<span style=\"color: #CF7496;\">jitzek@jitzek</span>\n" +
             "<span style=\"color: white;\">  -------------</span>\n" +
-            "<span style=\"color: #CF7496;\">OS: <span style=\"color: white;\">jitxekOS 0.1 (devPhase) (x86_64)</span></span>\n" +
+            "<span style=\"color: #CF7496;\">OS: <span style=\"color: white;\">jitxekOS " + VERSION + " (devPhase) (x86_64)</span></span>\n" +
             "<span style=\"color: #CF7496;\">Uptime: <span style=\"color: white;\">" + sUpTime + "</span></span>"
         "</pre>"
     } else {
@@ -283,7 +299,7 @@ function exec_sysinfo() {
             "<pre class=\"container\" id=\"terminal-line\" style=\"overflow: hidden;\">" +
             "<span style=\"color: #CF7496;\"> 888888 888888 888    d8P  </span>         <span style=\"color: #CF7496;\">jitzek@jitzek</span>\n" +
             "<span style=\"color: #F99F9F;\">    \"88b   \"88b 888   d8P   </span>      <span style=\"color: white;\">  -------------</span>\n" +
-            "<span style=\"color: #FAB69F;\">     888    888 888  d8P    </span>        <span style=\"color: #CF7496;\">OS: <span style=\"color: white;\">jitxekOS 0.1 (devPhase) (x86_64)</span></span>\n" +
+            "<span style=\"color: #FAB69F;\">     888    888 888  d8P    </span>        <span style=\"color: #CF7496;\">OS: <span style=\"color: white;\">jitxekOS " + VERSION + " (devPhase) (x86_64)</span></span>\n" +
             "<span style=\"color: #F7D0A8;\">     888    888 888d88K     </span>        <span style=\"color: #CF7496;\">Uptime: <span style=\"color: white;\">" + sUpTime + "</span></span>\n" +
             "<span style=\"color: #E0BDAE;\">     888    888 8888888b    </span>\n" +
             "<span style=\"color: #CDA3B4\">     888    888 888  Y88b   </span>\n" +
