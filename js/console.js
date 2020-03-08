@@ -40,6 +40,7 @@ var cd = new Object; cd.name = "cd"; cd.help = "Change the shell working directo
 var clear = new Object; clear.name = "clear"; clear.help = "clear the terminal screen";
 var ls = new Object; ls.name = "ls"; ls.help = "list directory contents";
 var pwd = new Object; pwd.name = "pwd"; pwd.help = "print name of current / working directory";
+var reboot = new Object; reboot.name = "reboot"; reboot.help = "reboot the machine";
 var sysinfo = new Object; sysinfo.name = "sysinfo"; sysinfo.help = "display system info along with ascii art";
 var commands = [cat, cd, clear, ls, pwd, sysinfo];
 /* ------------ */
@@ -74,12 +75,8 @@ function sendCommand(event) {
 };
 
 function handleCommonCommands(input) {
-
+    current_file = null;
     var args = input.trim().split(" ");
-    if (args[0][0] == '.' && args[0][1] == '/') {
-        //
-        return;
-    }
     switch (args[0]) {
         case cat.name:
             exec_cat(args);
@@ -110,12 +107,70 @@ function handleCommonCommands(input) {
         case pwd.name:
             document.getElementById('terminal').innerHTML += "<p id=\"terminal-line\" style=\"color: " + neutral + ";\">" + current_dir.path + "</p>";
             return;
+        case reboot.name:
+            location.reload();
+            return;
         case sysinfo.name:
             exec_sysinfo();
             return;
         default:
-            return;
+            break;
     }
+    getFile(current_dir, current_dir, args[0]);
+    if (current_dir.content.includes(current_file)) {
+        return;
+    }
+    if (args[0][0] == '.' && args[0][1] == '/' || current_file) {
+        if (args.length > 1) {
+            sendError("expected one argument, got " + args.length);
+        }
+        args[0] = args[0].slice(2, args[0].length);
+        if (!current_file) {
+            getFile(current_dir, current_dir, args[0]);
+            if (!current_file) {
+                getFile(current_dir, current_dir, '/' + args[0]);
+            }
+        }
+        if (current_file) {
+            if (current_file.exec) {
+                //
+            }
+        }
+        return;
+    }
+}
+
+var current_file;
+function getFile(or_parent, parent, filename) {
+    if (parent.type != 'directory') {
+        return;
+    }
+    parent.content.forEach(file => {
+        if (file.type == 'file') {
+            // File is in same directory
+            if (file.name == filename && or_parent == parent) {
+                current_file = file;
+                console.log('1');
+                return;
+            }
+            // Recursion took place, subjective path given (e.g. Projects/project1)
+            if (parent.path + '/' + file.name == or_parent.path + '/' + filename) {
+                current_file = file;
+                console.log('2');
+                return;
+            }
+            // Recursion took place, full path given (e.g. /usr/local/Projects/project1)
+            if (parent.path + '/' + file.name == filename) {
+                current_file = file;
+                console.log('3');
+                return;
+            }
+        }
+    });
+    parent.content.forEach(element => {
+        getFile(or_parent, element, filename);
+        return;
+    });
 }
 
 function sendError(errormsg) {
@@ -131,12 +186,7 @@ function dirToPath(parent, path) {
         return;
     }
     parent.content.forEach(element => {
-        if (element.path != path) {
-            dirToPath(element, path);
-        }
-        if (element.type == 'directory') {
-            current_dir = element;
-        }
+        dirToPath(element, path);
         return;
     });
 }
@@ -151,7 +201,6 @@ function getPathUp(path) {
         fullcount++;
     });
     return path.slice(0, partcount);
-
 }
 
 
@@ -160,16 +209,12 @@ function exec_cat(args) {
         document.getElementById('terminal').innerHTML += "<p id=\"terminal-line\" style=\"color: " + white + ";\">" + "cat [FILE]" + "</p>";
         return;
     }
-    current_dir.content.forEach(element => {
-        if (element.name == args[1]) {
-            if (element.type == "directory") {
-                sendError(element.name + " Is a directory");
-                return;
-            }
-            document.getElementById('terminal').innerHTML += "<p id=\"terminal-line\" style=\"color: " + white + ";\">" + element.content + "</p>";
-            return;
-        }
-    });
+    getFile(current_dir, current_dir, args[1]);
+    if (!current_file) {
+        sendError(args[1] + " Is not a file or doesn't exist");
+        return;
+    }
+    document.getElementById('terminal').innerHTML += "<p id=\"terminal-line\" style=\"color: " + white + ";\">" + current_file.content + "</p>";
 }
 
 function exec_cd(args) {
@@ -182,7 +227,6 @@ function exec_cd(args) {
             sendError("Access Denied");
             return;
         }
-        var test = getPathUp(current_dir.path);
         dirToPath(root, getPathUp(current_dir.path));
         return;
     }
@@ -205,6 +249,7 @@ function exec_cd(args) {
 }
 
 function exec_sysinfo() {
+
     var cUpTime = convertUpTime();
     var sUpTime = '';
     if (cUpTime[0] > 0) {
@@ -213,20 +258,43 @@ function exec_sysinfo() {
         sUpTime += cUpTime[1] + ' mins  ';
     }
     sUpTime += cUpTime[2] + ' seconds';
-    var output =
-        "<pre id=\"terminal-line\" style=\"overflow: hidden;\">" +
-        "<span style=\"color: #CF7496;\"> 888888 888888 888    d8P  </span>         <span style=\"color: #CF7496;\">jitzek@jitzek</span>\n" +
-        "<span style=\"color: #F99F9F;\">    \"88b   \"88b 888   d8P   </span>      <span style=\"color: white;\">  -------------</span>\n" +
-        "<span style=\"color: #FAB69F;\">     888    888 888  d8P    </span>        <span style=\"color: #CF7496;\">OS: <span style=\"color: white;\">jitxekOS 0.1 (devPhase) (x86_64)</span></span>\n" +
-        "<span style=\"color: #F7D0A8;\">     888    888 888d88K     </span>        <span style=\"color: #CF7496;\">Uptime: <span style=\"color: white;\">" + sUpTime + "</span></span>\n" +
-        "<span style=\"color: #E0BDAE;\">     888    888 8888888b    </span>\n" +
-        "<span style=\"color: #CDA3B4\">     888    888 888  Y88b   </span>\n" +
-        "<span style=\"color: #C095B0;\">     88P    88P 888   Y88b  </span>\n" +
-        "<span style=\"color: #C56D92;\">     888    888 888    Y88b </span>\n" +
-        "<span style=\"color: #AA5C8D;\">   .d88P  .d88P             </span>\n" +
-        "<span style=\"color: #A1588F\"> .d88P\" .d88P\"              </span>\n" +
-        "<span style=\"color: #8B4E87;\">888P\"  888P\"                </span>\n" +
+    if ($(window).width() < 600) {
+        var output =
+            "<pre class=\"container\" id=\"terminal-line\" style=\"overflow: hidden;\">" +
+            "<span style=\"color: #CF7496;\"> 888888 888888 888    d8P  </span>>\n" +
+            "<span style=\"color: #F99F9F;\">    \"88b   \"88b 888   d8P   </span>\n" +
+            "<span style=\"color: #FAB69F;\">     888    888 888  d8P    </span>\n" +
+            "<span style=\"color: #F7D0A8;\">     888    888 888d88K     </span>\n" +
+            "<span style=\"color: #E0BDAE;\">     888    888 8888888b    </span>\n" +
+            "<span style=\"color: #CDA3B4\">     888    888 888  Y88b   </span>\n" +
+            "<span style=\"color: #C095B0;\">     88P    88P 888   Y88b  </span>\n" +
+            "<span style=\"color: #C56D92;\">     888    888 888    Y88b </span>\n" +
+            "<span style=\"color: #AA5C8D;\">   .d88P  .d88P             </span>\n" +
+            "<span style=\"color: #A1588F\"> .d88P\" .d88P\"              </span>\n" +
+            "<span style=\"color: #8B4E87;\">888P\"  888P\"                </span>\n" +
+            "\n" +
+            "<span style=\"color: #CF7496;\">jitzek@jitzek</span>\n" +
+            "<span style=\"color: white;\">  -------------</span>\n" +
+            "<span style=\"color: #CF7496;\">OS: <span style=\"color: white;\">jitxekOS 0.1 (devPhase) (x86_64)</span></span>\n" +
+            "<span style=\"color: #CF7496;\">Uptime: <span style=\"color: white;\">" + sUpTime + "</span></span>"
         "</pre>"
+    } else {
+        var output =
+            "<pre class=\"container\" id=\"terminal-line\" style=\"overflow: hidden;\">" +
+            "<span style=\"color: #CF7496;\"> 888888 888888 888    d8P  </span>         <span style=\"color: #CF7496;\">jitzek@jitzek</span>\n" +
+            "<span style=\"color: #F99F9F;\">    \"88b   \"88b 888   d8P   </span>      <span style=\"color: white;\">  -------------</span>\n" +
+            "<span style=\"color: #FAB69F;\">     888    888 888  d8P    </span>        <span style=\"color: #CF7496;\">OS: <span style=\"color: white;\">jitxekOS 0.1 (devPhase) (x86_64)</span></span>\n" +
+            "<span style=\"color: #F7D0A8;\">     888    888 888d88K     </span>        <span style=\"color: #CF7496;\">Uptime: <span style=\"color: white;\">" + sUpTime + "</span></span>\n" +
+            "<span style=\"color: #E0BDAE;\">     888    888 8888888b    </span>\n" +
+            "<span style=\"color: #CDA3B4\">     888    888 888  Y88b   </span>\n" +
+            "<span style=\"color: #C095B0;\">     88P    88P 888   Y88b  </span>\n" +
+            "<span style=\"color: #C56D92;\">     888    888 888    Y88b </span>\n" +
+            "<span style=\"color: #AA5C8D;\">   .d88P  .d88P             </span>\n" +
+            "<span style=\"color: #A1588F\"> .d88P\" .d88P\"              </span>\n" +
+            "<span style=\"color: #8B4E87;\">888P\"  888P\"                </span>\n" +
+            "</pre>"
+    }
+
     document.getElementById('terminal').innerHTML += output;
     return;
 }

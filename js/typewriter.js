@@ -12,7 +12,6 @@ async function typeWriter() {
             remove();
             continue;
         } else if (getRemoval(elements[i].innerText) == 'f') {
-            console.log('remove');
             fullRemove();
             continue;
         }
@@ -34,6 +33,9 @@ async function typeWriter() {
             }
             at++;
             await sleep(speed);
+        }
+        if (i > 10) {
+            elements[i - 10].scrollIntoView();
         }
     }
 }
