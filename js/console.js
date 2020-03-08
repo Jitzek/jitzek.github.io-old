@@ -126,7 +126,7 @@ function handleCommonCommands(input) {
         }
         args[0] = args[0].slice(2, args[0].length);
         if (!current_file) {
-            getFile(current_dir, current_dir, args[0]);
+            getFile(current_dir, root, args[0]);
             if (!current_file) {
                 getFile(current_dir, current_dir, '/' + args[0]);
             }
@@ -209,7 +209,7 @@ function exec_cat(args) {
         document.getElementById('terminal').innerHTML += "<p id=\"terminal-line\" style=\"color: " + white + ";\">" + "cat [FILE]" + "</p>";
         return;
     }
-    getFile(current_dir, current_dir, args[1]);
+    getFile(current_dir, root, args[1]);
     if (!current_file) {
         sendError(args[1] + " Is not a file or doesn't exist");
         return;
