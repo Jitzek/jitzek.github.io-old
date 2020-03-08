@@ -1,109 +1,118 @@
 body {
-  background-color: black !important;
-  height: 100%;
-  font-family: monospace, "Quicksand", sans-serif;
-  font-size: 18px;
+    background-color: black !important;
+    height: 100%;
+    font-family: monospace, "Quicksand", sans-serif;
+    font-size: 18px;
 }
 
 .linux {
-  color: white !important;
+    color: white !important;
 }
 
 .initial-console {
-  color: white;
-  overflow: hidden;
-  white-space: nowrap;
-  margin: 0 auto;
-  letter-spacing: 0.15em;
-  float: left;
-  font-size: 16px;
-  animation: remove 0.1s 8s forwards;
+    color: white;
+    overflow: hidden;
+    white-space: nowrap;
+    margin: 0 auto;
+    letter-spacing: 0.15em;
+    float: left;
+    font-size: 16px;
+    animation: unload-console 0.1s 12s forwards;
 }
 
 .console {
-  width: 100%;
-  font-family: monospace, "Quicksand", sans-serif;
-  opacity: 0;
-  color: white;
-  float: left;
-  animation: load-console 0.1s 8s forwards;
+    width: 100%;
+    font-family: monospace, "Quicksand", sans-serif;
+    opacity: 0;
+    color: white;
+    float: left;
+    animation: load-console 0.1s 12s forwards;
 }
 
-.console-history {
-}
+.console-history {}
 
 .console-input {
-  display: flex;
+    display: flex;
 }
 
 .console-input-label {
-  padding-top: 8px;
-  width: auto;
+    padding-top: 8px;
+    width: auto;
 }
 
 .console-input-field {
-  background-color: rgba(0, 0, 0, 0);
-  color: white;
-  border: none;
-  width: 100%;
+    background-color: rgba(0, 0, 0, 0);
+    color: white;
+    border: none;
+    width: 100%;
 }
 
 #terminal-line {
-  line-height: 16px;
-  margin-bottom: 4px;
+    line-height: 16px;
+    margin-bottom: 4px;
 }
 
 .c1 {
-  animation: typing-c1 1.2s steps(19, end);
-  width: 230px;
+    animation: typing-c1 1.2s steps(19, end);
+    width: 230px;
 }
 
 .c2 {
-  width: 0px;
-  animation: typing-c2 1.2s steps(20, end) forwards;
-  animation-delay: 3s;
+    width: 0px;
+    animation: typing-c2 1.2s steps(20, end) forwards;
+    animation-delay: 3s;
 }
 
 .c3 {
-  width: 0px;
-  animation: typing-c3 1.2s steps(20, end) forwards;
-  animation-delay: 5s;
+    width: 0px;
+    animation: typing-c3 1.2s steps(20, end) forwards;
+    animation-delay: 5s;
 }
 
 @keyframes typing-c1 {
-  from {
-    width: 0;
-  }
-  to {
-    width: 230px;
-  }
+    from {
+        width: 0;
+    }
+    to {
+        width: 230px;
+    }
 }
 
 @keyframes typing-c2 {
-  from {
-    width: 0px;
-  }
-  to {
-    width: 240px;
-  }
+    from {
+        width: 0px;
+    }
+    to {
+        width: 240px;
+    }
 }
 
 @keyframes typing-c3 {
-  from {
-    width: 0px;
-  }
-  to {
-    width: 320px;
-  }
+    from {
+        width: 0px;
+    }
+    to {
+        width: 320px;
+    }
 }
 
 @keyframes load-console {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes unload-console {
+    from {
+        display: initial;
+    }
+    to {
+        display: none;
+        width: 0;
+    }
 }
 
 @keyframes remove {
