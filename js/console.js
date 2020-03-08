@@ -5,6 +5,7 @@ var accented = "rgb(116, 137, 207)"
 var neutral = "rgb(230, 230, 230)";
 var red = "rgb(255, 0, 0)";
 
+var uptime = 0;
 
 // UPDATEME
 /* /usr/local (root)
@@ -12,6 +13,26 @@ var red = "rgb(255, 0, 0)";
             project1
         readme.txt
 */
+
+async function countUpTime() {
+    await sleep(1000);
+    uptime++;
+    countUpTime();
+}
+
+function convertUpTime() {
+    var conversion = uptime;
+    var hours = Math.floor(uptime / 360);
+    conversion -= (hours * 360);
+    var minutes = Math.floor(uptime / 60);
+    conversion -= (minutes * 60);
+    var seconds = conversion;
+    return [hours, minutes, seconds];
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 /** Define and Configure Commands */
 var cat = new Object; cat.name = "cat"; cat.help = "concatenate files and print on the standard output";
@@ -184,12 +205,20 @@ function exec_cd(args) {
 }
 
 function exec_sysinfo() {
+    var cUpTime = convertUpTime();
+    var sUpTime = '';
+    if (cUpTime[0] > 0) {
+        sUpTime += cUpTime[0] + ' hours  ';
+    } if (cUpTime[1] > 0) {
+        sUpTime += cUpTime[1] + ' mins  ';
+    }
+    sUpTime += cUpTime[2] + ' seconds';
     var output =
         "<pre id=\"terminal-line\" style=\"overflow: hidden;\">" +
-        "<span style=\"color: #CF7496;\"> 888888 888888 888    d8P  </span>\n" +
-        "<span style=\"color: #F99F9F;\">    \"88b   \"88b 888   d8P   </span>\n" +
-        "<span style=\"color: #FAB69F;\">     888    888 888  d8P    </span>\n" +
-        "<span style=\"color: #F7D0A8;\">     888    888 888d88K     </span>\n" +
+        "<span style=\"color: #CF7496;\"> 888888 888888 888    d8P  </span>         <span style=\"color: #CF7496;\">jitzek@jitzek</span>\n" +
+        "<span style=\"color: #F99F9F;\">    \"88b   \"88b 888   d8P   </span>      <span style=\"color: white;\">  -------------</span>\n" +
+        "<span style=\"color: #FAB69F;\">     888    888 888  d8P    </span>        <span style=\"color: #CF7496;\">OS: <span style=\"color: white;\">jitxekOS 0.1 (devPhase) (x86_64)</span></span>\n" +
+        "<span style=\"color: #F7D0A8;\">     888    888 888d88K     </span>        <span style=\"color: #CF7496;\">Uptime: <span style=\"color: white;\">" + sUpTime + "</span></span>\n" +
         "<span style=\"color: #E0BDAE;\">     888    888 8888888b    </span>\n" +
         "<span style=\"color: #CDA3B4\">     888    888 888  Y88b   </span>\n" +
         "<span style=\"color: #C095B0;\">     88P    88P 888   Y88b  </span>\n" +

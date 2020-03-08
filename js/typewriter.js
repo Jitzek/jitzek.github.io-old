@@ -8,9 +8,16 @@ async function typeWriter() {
     for (var i = 0; i < elements.length; i++) {
         var at = 0;
         await sleep(getDelay(elements[i].innerText));
-        if (getRemoval(elements[i].innerText)) {
+        if (getRemoval(elements[i].innerText) == 'y') {
             remove();
             continue;
+        } else if (getRemoval(elements[i].innerText) == 'f') {
+            console.log('remove');
+            fullRemove();
+            continue;
+        }
+        if (getLoad(elements[i].innerText) == 'console') {
+            document.getElementsByClassName('console')[0].style.setProperty('opacity', 1);
         }
         var speed = getSpeed(elements[i].innerText);
         var txt = trimArgs(elements[i].innerText);
@@ -137,6 +144,23 @@ function getColor(element) {
     return arg;
 }
 
+function getLoad(element) {
+    var prefix = 'l';
+    var start = false;
+    var arg = '';
+    for (var i = 0; i < element.length; i++) {
+        if (start && element[i] == argEnd) {
+            break;
+        }
+        if (start) {
+            arg += element.charAt(i);
+        } else if (element[i] == argStart && element[i - 1] == prefix) {
+            start = true;
+        }
+    }
+    return arg;
+}
+
 function remove(till) {
     elements = document.getElementsByClassName(name);
     for (var i = 0; i < till; i++) {
@@ -148,7 +172,12 @@ function fullRemove() {
     var container = document.getElementsByClassName("tw-container");
     for (var i = 0; i < container.length; i++) {
         container[i].style.setProperty("display","none");
+        container[i].style.setProperty("width","0");
     }
+}
+
+function loadMainConsole() {
+    document.getElementsByClassName("console")[0].style.setProperty("opacity", 1);
 }
 
 function getRemoval(element) {
@@ -165,7 +194,5 @@ function getRemoval(element) {
             start = true;
         }
     }
-    if (arg == 'y') {
-        return true;
-    }
+    return arg;
 }

@@ -14,6 +14,7 @@
 <body onload="typeWriter()">
     <img src="#" hidden onerror="global_include()" />
     <img src="#" hidden onerror="include()" />
+    <img src="#" hidden onerror="countUpTime()" />
     <div style="font-family: 'Quicksand', sans-serif;">
         <!-- CSS Files to be included (include.js) -->
         <div css-include="/css/linux" />
@@ -27,50 +28,53 @@
         <!-- ------------------- -->
     </div>
     <div style="margin-bottom: 50px;"></div>
-    <div class="initial-console">
+    <div class="initial-console tw-container">
         <span class="initial-console tw" style="display: none;">s=20;d=0;Uncompressing Linux....</span>
-        <span class="initial-console tw" style="display: none;">s=20;d=1000; done, booting the kernel.</span><br><br>
+        <span class="initial-console tw" style="display: none;">s=20;d=700; done, booting the kernel.</span><br><br>
         <span class="initial-console tw" style="display: none;">s=0;d=1000;c=#01FF00;[  OK  ].</span>
         <span class="initial-console tw" style="display: none;">s=10;d=0; Reached target Paths..</span><br>
 
-        <span class="initial-console tw" style="display: none;">s=0;d=100;c=#01FF00;[  OK  ].</span>
+        <span class="initial-console tw" style="display: none;">s=0;d=50;c=#01FF00;[  OK  ].</span>
         <span class="initial-console tw" style="display: none;">s=0;d=0; Reached target Basic System.</span><br>
 
-        <span class="initial-console tw" style="display: none;">s=0;d=100;c=#01FF00;[  OK  ].</span>
+        <span class="initial-console tw" style="display: none;">s=0;d=50;c=#01FF00;[  OK  ].</span>
         <span class="initial-console tw" style="display: none;">s=0;d=0; Found device JTZK00444AS.</span><br>
         
-        <span class="initial-console tw" style="display: none;">s=0;d=100;c=#01FF00;[  OK  ].</span>
+        <span class="initial-console tw" style="display: none;">s=0;d=50;c=#01FF00;[  OK  ].</span>
         <span class="initial-console tw" style="display: none;">s=0;d=0; Reached target Remote File Systems (Pre).</span><br>
 
-        <span class="initial-console tw" style="display: none;">s=0;d=200;c=#01FF00;[  OK  ].</span>
+        <span class="initial-console tw" style="display: none;">s=0;d=100;c=#01FF00;[  OK  ].</span>
         <span class="initial-console tw" style="display: none;">s=0;d=0; Reached target Remote File Systems.</span><br>
 
-        <span class="initial-console tw" style="display: none;">s=0;d=100;c=#01FF00;[  OK  ].</span>
+        <span class="initial-console tw" style="display: none;">s=0;d=50;c=#01FF00;[  OK  ].</span>
         <span class="initial-console tw" style="display: none;">s=0;d=0; Started File System Check on /dev/disk/by-uuid/85e4ae33-c60e-4372-a6ba-9aeb23bf6d86.</span><br>
 
-        <span class="initial-console tw" style="display: none;">s=0;d=100;            </span>
+        <span class="initial-console tw" style="display: none;">s=0;d=50;            </span>
         <span class="initial-console tw" style="display: none;">s=0;d=0; Mounting /root...</span><br>
 
-        <span class="initial-console tw" style="display: none;">s=0;d=400;c=#01FF00;[  OK  ].</span>
+        <span class="initial-console tw" style="display: none;">s=0;d=200;c=#01FF00;[  OK  ].</span>
         <span class="initial-console tw" style="display: none;">s=0;d=0; Mounted /root.</span><br>
 
-        <span class="initial-console tw" style="display: none;">s=0;d=100;c=#01FF00;[  OK  ].</span>
+        <span class="initial-console tw" style="display: none;">s=0;d=50;c=#01FF00;[  OK  ].</span>
         <span class="initial-console tw" style="display: none;">s=0;d=0; Reached target Initrd Root File System..</span><br>
 
-        <span class="initial-console tw" style="display: none;">s=0;d=200;            </span>
+        <span class="initial-console tw" style="display: none;">s=0;d=100;            </span>
         <span class="initial-console tw" style="display: none;">s=0;d=0; Starting Reload Configuration from the Real Root...</span><br>
 
-        <span class="initial-console tw" style="display: none;">s=0;d=500;c=#01FF00;[  OK  ].</span>
+        <span class="initial-console tw" style="display: none;">s=0;d=250;c=#01FF00;[  OK  ].</span>
         <span class="initial-console tw" style="display: none;">s=0;d=0; Started Reload Configuration from the Real Root.</span><br>
 
-        <span class="initial-console tw" style="display: none;">s=0;d=200;c=#01FF00;[  OK  ].</span>
+        <span class="initial-console tw" style="display: none;">s=0;d=100;c=#01FF00;[  OK  ].</span>
         <span class="initial-console tw" style="display: none;">s=0;d=0; Reached target Initrd File Systems..</span><br>
 
-        <span class="initial-console tw" style="display: none;">s=0;d=200;c=#01FF00;[  OK  ].</span>
+        <span class="initial-console tw" style="display: none;">s=0;d=100;c=#01FF00;[  OK  ].</span>
         <span class="initial-console tw" style="display: none;">s=0;d=0; Reached target Initrd Default Target.</span><br><br>
 
+        <span class="initial-console tw" style="display: none;">s=0;d=500;c=#CF7496;Welcome to jitxekOS 0.1 (devPhase) (x86_64)! </span><br><br>
+
         <p class="initial-console tw" style="display: none;">s=50;d=1000;Preparing Terminal... please wait.</p>
-        <span class="tw" style="display: none;">d=1500;r=y;</span>
+        <span class="tw" style="display: none;">d=1500;r=f;</span>
+        <span class="tw" style="display: none;">d=0;l=console;</span>
         <!--<span class="initial-console c1">
             <p>Uncompressing Linux...</p>
         </span>
@@ -107,5 +111,7 @@
         </div>
     </div>
 </body>
+<footer>
+</footer>
 
 </html>
