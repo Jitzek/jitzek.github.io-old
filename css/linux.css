@@ -44,7 +44,14 @@ body {
   /*animation: load-console 0.1s 12s forwards;*/
 }
 
-.console-history {
+.skip-btn {
+  color: #aaaaaa !important;
+  cursor: pointer;
+  padding: 6px;
+  text-shadow: 0 0 20px #aaaaaa;
+}
+.skip-btn:hover {
+  text-shadow: 0 0 20px #ffffff;
 }
 
 .console-input {

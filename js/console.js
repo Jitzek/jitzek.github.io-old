@@ -80,6 +80,7 @@ function sendCommand(event) {
     }
 };
 
+
 function handleCommonCommands(input) {
     current_file = null;
     var args = input.trim().split(" ");
@@ -228,7 +229,7 @@ function exec_cat(args) {
     }
     getFile(current_dir, root, args[1]);
     if (!current_file) {
-        sendError(args[1] + " Was not found");
+        sendError(args[1] + " Was not found or was not of a valid filetype");
         return;
     }
     document.getElementById('terminal').innerHTML += "<p id=\"terminal-line\" style=\"color: " + white + ";\">" + current_file.content + "</p>";
