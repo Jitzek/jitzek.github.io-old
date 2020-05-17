@@ -172,7 +172,6 @@ class FileSystem {
         if (path[0][0] == '.') {
             path[0] = this.getLocationAsPath(this.current_dir);
         }
-        console.log(path);
         let i = 0;
         while (i <= path.length) {
             if (path[i] == './') {
