@@ -169,6 +169,10 @@ class FileSystem {
     convertToLegalPath(path = this.getLocationAsPath(this.current_dir)) {
         //path = path[0][0] == '/' ? path : this.getLocationAsPath(this.current_dir) + path;
         if (!Array.isArray(path)) path = this.getPathAsArray(path);
+        if (path[0][0] == '.') {
+            path[0] = this.getLocationAsPath(this.current_dir);
+        }
+        console.log(path);
         let i = 0;
         while (i <= path.length) {
             if (path[i] == './') {
@@ -180,6 +184,7 @@ class FileSystem {
             }
             else i++;
         }
+        console.log(path);
         return path.join('');
     }
 
