@@ -152,7 +152,7 @@ class FileSystem {
         var result = [];
         var count = 0;
         for (var i = 0; i < path.length; i++) {
-            if (path.charAt(i) === '/' || (i == path.length - 1 && count > 0)) {
+            if (path.charAt(i) === '/' || (i >= path.length - 1)) {
                 var item = "";
                 for (var j = i - count; j <= i; j++) {
                     item += path.charAt(j);
@@ -167,7 +167,7 @@ class FileSystem {
     }
 
     convertToLegalPath(path = this.getLocationAsPath(this.current_dir)) {
-        path = path[0][0] == '/' ? path : this.getLocationAsPath(this.current_dir) + path;
+        //path = path[0][0] == '/' ? path : this.getLocationAsPath(this.current_dir) + path;
         if (!Array.isArray(path)) path = this.getPathAsArray(path);
         let i = 0;
         while (i <= path.length) {
