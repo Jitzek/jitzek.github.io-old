@@ -20,13 +20,12 @@ body {
 .pr-card {
   color: white;
   padding: 0 !important;
-  margin: 2em;
   min-height: 20em;
   max-height: 20em;
   min-width: 14em;
   width: 18em !important;
   /*animation: shine 4s forwards 2s;*/
-  transition: box-shadow 0.25s, transform 0.25s, color 0.5s;
+  transition: box-shadow 0.45s, transform 0.45s, color 0.45s;
   cursor: pointer;
 }
 .pr-card:hover {
@@ -35,7 +34,7 @@ body {
 }
 
 .pr-card:hover .pr-icon {
-  width: 100px;
+  width: 180px;
 }
 
 .pr-card-overlay {
@@ -49,24 +48,31 @@ body {
 .pr-icon {
   width: 80px;
   height: auto;
-  transition: width 0.25s;
+  transition: width 0.45s;
 }
 
 .pr-icon-container {
-  min-height: 6em;
+  min-height: 12.5em;
+  max-height: 12.5em;
 }
 
 .name-container {
   margin-top: 1.2em;
   font-size: 1.2em;
-  min-height: 6.5em;
-  max-height: 6.5em;
+  min-height: 4.5em;
+  max-height: 4.5em;
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.tags-container {
+  min-height: 4.5em;
+  max-height: 4.5em;
 }
 
 .pr-tag {
   color: #99ffdd;
   text-shadow: 0 0 5px #99ffdd7e;
+  font-size: 1em;
 }
 
 /**

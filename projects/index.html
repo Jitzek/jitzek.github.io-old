@@ -3,14 +3,13 @@
 
 <head>
     <script src="../static/js/include.js" type="text/javascript"></script>
-    <!-- include.js uses jquery.min.js, be sure to include them both (in the righ order) -->
+    <script>
+        global_include();
+    </script>
     <link rel="stylesheet" href="../../static/css/projects/projects.css" />
 </head>
 
 <body>
-    <script>
-        global_include();
-    </script>
     <!--<img src="#" hidden onerror="countUpTime()" />-->
     <div style="font-family: 'Quicksand', sans-serif;">
         <!-- Includes the navbar (include.js) -->
@@ -21,6 +20,7 @@
         </div>
         <!-- ------------------- -->
     </div>
+    <div style="margin-top: 2em;"></div>
     <div class="container" id="pr-options">
         <script>
             const pr_info_arr = [
@@ -31,12 +31,12 @@
                     content: 'Isala Web Application',
                     tags: ['PHP', 'Database', 'LDAP', 'SMB', 'MVC'],
                     picture: '../static/src/projects/icons/isala.png',
-                    href: '/projects/forumpage',
+                    href: '/projects/isala',
                     color: 'white',
                     background: 'url(../static/src/projects/isala/isala_background.jpg',
                     foreground: 'rgba(39,62,84,1)',
                     hover: 'rgba(39,62,84,0.5)',
-                    glow: '0 0 10px rgba(255, 255, 255, 0.75)'
+                    glow: '0 0 10px #99ffdd55'
                 }
             ];
             var i = 0;
@@ -55,11 +55,11 @@
                     <div id="${pr_info.id}"  class="col-12 col-md-6 col-lg-3 col-card pr-card" onclick="onCardClick('${pr_info.href}')">
                         <div id="${pr_info.id}-overlay" class="pr-card-overlay">
                             <center>
-                                <div class="pfp-container">
+                                <div class="pr-icon-container">
                                     <img class="pr-icon" src="${pr_info.picture}" />
-                                </div>
-                                <div class="name-container">
-                                    <p>${pr_info.content}</p>
+                                    <div class="name-container">
+                                        <p>${pr_info.content}</p>
+                                    </div>
                                 </div>
                                 <div class="tags-container">`);
                     var card = document.getElementById(`${pr_info.id}`);
@@ -71,7 +71,7 @@
 
                     var overlay = document.getElementById(`${pr_info.id}-overlay`);
                     overlay.style.background = pr_info.foreground;
-                    overlay.style.transition = "background-color 1s";
+                    overlay.style.transition = "background-color 0.45s";
 
                     card.setAttribute("onMouseOver", `this.style.boxShadow  = '${pr_info.glow}'`)
                     card.setAttribute("onMouseLeave", `this.style.boxShadow  = 'none'`)
