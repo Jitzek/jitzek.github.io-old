@@ -23,7 +23,7 @@ function navbar_include(page = "") {
         ['project2', 'Project 2', '#', 'static'],
         ['project3', 'Project 3', '#', 'static']]];
     const LINUX = ['linux', 'Linux', '/linux', 'static'];
-    const CROMA = ['croma', 'Croma', '/croma-web-site', 'static'];
+    const CROMA = ['croma', 'Croma <span style="font-size: 10px">(in progress)</span>', '/croma-web-site', 'static'];
     const CONTACT = ['contact', 'Contact', '/contact', 'static'];
     var const_arr = [HOME, PROJECTS, LINUX, CROMA, CONTACT];
     document.write(`
