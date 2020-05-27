@@ -1,0 +1,109 @@
+body {
+  background-image: url(../../src/simplistic-mountain-2.jpg);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+  height: 100%;
+  font-family: "Quicksand", sans-serif;
+  font-size: 18px;
+}
+
+.card-head {
+  animation: fadein 1s forwards 0s;
+}
+
+.col-card {
+  animation: fadein 1s forwards 0s;
+}
+
+.contact-card {
+  color: white;
+  background-color: rgba(0, 0, 0, 0.775);
+  padding: 2em;
+  margin: 2em;
+  min-height: 20em;
+  max-height: 20em;
+  min-width: 14em;
+  width: 18em !important;
+  /*animation: shine 4s forwards 2s;*/
+  transition: box-shadow 0.25s, transform 0.25s, background 0.5s, color 0.5s;
+  cursor: pointer;
+}
+.contact-card:hover {
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.75);
+  transform: translateY(-4px);
+}
+
+.pr-icon {
+  width: 60px;
+  height: auto;
+}
+
+.pr-icon-container {
+  min-height: 6em;
+}
+
+.name-container {
+  font-size: 1.2em;
+  min-height: 5em;
+  max-height: 5em;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.pr-tag {
+    color: #99ffdd;
+    text-shadow: 0 0 5px #99ffdd7e;
+}
+
+/**
+  *   Media Rules
+  */
+@media screen and (max-width: 900px) {
+  #main {
+    flex-wrap: wrap;
+  }
+  #form {
+    text-align: center;
+    width: 20%;
+  }
+  input[type="text"],
+  [type="email"] {
+    width: 300px !important;
+  }
+  #pr-options {
+    text-align: center;
+  }
+  textarea {
+    width: 300px !important;
+  }
+  h1 {
+    color: #f7931e;
+    font-size: 3em !important;
+  }
+  h3 {
+    color: #f7931e;
+    font-size: 1.7em !important;
+  }
+}
+
+/**
+  *   Keyframes
+  */
+@keyframes shine {
+  0% {
+    box-shadow: 0 0 15px #f7921e00;
+  }
+  100% {
+    box-shadow: 0 0 15px #f7921e;
+  }
+}
+
+@keyframes fadein {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

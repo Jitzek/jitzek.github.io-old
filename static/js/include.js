@@ -6,6 +6,7 @@ function global_include() {
         <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.min.css" />
         <script src="/static/js/jquery/jquery-3.5.1.min.js" type="text/javascript"></script>
         <script src="/static/js/bootstrap/bootstrap.min.js" type="text/javascript""></script>
+        <link rel="stylesheet" href="/static/css/global.css" />
     `);
 }
 
@@ -18,10 +19,7 @@ function navbar_include(page = "") {
      * [4] = [optional] Children of dropdown
      */
     const HOME = ['home', 'Home', '/', 'static'];
-    const PROJECTS = ['projects', 'Projects', null, 'dropdown', [
-        ['project1', 'Project 1', '#', 'static'],
-        ['project2', 'Project 2', '#', 'static'],
-        ['project3', 'Project 3', '#', 'static']]];
+    const PROJECTS = ['projects', 'Projects', '/projects', 'static'];
     const LINUX = ['linux', 'Linux', '/linux', 'static'];
     const CROMA = ['croma', 'Croma <span style="font-size: 10px">(in progress)</span>', '/croma-web-site', 'static'];
     const CONTACT = ['contact', 'Contact', '/contact', 'static'];
@@ -45,20 +43,20 @@ function navbar_include(page = "") {
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">`);
                 const_arr.forEach(element => {
-                    //var id = page == element[1] ? "active" : "";
+                    var active = page == element[1] ? "active" : "";
                     switch(element[3]) {
                         case 'static':
                         default:
                             document.write(`
                             <li class="nav-item">
-                                <a class="nav-link ${element[0]}" href="${element[2]}">${element[1]}</a>
+                                <a class="nav-link ${element[0]} ${active}" href="${element[2]}">${element[1]}</a>
                             </li>
                             `);
                             break;
                         case 'dropdown':
                             document.write(`
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle ${element[0]}" href="#" id="navbarDropdown ${element[0]}" role="button"
+                                <a class="nav-link dropdown-toggle ${element[0]} ${active}" href="#" id="navbarDropdown ${element[0]}" role="button"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     ${element[1]}
                                 </a>`);
