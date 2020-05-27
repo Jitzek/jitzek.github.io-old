@@ -23,32 +23,37 @@
     </div>
     <div class="container" id="pr-options">
         <script>
-            // [0] - Project Name, 
-            // [1] - tags,
-            // [2] - Logo
-            // [3] - Redirect
-            // [4] - Text Color
-            // [5] - Background Color
             const pr_info_arr = [
-                { id: "csharp", type: 'header', content: 'C#', fg_color: 'white' },
-                { id: "9_34", type: 'card', content: 'Themed ForumPage (Harry Potter)', tags: ['C#', 'Database'], picture: '../static/src/projects/icons/9_34.png', href: '/projects/forumpage', fg_color: 'white', bg_color: 'rgb(2,0,36)', gradient: 'linear-gradient(320deg, rgba(0,40,60,1) 0%, rgba(0,60,80,1) 50%, rgba(0,140,180,1) 100%)', hover: 'background-position: 2em;'}
+                { id: "", type: 'header', content: '', fg_color: 'white' },
+                {
+                    id: "isala",
+                    type: 'card',
+                    content: 'Isala Web Application',
+                    tags: ['PHP', 'Database', 'LDAP', 'SMB', 'MVC'],
+                    picture: '../static/src/projects/icons/isala.png',
+                    href: '/projects/forumpage',
+                    color: 'white',
+                    background: 'url(../static/src/projects/isala/isala_background.jpg',
+                    foreground: 'rgba(39,62,84,1)',
+                    hover: 'rgba(39,62,84,0.5)',
+                    glow: '0 0 10px rgba(255, 255, 255, 0.75)'
+                }
             ];
             var i = 0;
             pr_info_arr.forEach(pr_info => {
-                var delay = i++ * 100;
                 // If arr.length == 1 defines a divider (Werktuigbouwkunde, Elektrotechniek or ICT)
                 if (pr_info.type === 'header') {
                     if (pr_info_arr[0] != pr_info) {
                         document.write('</div><div style="margin-top: 6em"></div>');
                     }
                     document.write(`
-                    <h3 id="${pr_info.id}" class="card-head" style="color: ${pr_info.fg_color};">${pr_info.content}</h3>
+                    <h3 id="${pr_info.id}" class="card-head" style="color: ${pr_info.color};">${pr_info.content}</h3>
                     <div class="row">`);
                 }
                 else if (pr_info.type === 'card') {
                     document.write(`
-                    <div class="col-12 col-md-6 col-lg-3 col-card" onclick="onCardClick('${pr_info.href}')">
-                        <div id="${pr_info.id}" style="background: ${pr_info.gradient}; background-color: ${pr_info.bg_color}; color: ${pr_info.fg_color};" class="contact-card">
+                    <div id="${pr_info.id}"  class="col-12 col-md-6 col-lg-3 col-card pr-card" onclick="onCardClick('${pr_info.href}')">
+                        <div id="${pr_info.id}-overlay" class="pr-card-overlay">
                             <center>
                                 <div class="pfp-container">
                                     <img class="pr-icon" src="${pr_info.picture}" />
@@ -57,9 +62,22 @@
                                     <p>${pr_info.content}</p>
                                 </div>
                                 <div class="tags-container">`);
-                    var style_init = document.getElementById(pr_info.id).style.cssText;
-                    document.getElementById(pr_info.id).setAttribute("onMouseOver", `this.style.cssText = "${style_init + " " + pr_info.hover}"`);
-                    document.getElementById(pr_info.id).setAttribute("onMouseLeave", `this.style.cssText = "${style_init}"`);
+                    var card = document.getElementById(`${pr_info.id}`);
+                    card.style.background = pr_info.background;
+                    card.style.backgroundRepeat = "no-repeat";
+                    card.style.backgroundPosition = "center";
+                    card.style.backgroundSize = "cover";
+                    card.style.webkitBackgroundSize = "cover";
+
+                    var overlay = document.getElementById(`${pr_info.id}-overlay`);
+                    overlay.style.background = pr_info.foreground;
+                    overlay.style.transition = "background-color 1s";
+
+                    card.setAttribute("onMouseOver", `this.style.boxShadow  = '${pr_info.glow}'`)
+                    card.setAttribute("onMouseLeave", `this.style.boxShadow  = 'none'`)
+
+                    overlay.setAttribute("onMouseOver", `this.style.background = '${pr_info.hover}'`);
+                    overlay.setAttribute("onMouseLeave", `this.style.background = '${pr_info.foreground}'`);
                     var i = 0;
                     pr_info.tags.forEach(tag => {
                         if (i != 0) document.write('\n');
@@ -74,6 +92,7 @@
                     </div>
                     `);
                 }
+                i++;
             });
         </script>
     </div>

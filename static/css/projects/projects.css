@@ -17,27 +17,39 @@ body {
   animation: fadein 1s forwards 0s;
 }
 
-.contact-card {
+.pr-card {
   color: white;
-  background-color: rgba(0, 0, 0, 0.775);
-  padding: 2em;
+  padding: 0 !important;
   margin: 2em;
   min-height: 20em;
   max-height: 20em;
   min-width: 14em;
   width: 18em !important;
   /*animation: shine 4s forwards 2s;*/
-  transition: box-shadow 0.25s, transform 0.25s, background 0.5s, color 0.5s;
+  transition: box-shadow 0.25s, transform 0.25s, color 0.5s;
   cursor: pointer;
 }
-.contact-card:hover {
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.75);
+.pr-card:hover {
+  /*box-shadow: 0 0 10px rgba(255, 255, 255, 0.75);*/
   transform: translateY(-4px);
 }
 
+.pr-card:hover .pr-icon {
+  width: 100px;
+}
+
+.pr-card-overlay {
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  z-index: 2;
+  padding: 2em;
+}
+
 .pr-icon {
-  width: 60px;
+  width: 80px;
   height: auto;
+  transition: width 0.25s;
 }
 
 .pr-icon-container {
@@ -45,15 +57,16 @@ body {
 }
 
 .name-container {
+  margin-top: 1.2em;
   font-size: 1.2em;
-  min-height: 5em;
-  max-height: 5em;
+  min-height: 6.5em;
+  max-height: 6.5em;
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
 .pr-tag {
-    color: #99ffdd;
-    text-shadow: 0 0 5px #99ffdd7e;
+  color: #99ffdd;
+  text-shadow: 0 0 5px #99ffdd7e;
 }
 
 /**
