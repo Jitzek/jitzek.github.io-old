@@ -95,6 +95,32 @@
   text-shadow: 0 0 5px #b66f97;
 }
 
+.social-logo {
+  display: flex;
+  background-color: white;
+  margin-top: 4px;
+  padding: 17px;
+  opacity: 0.9;
+  transition: background-color 0.5s;
+}
+.social-logo:hover {
+  opacity: 1;
+}
+
+.gh-logo {
+  -webkit-mask: url(../src/icons/github.svg) no-repeat center;
+  mask: url(../src/icons/github.svg) no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+}
+
+.li-logo {
+  -webkit-mask: url(../src/icons/linkedin.svg) no-repeat center;
+  mask: url(../src/icons/linkedin.svg) no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+}
+
 /*
  * Responsiveness
 */
