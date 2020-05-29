@@ -29,7 +29,16 @@
                     id: "isala",
                     type: 'card',
                     content: 'Isala Web Application',
-                    tags: ['PHP', 'Database', 'LDAP', 'SMB', 'MVC', 'Linux', 'Apache', 'Virtual Machine'],
+                    // TODO: Pills / colour coded
+                    tags: [
+                        {content: 'PHP', type: 'lang'}, 
+                        {content: 'Database', type: 'service'}, 
+                        {content: 'LDAP', type: 'service'}, 
+                        {content: 'SMB', type: 'service'}, 
+                        {content: 'MVC', type: 'dp'}, 
+                        {content: 'Linux', type: 'other'}, 
+                        {content: 'Apache', type: 'service'}, 
+                        {content: 'VM', type: 'other'}],
                     picture: '../static/src/projects/icons/isala.png',
                     href: '/projects/isala',
                     color: 'white',
@@ -78,12 +87,8 @@
 
                     overlay.setAttribute("onMouseOver", `this.style.background = '${pr_info.hover}'`);
                     overlay.setAttribute("onMouseLeave", `this.style.background = '${pr_info.foreground}'`);
-                    var i = 0;
                     pr_info.tags.forEach(tag => {
-                        if (i != 0) document.write('\n');
-                        document.write(`<span class="pr-tag">${tag}</span>`);
-                        if (i < pr_info.tags.length - 1) document.write(`,`);
-                        i++;
+                        document.write(`<a class="pr-tag tag-${tag.type}">${tag.content}</a>\n`);
                     });
                     document.write(`</div>
                                 <div style="min-height: 40px"></div>

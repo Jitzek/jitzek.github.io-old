@@ -52,8 +52,8 @@ body {
 }
 
 .pr-icon-container {
-  min-height: 12.5em;
-  max-height: 12.5em;
+  min-height: 10.5em;
+  max-height: 10.5em;
 }
 
 .name-container {
@@ -65,14 +65,34 @@ body {
 }
 
 .tags-container {
-  min-height: 4.5em;
-  max-height: 4.5em;
+  min-height: 7em;
+  max-height: 7em;
+  overflow: auto;
+  line-height: 2em;
 }
 
 .pr-tag {
-  color: #99ffdd;
-  text-shadow: 0 0 5px #99ffdd7e;
+  display: inline;
   font-size: 1em;
+  padding: 0.2em 0.4em 0.2em 0.4em;
+  border-radius: 0.75em;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.425);
+}
+.tag-lang {
+  color: white;
+  background-color: rgba(0, 98, 255, 0.9);
+}
+.tag-service {
+  color: white;
+  background-color: rgba(255, 72, 0, 0.9);
+}
+.tag-dp {
+  color: white;
+  background-color: rgba(255, 0, 98, 0.9);
+}
+.tag-other {
+  color: white;
+  background-color: rgba(140, 0, 255, 0.9);
 }
 
 /**

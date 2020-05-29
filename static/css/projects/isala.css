@@ -26,6 +26,20 @@ p {
   background-color: rgba(39, 62, 84, 1);
 }
 
+.project-info {
+
+}
+.project-info table {
+  color: white;
+  list-style: none;
+}
+.project-info .col-subject {
+  width: 15vw;
+}
+.project-info .col-value span {
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.55);
+}
+
 .media {
   border: 0.05em solid black;
 }

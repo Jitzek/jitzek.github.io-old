@@ -18,61 +18,109 @@
             </script>
         </div>
         <div class="container body" style="padding-top: 10vh;">
-            <!-- Can be automated using Javascript -->
-            <hr>
-            <h1>
-                The Virtual Machine
-            </h1>
-            <div class="media-container">
-                <div class="row">
-                    <div class="column">
-                        <input type="checkbox" id="1">
-                        <label for="1">
-                            <img src="../../static/src/projects/isala/startup.gif" class="img-fluid media"
-                                alt="Virtual Machine Demo Gif" />
-                        </label>
-                    </div>
-                    <div class="column">
-                        <input type="checkbox" id="2">
-                        <label for="2">
-                            <img src="../../static/src/projects/isala/startup.gif" class="img-fluid media"
-                                alt="Virtual Machine Demo Gif" />
-                        </label>
-                    </div>
-                    <div class="column">
-                        <input type="checkbox" id="3">
-                        <label for="3">
-                            <img src="../../static/src/projects/isala/startup.gif" class="img-fluid media"
-                                alt="Virtual Machine Demo Gif" />
-                        </label>
-                    </div>
-                    <div class="column">
-                        <input type="checkbox" id="4">
-                        <label for="4">
-                            <img src="../../static/src/projects/isala/startup.gif" class="img-fluid media"
-                                alt="Virtual Machine Demo Gif" />
-                        </label>
-                    </div>
-                </div>
+            <!-- TODO, Make everything collapsable -->
+            <h1>Project Info</h1>
+            <div class="project-info">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td class="col-subject">Github</td>
+                            <td class="col-value"><a href="https://github.com/Jitzek/isala-web-app"
+                                    target="_blank">https://github.com/Jitzek/isala-web-app</a></td>
+                        </tr>
+                        <tr>
+                            <td class="col-subject">Teamsize</td>
+                            <td class="col-value"><span>5</span></td>
+                        </tr>
+                        <tr>
+                            <td class="col-subject">Language(s) used</td>
+                            <td class="col-value"><span>PHP</span></td>
+                        </tr>
+                        <tr>
+                            <td class="col-subject">Framework(s) used</td>
+                            <td class="col-value">None</td>
+                        </tr>
+                        <tr>
+                            <td class="col-subject">Design Pattern(s) used</td>
+                            <td class="col-value"><span>MVC</span></td>
+                        </tr>
+                        <tr>
+                            <td class="col-subject">Services used</td>
+                            <td class="col-value">
+                                <span>Mariadb</span><br>
+                                <span>OpenLDAP</span><br>
+                                <span>Samba</span><br>
+                                <span>Apache</span><br>
+                                <span>PHPUnit</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-subject">Other</td>
+                            <td class="col-value">
+                                Usage of Virtual Machine (VirtualBox): <span>Debian GNU/Linux</span><br>
+                            </td>
+                        </tr>
+                    </tbody>
 
+                </table>
             </div>
-            <br>
-            <p>
-
-            </p>
-            <hr>
-            <h1>
-                Login Page
-            </h1>
-            <div class="row">
-                <div class="column">
-                    <input type="checkbox" id="5">
-                    <label for="5">
-                        <img src="../../static/src/projects/isala/login.gif" class="img-fluid media"
-                            alt="Login Demo Gif" />
-                    </label>
-                </div>
-            </div>
+            <script>
+                const content_arr = [
+                    {
+                        head: 'The Virtual Machine',
+                        content: ``,
+                        imgs: [
+                            {
+                                url: '../../static/src/projects/isala/startup.gif',
+                                alt: '[Gif] Virtual Machine Demo (SSH and MariaDB)'
+                            }
+                        ]
+                    },
+                    {
+                        head: 'Login Page',
+                        content: ``,
+                        imgs: [
+                            {
+                                url: '../../static/src/projects/isala/login.gif',
+                                alt: '[Gif] Login Demo (succesful login)'
+                            }
+                        ]
+                    }
+                ]
+                let i = 0;
+                document.write('<!-- JavaScript Generated -->');
+                content_arr.forEach(content => {
+                    document.write(`
+                        <hr>
+                        <h1>${content.head}</h1>`);
+                    if (content.imgs.length > 0) {
+                        // TODO, Make images clickable using JavaScript logic instead of CSS logic
+                        document.write(`
+                            <div class="media-container">
+                                <div class="row">`);
+                        content.imgs.forEach(img => {
+                            document.write(`
+                                    <div class="column">
+                                        <input type="checkbox" id="${i}">
+                                        <label for="${i}">
+                                            <img src="${img.url}" class="img-fluid media"
+                                                alt="${img.alt}" />
+                                        </label>
+                                    </div>
+                                `);
+                            i++;
+                        });
+                        document.write(`
+                                </div>
+                            </div>
+                        `);
+                    }
+                    document.write(`
+                        <br>
+                        <p>${content.content}</p>
+                    `);
+                });
+            </script>
         </div>
     </div>
 </body>
