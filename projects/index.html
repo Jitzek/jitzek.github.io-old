@@ -6,7 +6,9 @@
     <script>
         global_include();
     </script>
-    <link rel="stylesheet" href="../../static/css/projects/projects.css" />
+    <link rel="stylesheet" href="../static/css/projects/projects.css" />
+    <link rel="stylesheet" href="../static/css/projects/global.css" />
+    <script src="../../static/js/projects/global.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -23,31 +25,6 @@
     <div style="margin-top: 2em;"></div>
     <div class="container" id="pr-options">
         <script>
-            const pr_info_arr = [
-                { id: "", type: 'header', content: '', fg_color: 'white' },
-                {
-                    id: "isala",
-                    type: 'card',
-                    content: 'Isala Web Application',
-                    // TODO: Pills / colour coded
-                    tags: [
-                        {content: 'PHP', type: 'lang'}, 
-                        {content: 'Database', type: 'service'}, 
-                        {content: 'LDAP', type: 'service'}, 
-                        {content: 'SMB', type: 'service'}, 
-                        {content: 'MVC', type: 'dp'}, 
-                        {content: 'Linux', type: 'other'}, 
-                        {content: 'Apache', type: 'service'}, 
-                        {content: 'VM', type: 'other'}],
-                    picture: '../static/src/projects/icons/isala.png',
-                    href: '/projects/isala',
-                    color: 'white',
-                    background: 'url(../static/src/projects/isala/isala_background.jpg',
-                    foreground: 'rgba(39,62,84,1)',
-                    hover: 'rgba(39,62,84,0.5)',
-                    glow: '0 0 10px #99ffdd55'
-                }
-            ];
             var i = 0;
             pr_info_arr.forEach(pr_info => {
                 // If arr.length == 1 defines a divider (Werktuigbouwkunde, Elektrotechniek or ICT)
@@ -88,7 +65,7 @@
                     overlay.setAttribute("onMouseOver", `this.style.background = '${pr_info.hover}'`);
                     overlay.setAttribute("onMouseLeave", `this.style.background = '${pr_info.foreground}'`);
                     pr_info.tags.forEach(tag => {
-                        document.write(`<a class="pr-tag tag-${tag.type}">${tag.content}</a>\n`);
+                        document.write(`<a class="pr-tag tag-${tag.type}">${tag.value}</a>\n`);
                     });
                     document.write(`</div>
                                 <div style="min-height: 40px"></div>

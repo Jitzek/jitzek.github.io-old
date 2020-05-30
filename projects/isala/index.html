@@ -7,6 +7,9 @@
         global_include();
     </script>
     <link rel="stylesheet" href="../../static/css/projects/isala.css" />
+    <link rel="stylesheet" href="../../static/css/projects/global.css" />
+    <script src="../../static/js/projects/global.js" type="text/javascript"></script>
+    <script src="../../static/js/projects/project.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -18,52 +21,22 @@
             </script>
         </div>
         <div class="container body" style="padding-top: 10vh;">
-            <!-- TODO, Make everything collapsable -->
-            <h1>Project Info</h1>
-            <div class="project-info">
-                <table class="table">
-                    <tbody>
-                        <tr>
-                            <td class="col-subject">Github</td>
-                            <td class="col-value"><a href="https://github.com/Jitzek/isala-web-app"
-                                    target="_blank">https://github.com/Jitzek/isala-web-app</a></td>
-                        </tr>
-                        <tr>
-                            <td class="col-subject">Teamsize</td>
-                            <td class="col-value"><span>5</span></td>
-                        </tr>
-                        <tr>
-                            <td class="col-subject">Language(s) used</td>
-                            <td class="col-value"><span>PHP</span></td>
-                        </tr>
-                        <tr>
-                            <td class="col-subject">Framework(s) used</td>
-                            <td class="col-value">None</td>
-                        </tr>
-                        <tr>
-                            <td class="col-subject">Design Pattern(s) used</td>
-                            <td class="col-value"><span>MVC</span></td>
-                        </tr>
-                        <tr>
-                            <td class="col-subject">Services used</td>
-                            <td class="col-value">
-                                <span>Mariadb</span><br>
-                                <span>OpenLDAP</span><br>
-                                <span>Samba</span><br>
-                                <span>Apache</span><br>
-                                <span>PHPUnit</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="col-subject">Other</td>
-                            <td class="col-value">
-                                Usage of Virtual Machine (VirtualBox): <span>Debian GNU/Linux</span><br>
-                            </td>
-                        </tr>
-                    </tbody>
-
-                </table>
-            </div>
+            <script>
+                pr_info = getProjectInfoByID('isala');
+                const project = new Project(
+                    'Isala Web App', 
+                    `"PHP webapplication designed with security as it's top priority"<br><br>
+                    This webapplication's purpose was to save costs on the treatment process for obesity patients.<br>
+                    All data which would normally be acquired by the means of an appointment would be handled with a hypothetical smartwatch and our webapplication would serve as the user's portal to this data.<br><br>
+                    Due the sensitive nature of the data we had to take upmost care in taking care of the confidentiality, integrity and availability of this data.<br>
+                    We were tasked with taking care of the Back-End code of the website, the Database it would connect to, the user authentication using LDAP, the webserver it would be hosted with and finally the OS it would be hosted on (user permissions, firewall configuration, etc.).<br><br>
+                    The webapplication with all it's required services had to be build in a Virtual Machine, to make the development process easier we elected to use Samba for directory access from host to guest.`,
+                    '/static/src/projects/isala/isala_full.png',
+                    'PHP',
+                    5,
+                    pr_info.tags);
+                document.write(project.headHTML);
+            </script>
             <script>
                 const content_arr = [
                     {
