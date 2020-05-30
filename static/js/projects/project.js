@@ -103,7 +103,7 @@ class Project {
                 ${this.desc}
             </p>
         </div>
-        <table style="width: 100%;">
+        <table style="width: 100%; font-size: 1em;">
             <tbody>
                 <tr>
                     <td style="min-width: 5em; height: 2em; padding: 0.4em;">
