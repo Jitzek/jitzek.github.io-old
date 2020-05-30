@@ -53,11 +53,11 @@ function getColorOfLanguage(lang) {
 }
 
 function tagsAsHTML(tags) {
-    var output = '';
+    var output = '<div>';
     tags.forEach(tag => {
-        output += `<a class="pr-tag tag-${tag.type}" style="margin: 0.2em;">${tag.value}</a>`
+        output += `<p class="pr-tag tag-${tag.type}">${tag.value}</p>&nbsp;\n`
     });
-    return output;
+    return output + '</div>';
 }
 
 class Project {
@@ -82,20 +82,27 @@ class Project {
         <!-- JavaScript Generated -->
         <!-- Image and Title -->
         <div style="display: flex;">
-            <div style="display: flex;">
+            <div style="display: flex; max-height: 4.5em;">
                 <img style="width: 80px; height: auto; margin-right: 0.25em;" src="${this.img}"
                     class="img-fluid" />
-                <h2 style="color: white;">${this.title}</h2>
+                <div>
+                    <h2 style="color: white;">${this.title}</h2>
+                    <!-- Tags -->
+                    <div style="min-height: 4em; max-height: 4em; overflow: auto; line-height: 2em;">
+                        ${tagsAsHTML(this.tags)}
+                    </div>
+                </div>
             </div>
-            <!-- Tags -->
-            <div style="position: absolute; margin: 45px 0px 0px 80px;">
+            <!--<div style="position: absolute; margin: 45px 0px 0px 80px;">
                 ${tagsAsHTML(this.tags)}
-            </div>
+            </div>-->
         </div><br>
         <!-- Description -->
-        <p>
-            ${this.desc}
-        </p>
+        <div style="margin-top: 1em;">
+            <p>
+                ${this.desc}
+            </p>
+        </div>
         <table style="width: 100%;">
             <tbody>
                 <tr>
