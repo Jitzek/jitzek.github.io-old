@@ -9,7 +9,7 @@
 }
 
 #navbarSupportedContent {
-  padding-left: 15%;
+  padding-left: 10%;
 }
 
 .name-link:hover:hover {
@@ -124,7 +124,7 @@
 /*
  * Responsiveness
 */
-@media only screen and (max-width: 990px) {
+@media only screen and (max-width: 1200px) {
   #navbarSupportedContent {
     padding-left: 0;
   }
