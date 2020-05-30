@@ -88,7 +88,7 @@ class Project {
                 <div>
                     <h2 style="color: white;">${this.title}</h2>
                     <!-- Tags -->
-                    <div style="min-height: 4em; max-height: 4em; overflow: auto; line-height: 2em;">
+                    <div style="min-height: 2em; max-height: 2em; overflow: auto; line-height: 2em;">
                         ${tagsAsHTML(this.tags)}
                     </div>
                 </div>
