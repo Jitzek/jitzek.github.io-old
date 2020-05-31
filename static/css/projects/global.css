@@ -8,7 +8,6 @@
 
 .gh-logo {
   display: inline;
-  margin-right: 10px;
   background-color: white;
   padding: 0.6em;
   -webkit-mask: url(../src/icons/github.svg) no-repeat center;

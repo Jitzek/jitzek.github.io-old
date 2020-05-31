@@ -69,7 +69,7 @@ class Project {
     tags = [];
 
     constructor(title, desc, img, pr_lang, teamsize, tags = []) {
-        alert('test');
+        document.write('<h1>test</h1>');
         this.title = title;
         this.desc = desc;
         this.img = img;
