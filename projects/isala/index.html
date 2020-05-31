@@ -26,7 +26,7 @@
                 document.write('test1');
                 pr_info = getProjectInfoByID('isala');
                 document.write('test2');
-                const project = new Project(
+                /*const project = new Project(
                     'Isala Web App', 
                     `"PHP webapplication designed with security as it's top priority"<br><br>
                     This webapplication's purpose was to save costs on the treatment process for obesity patients.<br>
@@ -37,11 +37,26 @@
                     '/static/src/projects/isala/isala_full.png',
                     'PHP',
                     5,
-                    pr_info.tags);
+                    pr_info.tags);*/
+                projectSetVars(
+                    'Isala Web App', 
+                    `"PHP webapplication designed with security as it's top priority"<br><br>
+                    This webapplication's purpose was to save costs on the treatment process for obesity patients.<br>
+                    All data which would normally be acquired by the means of an appointment would be handled with a hypothetical smartwatch and our webapplication would serve as the user's portal to this data.<br><br>
+                    Due the sensitive nature of the data we had to take upmost care in taking care of the confidentiality, integrity and availability of this data.<br>
+                    We were tasked with taking care of the Back-End code of the website, the Database it would connect to, the user authentication using LDAP, the webserver it would be hosted with and finally the OS it would be hosted on (user permissions, firewall configuration, etc.).<br><br>
+                    The webapplication with all it's required services had to be build in a Virtual Machine, to make the development process easier we elected to use Samba for directory access from host to guest.`,
+                    '/static/src/projects/isala/isala_full.png',
+                    'PHP',
+                    5,
+                    pr_info.tags
+                );
                 document.write('test3');
-                document.write(project.includesHTML);
+                //document.write(project.includesHTML);
+                document.write(projectIncludesHTML());
                 document.write('test4');
-                document.write(project.headHTML);
+                //document.write(project.headHTML);
+                document.write(projectHeadHTML());
             </script>
             <script>
                 document.write('test5');
