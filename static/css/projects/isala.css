@@ -1,5 +1,5 @@
 body {
-  background-image: url(../../src/projects/isala/isala_background.jpg);
+  background: rgb(27, 44, 59);
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: center;
@@ -71,7 +71,7 @@ input[type="checkbox"] {
 
 input[type="checkbox"]:checked ~ label > .media {
   position: absolute;
-  top: 50%;
+  /*top: 50%;*/
   left: 50%;
   z-index: 1;
   transform: scale(1) translate(-50%, -50%);

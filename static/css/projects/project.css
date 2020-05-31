@@ -2,6 +2,16 @@
   font-size: 1em;
 }
 
+.pr-href-link {
+  color: rgba(0, 174, 255);
+  transition: text-shadow 0.25s;
+}
+.pr-href-link:hover {
+  color: rgb(0, 184, 255);
+  text-decoration: none;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+}
+
 /*
  * Responsiveness
 */
