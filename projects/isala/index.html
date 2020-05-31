@@ -27,7 +27,7 @@
                 pr_info = getProjectInfoByID('isala');
                 document.write('test2');
                 document.write(CPLUSPLUS_LOGO);
-                var project = new Project(
+                var project = initProject(
                     'Isala Web App',
                     `"PHP webapplication designed with security as it's top priority"<br><br>
                     This webapplication's purpose was to save costs on the treatment process for obesity patients.<br>
@@ -42,9 +42,9 @@
                 );
 
                 document.write('test3');
-                document.write(project.includesHTML);
+                document.write(project.getIncludesHTML);
                 document.write('test4');
-                document.write(project.headHTML);
+                document.write(project.getHeadHTML);
             </script>
             <script>
                 document.write('test5');
