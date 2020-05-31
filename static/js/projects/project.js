@@ -1,4 +1,4 @@
-const CPLUSPLUS_LOGO = '/static/src/icons/programming_languages/cplusplus_logo.png';
+/*const CPLUSPLUS_LOGO = '/static/src/icons/programming_languages/cplusplus_logo.png';
 const CSHARP_LOGO = '/static/src/icons/programming_languages/csharp_logo.png';
 const HASKELL_LOGO = '/static/src/icons/programming_languages/haskell_logo.png';
 const JAVA_LOGO = '/static/src/icons/programming_languages/java_logo.png';
@@ -141,4 +141,4 @@ class Project {
         </table>
         `;
     }
-}
+}*/
