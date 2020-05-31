@@ -22,7 +22,9 @@
         </div>
         <div class="container body" style="padding-top: 10vh;">
             <script>
+                document.write('test1');
                 pr_info = getProjectInfoByID('isala');
+                document.write('test2');
                 const project = new Project(
                     'Isala Web App', 
                     `"PHP webapplication designed with security as it's top priority"<br><br>
@@ -35,7 +37,9 @@
                     'PHP',
                     5,
                     pr_info.tags);
+                document.write('test3');
                 document.write(project.includesHTML);
+                document.write('test4');
                 document.write(project.headHTML);
             </script>
             <script>
