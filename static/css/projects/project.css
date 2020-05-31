@@ -1,0 +1,12 @@
+.gh-repo {
+  font-size: 1em;
+}
+
+/*
+ * Responsiveness
+*/
+@media only screen and (max-width: 800px) {
+  .gh-repo {
+    font-size: 0.7em;
+  }
+}

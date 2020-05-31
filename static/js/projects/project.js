@@ -77,6 +77,12 @@ class Project {
         this.tags = tags;
     }
 
+    get includesHTML() {
+        return `
+            <link rel="stylesheet" href="/static/css/projects/project.css" />
+        `;
+    }
+
     get headHTML() {
         return `
         <!-- JavaScript Generated -->
@@ -109,7 +115,7 @@ class Project {
                     <td style="min-width: 5em; height: 2em; padding: 0.4em;">
                         <img style="width: 2.75em; height: auto; background-color: black; padding: 0.4em;"
                             src="/static/src/icons/github_logo.png" class="img-fluid" alt="Language" /><span style="padding: 0.4em; background-color: ${GITHUB_COLOR};">
-                            <a href="https://github.com/Jitzek/isala-web-app" class="href-link" target="_blank">https://github.com/Jitzek/isala-web-app</a>
+                            <a href="https://github.com/Jitzek/isala-web-app" class="href-link gh-repo" target="_blank">https://github.com/Jitzek/isala-web-app</a>
                         </span>
                     </td>
                 </tr>
