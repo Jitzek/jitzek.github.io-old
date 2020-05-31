@@ -25,7 +25,7 @@ const pr_info_arr = [
 ];
 
 function getProjectInfoByID(id) {
-    for (let i = 0; i , pr_info_arr.length; i++) {
+    for (var i = 0; i , pr_info_arr.length; i++) {
         if (pr_info_arr[i].id == id) {
             return pr_info_arr[i];
         }
