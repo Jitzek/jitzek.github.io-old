@@ -17,16 +17,12 @@
         <!-- Includes the navbar (include.js) -->
         <div class="container" style="height: auto;">
             <script>
-                document.write('TEST5');
                 navbar_include('Projects');
             </script>
         </div>
         <div class="container body" style="padding-top: 10vh;">
             <script>
-                document.write('test1');
                 pr_info = getProjectInfoByID('isala');
-                document.write('test2');
-                document.write(CPLUSPLUS_LOGO);
                 var project = initProject(
                     'Isala Web App',
                     `"PHP webapplication designed with security as it's top priority"<br><br>
@@ -40,14 +36,10 @@
                     5,
                     pr_info.tags
                 );
-
-                document.write('test3');
                 document.write(project.getIncludesHTML);
-                document.write('test4');
                 document.write(project.getHeadHTML);
             </script>
             <script>
-                document.write('test5');
                 const content_arr = [
                     {
                         head: 'The Virtual Machine',
@@ -70,7 +62,6 @@
                         ]
                     }
                 ];
-                document.write('test6');
                 let i = 0;
                 document.write('<!-- JavaScript Generated -->');
                 content_arr.forEach(content => {
