@@ -82,7 +82,7 @@ function initProject(title, desc, img, pr_lang, teamsize, tags = []) {
                 <div>
                     <h2 style="color: white;">${project.title}</h2>
                     <!-- Tags -->
-                    <div style="min-height: 2em; max-height: 2em; overflow: auto; line-height: 2em;">
+                    <div style="min-height: 1.5em; max-height: 1.5em; overflow: auto; line-height: 1.5em;">
                         ${tagsAsHTML(project.tags)}
                     </div>
                 </div>

@@ -24,9 +24,9 @@
 
 .pr-tag {
   display: inline;
-  font-size: 1em;
+  font-size: 0.8em;
   padding: 0.2em 0.4em 0.2em 0.4em;
-  border-radius: 0.75em;
+  border-radius: 0.65em;
   text-shadow: 0 0 15px rgba(255, 255, 255, 0.425);
 }
 .tag-lang {
@@ -35,11 +35,11 @@
 }
 .tag-service {
   color: white !important;
-  background-color: rgba(255, 72, 0, 0.9);
+  background-color: rgba(49, 163, 163, 0.9);
 }
 .tag-dp {
   color: white !important;
-  background-color: rgba(255, 0, 98, 0.9);
+  background-color: rgba(144, 24, 70, 0.9);
 }
 .tag-other {
   color: white!important;
