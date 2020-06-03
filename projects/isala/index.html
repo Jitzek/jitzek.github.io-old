@@ -85,9 +85,25 @@
             </p>
             <br>
             <hr>
+            <h1>
+                Login Page
+            </h1>
             <script>
                 insertImage('../../static/src/projects/isala/login.gif', '[Gif] Login Demo');
             </script>
+            <p>
+                The login page was my responsibility, the requirements stated the need of authentication using LDAP and the use of 2FA.<br>
+                As team we decided to also include measures against Brute Force and (D)DoS attacks.<br><br>
+                The mitigation of brute force attacks was done with a login attempt limit that'd block the user's IP for each 5 wrong attempts where the time blocked would go to a maximum of 30 minutes.<br>
+                The way the IP was decided had it's limits with proxies but ways of determining the original IP from it came with it's own vulnerabilities so we decided to accept these limitations.<br><br>
+                After giving the correct username and password combination after failed retries there would be a soft reset (resetting it so the user had 5 tries for the 2FA but the penalty would not be decreased).<br>
+                The user would be given a temporary token which would be bound to their account for the 2FA, the 2FA had the same measurements as the login.<br>
+                Only after giving the correct code and thus logging in would the block be completely reset (deleted from the database).<br><br>
+                The measures against (D)DoS were configured in the firewall (<a href="https://wiki.ubuntu.com/UncomplicatedFirewall" class="pr-href-link" target="_blank">UFW</a>) where the IP table was configured to only accept a certain amount of requests (and size) each second.<br>
+                <!-- Code Block -->
+            </p>
+            <br>
+            <hr>
         </div>
     </div>
 </body>
