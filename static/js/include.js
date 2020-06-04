@@ -20,10 +20,10 @@ function navbar_include(page = "") {
      */
     const HOME = ['home', 'Home', '/', 'static'];
     const PROJECTS = ['projects', 'Projects', '/projects', 'static'];
-    const LINUX = ['linux', 'Linux', '/linux', 'static'];
+    const LINUX = ['linux', 'Linux <span style="font-size: 10px">(in progress)</span>', '/linux', 'static'];
     const CROMA = ['croma', 'Croma <span style="font-size: 10px">(in progress)</span>', '/croma-web-site', 'static'];
     const CONTACT = ['contact', 'Contact', '/contact', 'static'];
-    var const_arr = [HOME, PROJECTS, LINUX, CROMA, CONTACT];
+    var const_arr = [HOME, PROJECTS, LINUX, CROMA/*, CONTACT*/];
     document.write(`
     <link rel="stylesheet" href="/static/css/navbar.css" />
     <section>
