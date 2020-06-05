@@ -131,6 +131,10 @@ function initProject(title, desc, img, pr_lang, teamsize, tags = []) {
     return project;
 }
 
+function codeBlock(content, language = null) {
+    
+}
+
 /*class Project {
     title = 'undefined';
     desc = 'undefined';
