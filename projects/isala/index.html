@@ -42,28 +42,30 @@
             <hr>
             <script>
                 let i = 0;
-                function insertImage(url, alt = '') {
+                function insertImages(imgs) {
+                    document.write(`<div class="media-container"><div class="row">`);
+                    imgs.forEach(img => {
+                        document.write(`
+                                <div class="column">
+                                <input type="checkbox" id="${i}">
+                                <label for="${i}">
+                                    <img src="${img.url}" class="img-fluid media"
+                                        alt="${img.url}" />
+                                    </label>
+                                </div>
+                        `);
+                        i++;
+                    });
                     document.write(`
-                    <div class="media-container">
-                        <div class="row">
-                            <div class="column">
-                            <input type="checkbox" id="${i}">
-                            <label for="${i}">
-                                <img src="${url}" class="img-fluid media"
-                                    alt="${alt}" />
-                                </label>
                             </div>
-                        </div>
-                    </div>
-                    `);
-                    i++;
+                        </div>`);
                 }
             </script>
             <h1>
                 The Virtual Machine
             </h1>
             <script>
-                insertImage('../../static/src/projects/isala/startup.gif', '[Gif] SSH and Database');
+                insertImages([{url: '../../static/src/projects/isala/startup.gif', alt: '[Gif] SSH and Database'}]);
                 // Brute Force example
                 // DoS example
             </script>
@@ -90,9 +92,15 @@
             <h1>
                 Login Page
             </h1>
-            <script>
-                insertImage('../../static/src/projects/isala/login.gif', '[Gif] Login Demo');
-            </script>
+            <div class="media-container">
+                <script>
+                    insertImages([
+                            {url: '../../static/src/projects/isala/login.gif', alt: '[Gif] Login Demo'}, 
+                            {url: '../../static/src/projects/isala/blockedip.gif', alt: '[Gif] Blocked IP Demo'}
+                        ]
+                    );
+                </script>
+            </div>
             <p>
                 The login page was my responsibility, the requirements stated the need of authentication using LDAP and the use of 2FA.<br>
                 As team we decided to also include measures against Brute Force and (D)DoS attacks.<br><br>
