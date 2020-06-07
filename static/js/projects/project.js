@@ -60,6 +60,45 @@ function tagsAsHTML(tags) {
     return output + '</div>';
 }
 
+const ELEMENTID = 'pr-';
+const EXPANDER = 'pr-desc-expander';
+const DESCRIPTION = 'pr-description';
+const EXPANDEDKEY = 'expanded';
+const ANIMATIONTIME = 500;
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+async function expanderOnClick(id) {
+    var element = document.getElementById(`${ELEMENTID}${id}`);
+    var expander = element.querySelector(`.${EXPANDER}`);
+    var description = element.querySelector(`.${DESCRIPTION}`);
+
+    if (description.classList.contains(EXPANDEDKEY)) {
+        // Remove Key
+        description.classList.remove(EXPANDEDKEY);
+
+        // rotate expander
+        expander.style.transform = 'rotate(90deg)';
+
+        description.style.opacity = '0';
+        await sleep(ANIMATIONTIME);
+        description.style.height = '0';
+
+        return
+    }
+
+    // rotate expander
+    expander.style.transform = 'rotate(0deg)';
+
+    description.style.height = 'initial';
+    description.style.opacity = '1';
+
+    // Add Key
+    description.classList.add(EXPANDEDKEY);
+}
+
+let id = 0;
 function initProject(title, desc, img, pr_lang, teamsize, tags = []) {
     var project = new Object();
     project.title = title;
@@ -72,62 +111,68 @@ function initProject(title, desc, img, pr_lang, teamsize, tags = []) {
     project.getIncludesHTML = `
     <link rel="stylesheet" href="/static/css/projects/project.css" />
     `;
-    project.getHeadHTML = `
+    project.getDescHTML = `
         <!-- JavaScript Generated -->
         <!-- Image and Title -->
-        <div style="display: flex;">
-            <div style="display: flex; max-height: 4.5em;">
-                <img style="width: 80px; height: auto; margin-right: 0.25em;" src="${project.img}"
-                    class="img-fluid" />
-                <div>
-                    <h2 style="color: white;">${project.title}</h2>
-                    <!-- Tags -->
-                    <div style="min-height: 1.5em; max-height: 1.5em; overflow: auto; line-height: 1.5em;">
-                        ${tagsAsHTML(project.tags)}
+        <div id="pr-${id}">
+            <div style="display: flex;">
+                <div style="display: flex; max-height: 4.5em;">
+                    <img style="width: 80px; height: auto; margin-right: 0.25em;" src="${project.img}"
+                        class="img-fluid" />
+                    <div>
+                        <h2 style="color: white;">${project.title}</h2>
+                        <!-- Tags -->
+                        <div style="min-height: 1.5em; max-height: 1.5em; overflow: auto; line-height: 1.5em;">
+                            ${tagsAsHTML(project.tags)}
+                        </div>
                     </div>
                 </div>
+                <div class="pr-desc-expander" onclick="expanderOnClick(${id})"></div>
+                <!--<div style="position: absolute; margin: 45px 0px 0px 80px;">
+                    ${tagsAsHTML(project.tags)}
+                </div>-->
+            </div><br>
+            <!-- Description -->
+            <div class="pr-description expanded">
+                <div style="margin-top: 1em;">
+                    <p>
+                        ${project.desc}
+                    </p>
+                </div>
+                <table style="width: 100%; font-size: 1em;">
+                    <tbody>
+                        <tr>
+                            <td style="min-width: 5em; height: 2em; padding: 0.4em;">
+                                <img style="width: 2.75em; height: auto; background-color: black; padding: 0.4em;"
+                                    src="/static/src/icons/github_logo.png" class="img-fluid" alt="Language" /><span style="padding: 0.4em; background-color: ${GITHUB_COLOR};">
+                                    <a href="https://github.com/Jitzek/isala-web-app" class="href-link gh-repo" target="_blank">https://github.com/Jitzek/isala-web-app</a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="min-width: 5em; height: 2em; padding: 0.4em;">
+                                <img style="width: 2.75em; height: auto; background-color: black; padding: 0.4em;"
+                                    src="/static/src/icons/programming_lang_white.png" class="img-fluid" alt="Language" /><span style="padding: 0.4em; background-color: ${getColorOfLanguage(project.pr_lang)};">
+                                    <img style="width: 1.5em; height: auto;"
+                                        src="${getLogoOfLanguage(project.pr_lang)}" class="img-fluid" /><span
+                                        style="color: white; margin-left: 0.5em;">${project.pr_lang}</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="min-width: 5em; height: 2em; padding: 0.4em;">
+                                <img style="width: 2.75em; height: auto; background-color: black; padding: 5px;"
+                                    src="/static/src/icons/team_icon.png" class="img-fluid" alt="Language" /><span style="padding: 5px; background-color: ${TEAMSIZE_COLOR};">
+                                    <span style="color: white;">${project.teamsize}</span>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <!--<div style="position: absolute; margin: 45px 0px 0px 80px;">
-                ${tagsAsHTML(project.tags)}
-            </div>-->
-        </div><br>
-        <!-- Description -->
-        <div style="margin-top: 1em;">
-            <p>
-                ${project.desc}
-            </p>
         </div>
-        <table style="width: 100%; font-size: 1em;">
-            <tbody>
-                <tr>
-                    <td style="min-width: 5em; height: 2em; padding: 0.4em;">
-                        <img style="width: 2.75em; height: auto; background-color: black; padding: 0.4em;"
-                            src="/static/src/icons/github_logo.png" class="img-fluid" alt="Language" /><span style="padding: 0.4em; background-color: ${GITHUB_COLOR};">
-                            <a href="https://github.com/Jitzek/isala-web-app" class="href-link gh-repo" target="_blank">https://github.com/Jitzek/isala-web-app</a>
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="min-width: 5em; height: 2em; padding: 0.4em;">
-                        <img style="width: 2.75em; height: auto; background-color: black; padding: 0.4em;"
-                            src="/static/src/icons/programming_lang_white.png" class="img-fluid" alt="Language" /><span style="padding: 0.4em; background-color: ${getColorOfLanguage(project.pr_lang)};">
-                            <img style="width: 1.5em; height: auto;"
-                                src="${getLogoOfLanguage(project.pr_lang)}" class="img-fluid" /><span
-                                style="color: white; margin-left: 0.5em;">${project.pr_lang}</span>
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="min-width: 5em; height: 2em; padding: 0.4em;">
-                        <img style="width: 2.75em; height: auto; background-color: black; padding: 5px;"
-                            src="/static/src/icons/team_icon.png" class="img-fluid" alt="Language" /><span style="padding: 5px; background-color: ${TEAMSIZE_COLOR};">
-                            <span style="color: white;">${project.teamsize}</span>
-                        </span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
     `;
+    id++;
     return project;
 }
 

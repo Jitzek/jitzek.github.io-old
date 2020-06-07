@@ -12,6 +12,23 @@
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
 }
 
+.pr-description {
+  transition: all 0.5s;
+}
+
+.pr-desc-expander {
+  float: right;
+  background-color: white;
+  margin-bottom: 2em;
+  padding: 1.0em;
+  transition: all 0.25s;
+  -webkit-mask: url(../../src/projects/global/arrow.svg) no-repeat center;
+  mask: url(../../src/projects/global/arrow.svg) no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  transform: rotate(0deg);
+}
+
 /*
  * Responsiveness
 */
