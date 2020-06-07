@@ -99,10 +99,11 @@ async function expanderOnClick(id) {
 }
 
 let id = 0;
-function initProject(title, desc, img, pr_lang, teamsize, tags = []) {
+function initProject(title, desc, img, date, pr_lang, teamsize, tags = []) {
     var project = new Object();
     project.title = title;
     project.desc = desc;
+    project.date = date;
     project.img = img;
     project.pr_lang = pr_lang;
     project.teamsize = teamsize;
@@ -131,7 +132,7 @@ function initProject(title, desc, img, pr_lang, teamsize, tags = []) {
                 <!--<div style="position: absolute; margin: 45px 0px 0px 80px;">
                     ${tagsAsHTML(project.tags)}
                 </div>-->
-            </div><br>
+            </div><span style="color: #aaaaaa; font-size: 0.8em;">Date of completion: <span style="color: #dddddd;">${project.date}</span></span><br>
             <!-- Description -->
             <div class="pr-description expanded">
                 <div style="margin-top: 1em;">
