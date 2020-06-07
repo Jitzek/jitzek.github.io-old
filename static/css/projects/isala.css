@@ -79,6 +79,24 @@ input[type="checkbox"]:checked ~ label > .media {
   cursor: zoom-out;
 }
 
+.isala-description {
+  transition: all 0.5s;
+}
+
+.isala-desc-expander {
+  float: right;
+  margin-left: 1em;
+  background-color: white;
+  margin-bottom: 2em;
+  padding: 1.0em;
+  transition: all 0.25s;
+  -webkit-mask: url(../../src/projects/global/arrow.svg) no-repeat center;
+  mask: url(../../src/projects/global/arrow.svg) no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  transform: rotate(0deg);
+}
+
 /*
  * Responsiveness
 */

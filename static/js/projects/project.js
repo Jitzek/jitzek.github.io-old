@@ -60,29 +60,29 @@ function tagsAsHTML(tags) {
     return output + '</div>';
 }
 
-const ELEMENTID = 'pr-';
-const EXPANDER = 'pr-desc-expander';
-const DESCRIPTION = 'pr-description';
-const EXPANDEDKEY = 'expanded';
-const ANIMATIONTIME = 500;
+const PROJECT_ELEMENTID = 'pr-';
+const PROJECT_EXPANDER = 'pr-desc-expander';
+const PROJECT_DESCRIPTION = 'pr-description';
+const PROJECT_EXPANDEDKEY = 'expanded';
+const PROJECT_ANIMATIONTIME = 500;
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 async function expanderOnClick(id) {
-    var element = document.getElementById(`${ELEMENTID}${id}`);
-    var expander = element.querySelector(`.${EXPANDER}`);
-    var description = element.querySelector(`.${DESCRIPTION}`);
+    var element = document.getElementById(`${PROJECT_ELEMENTID}${id}`);
+    var expander = element.querySelector(`.${PROJECT_EXPANDER}`);
+    var description = element.querySelector(`.${PROJECT_DESCRIPTION}`);
 
-    if (description.classList.contains(EXPANDEDKEY)) {
+    if (description.classList.contains(PROJECT_EXPANDEDKEY)) {
         // Remove Key
-        description.classList.remove(EXPANDEDKEY);
+        description.classList.remove(PROJECT_EXPANDEDKEY);
 
         // rotate expander
         expander.style.transform = 'rotate(90deg)';
 
         description.style.opacity = '0';
-        await sleep(ANIMATIONTIME);
+        await sleep(PROJECT_ANIMATIONTIME);
         description.style.height = '0';
 
         return
@@ -95,7 +95,7 @@ async function expanderOnClick(id) {
     description.style.opacity = '1';
 
     // Add Key
-    description.classList.add(EXPANDEDKEY);
+    description.classList.add(PROJECT_EXPANDEDKEY);
 }
 
 let id = 0;

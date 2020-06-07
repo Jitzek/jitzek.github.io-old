@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../../static/css/projects/global.css" />
     <script src="../../static/js/projects/project.js" type="text/javascript"></script>
     <script src="../../static/js/projects/global.js" type="text/javascript"></script>
+    <script src="../../static/js/projects/isala/isala.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -44,6 +45,7 @@
             <script>
                 let i = 0;
                 function insertImages(imgs) {
+                    if (imgs == null) return;
                     document.write(`<div class="media-container"><div class="row">`);
                     imgs.forEach(img => {
                         document.write(`
@@ -62,59 +64,109 @@
                         </div>`);
                 }
             </script>
-            <h1>
-                The Virtual Machine
-            </h1>
             <script>
-                insertImages([{url: '../../static/src/projects/isala/startup.gif', alt: '[Gif] SSH and Database'}]);
-                // Brute Force example
-                // DoS example
-            </script>
-            <p>
-                The Virtual Machine was created by me, after discussing the various Operating Systems and assessing my team's know-how on them I decided to go with <a href="https://www.debian.org/" class="href-link" target="_blank">Debian GNU/Linux</a>.<br><br>
-                Since the webapplication had to be hosted on a Virtual Machine we had to port forward certain services from the machine to it's host.<br>
-                The Virtual Machine would not have a GUI so all development would take place on the host.<br><br>
-                We could use VirtualBox's "Port Forwarding" option to port forward SSH, <a href="https://httpd.apache.org/" class="pr-href-link" target="_blank">Apache</a> and <a href="https://www.openldap.org/" class="pr-href-link" target="_blank">OpenLDAP</a> for use on the host.<br>
-                The most important service in terms of development was <a href="https://www.samba.org/" class="pr-href-link" target="_blank">Samba</a>, for this we used a Host-Only adapter, configured the interface on the guest and configured Samba's configuration to allow access to the webapplication's files for the developer user.<br><br>
-                I distributed the Virtual Machine to my teammembers and got to work on the webapplication's framework.
-            </p>
-            <br>
-            <hr>
-            <h1>
-                The Framework
-            </h1>
-            <p>
-                I decided to base our framework on MVC because of it's maintainability and ease of appending functionality.<br>
-                After some research and following a few tutorials I got a decent framework set-up that would be the starting point of our project.<br><br>
-                I created a Github repository, invited my team, we made some issues based on our already established requirements (mainly MoSCoW and Security Requirements) and distributed them.
-            </p>
-            <br>
-            <hr>
-            <h1>
-                Login Page
-            </h1>
-            <div class="media-container">
-                <script>
-                    insertImages([
-                            {url: '../../static/src/projects/isala/login.gif', alt: '[Gif] Login Demo'}, 
-                            {url: '../../static/src/projects/isala/blockedip.gif', alt: '[Gif] Blocked IP Demo'}
+                content_arr = [
+                    {
+                        title: 'The Virtual Machine',
+                        content: `
+                        The Virtual Machine was created by me, after discussing the various Operating Systems and
+                        assessing
+                        my team's know-how on them I decided to go with <a href="https://www.debian.org/"
+                            class="href-link" target="_blank">Debian GNU/Linux</a>.<br><br>
+                        Since the webapplication had to be hosted on a Virtual Machine we had to port forward certain
+                        services from the machine to it's host.<br>
+                        The Virtual Machine would not have a GUI so all development would take place on the
+                        host.<br><br>
+                        We could use VirtualBox's "Port Forwarding" option to port forward SSH, <a
+                            href="https://httpd.apache.org/" class="pr-href-link" target="_blank">Apache</a> and <a
+                            href="https://www.openldap.org/" class="pr-href-link" target="_blank">OpenLDAP</a> for use
+                        on
+                        the host.<br>
+                        The most important service in terms of development was <a href="https://www.samba.org/"
+                            class="pr-href-link" target="_blank">Samba</a>, for this we used a Host-Only adapter,
+                        configured
+                        the interface on the guest and configured Samba's configuration to allow access to the
+                        webapplication's files for the developer user.<br><br>
+                        I distributed the Virtual Machine to my teammembers and got to work on the webapplication's
+                        framework.
+                        `,
+                        images: [
+                            {
+                                url: '../../static/src/projects/isala/startup.gif',
+                                alt: '[Gif] SSH and Database'
+                            }
                         ]
+                    },
+                    {
+                        title: 'The Framework',
+                        content: `
+                        I decided to base our framework on MVC because of it's maintainability and ease of appending
+                        functionality.<br>
+                        After some research and following a few tutorials I got a decent framework set-up that would be the
+                        starting point of our project.<br><br>
+                        I created a Github repository, invited my team, we made some issues based on our already established
+                        requirements (mainly MoSCoW and Security Requirements) and distributed them.
+                        `,
+                        images: null
+                    },
+                    {
+                        title: 'Login Page',
+                        content: `
+                        The login page was my responsibility, the requirements stated the need of authentication using LDAP and
+                        the use of 2FA.<br>
+                        As team we decided to also include measures against Brute Force and (D)DoS attacks.<br><br>
+                        The mitigation of brute force attacks was done with a login attempt limit that'd block the user's IP for
+                        each 5 wrong attempts where the time blocked would go to a maximum of 30 minutes.<br>
+                        The way the IP was decided had it's limits with proxies but ways of determining the original IP from it
+                        came with it's own vulnerabilities so we decided to accept these limitations.<br><br>
+                        After giving the correct username and password combination after failed retries there would be a soft
+                        reset (resetting it so the user had 5 tries for the 2FA but the penalty would not be decreased).<br>
+                        The user would be given a temporary token which would be bound to their session for the 2FA, the 2FA had
+                        the same measurements as the login.<br>
+                        Only after giving the correct code and thus logging in would the block be completely reset (deleted from
+                        the database).<br><br>
+                        The measures against (D)DoS were configured in the firewall (<a
+                            href="https://wiki.ubuntu.com/UncomplicatedFirewall" class="pr-href-link" target="_blank">UFW</a>)
+                        where the IP table was configured to only accept a certain amount of requests (and size) each
+                        second.<br>
+                        `,
+                        images: [
+                            {
+                                url: '../../static/src/projects/isala/login.gif',
+                                alt: '[Gif] Login Demo'
+                            },
+                            {
+                                url: '../../static/src/projects/isala/blockedip.gif',
+                                alt: '[Gif] Blocked IP Demo'
+                            }
+                        ]
+                    }
+                ];
+                let j = 0;
+                content_arr.forEach(content => {
+                    if (j > 0) document.write('<br><hr>');
+                    document.write(
+                        `
+                        <div id="isala-${j}">
+                            <div style="display: flex;">
+                                <h1>
+                                    ${content.title}
+                                </h1>
+                                <div class="isala-desc-expander" onclick="isalaExpanderOnClick(${j})"></div>
+                            </div>
+                            <div class="isala-description expanded">`);
+                                insertImages(content.images);
+                                document.write(`
+                                <p>
+                                    ${content.content}
+                                </p>
+                            </div>
+                        </div>
+                        `
                     );
-                </script>
-            </div>
-            <p>
-                The login page was my responsibility, the requirements stated the need of authentication using LDAP and the use of 2FA.<br>
-                As team we decided to also include measures against Brute Force and (D)DoS attacks.<br><br>
-                The mitigation of brute force attacks was done with a login attempt limit that'd block the user's IP for each 5 wrong attempts where the time blocked would go to a maximum of 30 minutes.<br>
-                The way the IP was decided had it's limits with proxies but ways of determining the original IP from it came with it's own vulnerabilities so we decided to accept these limitations.<br><br>
-                After giving the correct username and password combination after failed retries there would be a soft reset (resetting it so the user had 5 tries for the 2FA but the penalty would not be decreased).<br>
-                The user would be given a temporary token which would be bound to their session for the 2FA, the 2FA had the same measurements as the login.<br>
-                Only after giving the correct code and thus logging in would the block be completely reset (deleted from the database).<br><br>
-                The measures against (D)DoS were configured in the firewall (<a href="https://wiki.ubuntu.com/UncomplicatedFirewall" class="pr-href-link" target="_blank">UFW</a>) where the IP table was configured to only accept a certain amount of requests (and size) each second.<br>
-                <!-- Code Block -->
-            </p>
-            <br>
-            <hr>
+                    j++;
+                });
+            </script>
         </div>
     </div>
 </body>
