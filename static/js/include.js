@@ -2,7 +2,7 @@ function global_include() {
     document.write(`
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- <link rel="shortcut icon" href="./static/favicon.ico"> -->
+        <link rel="shortcut icon" href="./static/favicon.ico">
         <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.min.css" />
         <script src="/static/js/jquery/jquery-3.5.1.min.js" type="text/javascript"></script>
         <script src="/static/js/bootstrap/bootstrap.min.js" type="text/javascript""></script>
