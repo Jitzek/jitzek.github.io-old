@@ -17,11 +17,13 @@ function navbar_include(page = "") {
      * [2] = Redirect URL
      * [3] = Type (static, dropdown, etc.)
      * [4] = [optional] Children of dropdown
+     * 
+     * TODO: objectify
      */
     const HOME = ['home', 'Home', '/', 'static'];
     const PROJECTS = ['projects', 'Projects', '/projects', 'static'];
     const LINUX = ['linux', 'Linux <span style="font-size: 10px">(in progress)</span>', '/linux', 'static'];
-    const CROMA = ['croma', 'Croma <span style="font-size: 10px">(in progress)</span>', '/croma-web-site', 'static'];
+    const CROMA = ['croma', 'Croma', '/croma-web-site', 'static'];
     const CONTACT = ['contact', 'Contact', '/contact', 'static'];
     var const_arr = [HOME, PROJECTS, LINUX, CROMA/*, CONTACT*/];
     document.write(`
