@@ -5,104 +5,58 @@ const COLOR_FILE = "#FFFFFF";
 const COLOR_ERR = "rgb(255, 0, 0)";
 
 const fs = new FileSystem();
+let terminal = document.getElementById("terminal");
+const commands = [new Cat(terminal), new Clear(terminal), new Ls(terminal)];
 
 function sendCommand(event) {
-    if (event.keyCode === 13) {
-        event.preventDefault();
-        document.getElementById('terminal').innerHTML += "<p id=\"terminal-line\" style=\"color: " + COLOR_INPUT + ";\"><strong style=\"color: #09EB00;\"> > </strong>" + document.getElementById('terminal-input').value + "</p>";
-        handleInput(document.getElementById('terminal-input').value);
-        document.getElementById('terminal-input').value = '';
-    }
-};
+  if (event.keyCode === 13) {
+    event.preventDefault();
+    document.getElementById("terminal").innerHTML +=
+      '<p id="terminal-line" style="color: ' +
+      COLOR_INPUT +
+      ';"><strong style="color: #09EB00;"> > </strong>' +
+      document.getElementById("terminal-input").value +
+      "</p>";
+    handleInput(document.getElementById("terminal-input").value);
+    document.getElementById("terminal-input").value = "";
+  }
+}
 
 function sendError(errormsg) {
-    document.getElementById('terminal').innerHTML += "<p id=\"terminal-line\" style=\"color: " + COLOR_ERR + ";\">" + errormsg + "</p>";
+  document.getElementById("terminal").innerHTML +=
+    '<p id="terminal-line" style="color: ' +
+    COLOR_ERR +
+    ';">' +
+    errormsg +
+    "</p>";
 }
 
 function sendMSG(msg) {
-    document.getElementById('terminal').innerHTML += "<p id=\"terminal-line\" style=\"color: " + COLOR_OUTPUT + ";\">" + msg + "</p>";
+  document.getElementById("terminal").innerHTML +=
+    '<p id="terminal-line" style="color: ' +
+    COLOR_OUTPUT +
+    ';">' +
+    msg +
+    "</p>";
 }
 
 function handleInput(input) {
-    var args = input.trim().split(" ");
-    switch (args[0]) {
-        case "cat":
-            output = cat(args);
-            if (!(output instanceof Array)) {
-                if (output) sendError(output);
-                break;
-            }
-            document.getElementById('terminal').innerHTML += "<span id=\"terminal-line\" style=\"color: " + COLOR_OUTPUT + ";\">" + output[0] + "</span> &nbsp;";
-            break;
-        case "clear":
-            document.getElementById('terminal').innerHTML = "";
-            break;
-        case "ls":
-            output = ls(args);
-            if (!(output instanceof Array)) {
-                if (output) sendError(output);
-                break;
-            }
-            output.forEach(element => {
-                if (fs.isDirectory(element)) {
-                    document.getElementById('terminal').innerHTML += "<span id=\"terminal-line\" style=\"color: " + COLOR_DIR + ";\">" + element + "</span> &nbsp;";
-                }
-                else if (fs.isFile(element)) {
-                    document.getElementById('terminal').innerHTML += "<span id=\"terminal-line\" style=\"color: " + COLOR_FILE + ";\">" + element + "</span> &nbsp;";
-                }
-            });
-            break;
-        default:
-            document.getElementById('terminal').innerHTML += "<span id=\"terminal-line\" style=\"color: " + COLOR_OUTPUT + ";\">" + `bash: ${args[0]}: command not found` + "</span> &nbsp;";
+  var args = input.trim().split(" ");
+  let cid = args[0];
+  for (let i = 0; i < commands.length; i++) {
+    if (commands[i].id == cid) {
+      let output = commands[i].execute(args);
+      if (commands[i].hasOutput()) commands[i].printToHTML(output);
+      break;
     }
-}
-
-function ls(args) {
-    if (args.length < 0) return;
-    if (args.length > 3) return 'Too many arguments';
-    let result;
-    let path = args[1];
-    if (path && path[0] === '-' && args.length > 2) {
-        // Additional Arguments Given
-        path = args[2];
-        // TODO
+    if (i + 1 >= commands.length) {
+      // Command not found
+      terminal.innerHTML +=
+        '<span id="terminal-line" style="color: ' +
+        COLOR_OUTPUT +
+        ';">' +
+        `bash: ${args[0]}: command not found` +
+        "</span> &nbsp;";
     }
-    path = fs.convertToLegalPath(path);
-    if (args.length > 1) {
-        result = fs.getFileByPath(path);
-        if (!result) {
-            return `ls: cannot access '${path}': No such file or directory`;
-        }
-    }
-    if (!result) result = fs.current_dir;
-    if (fs.isFile(fs.getLocationAsPath(result))) {
-        file = fs.getPathAsArray(path);
-        document.getElementById('terminal').innerHTML += "<span id=\"terminal-line\" style=\"color: " + COLOR_FILE + ";\">" + file[file.length - 1] + "</span> &nbsp;";
-        return;
-    }
-    arr = [];
-    for (let object in result) {
-        arr.push(object);
-    }
-    return arr;
-}
-
-function cat(args) {
-    if (args.length < 0) return;
-    if (args.length < 1) return 'Not enough arguments'
-    if (args.length > 3) return 'Too many arguments';
-    let result;
-    let path = args[1];
-    if (path && path[0] === '-' && args.length > 2) {
-        // Additional Arguments Given
-        path = args[2];
-        // TODO
-    }
-    path = fs.convertToLegalPath(path);
-    result = fs.getFileByPath(path);
-    if (!result) {
-        return `cat: ${path}: No such file or directory`;
-    }
-    if (!fs.isFile(path)) return `cat: ${path}: Is a directory`; 
-    return [result.content];
+  }
 }

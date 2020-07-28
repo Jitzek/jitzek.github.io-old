@@ -184,7 +184,6 @@ class FileSystem {
             }
             else i++;
         }
-        console.log(path);
         return path.join('');
     }
 
