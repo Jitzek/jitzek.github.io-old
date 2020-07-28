@@ -184,6 +184,14 @@ class FileSystem {
             }
             else i++;
         }
+        // Check if '/' should be appended
+        if (path.slice(-1)[0].slice(-1) != '/') {
+            let newpath = path.slice(0);
+            newpath[newpath.length - 1] = newpath[newpath.length - 1] + '/';
+            if ((this.getFileByPath(path) == false || this.getFileByPath(path) === undefined) && this.getFileByPath(newpath) != false)  {
+                path = newpath;
+            }
+        }
         return path.join('');
     }
 
@@ -215,7 +223,7 @@ class FileSystem {
     getFileByPath(file, current_file = [], current = this.storage, pointer = 0) {
         var result;
         if (!Array.isArray(file)) file = this.getPathAsArray(file);
-        if (file.join('') == current_file.join('')) { 
+        if (file.join('') == current_file.join('') || file.join('') + '/' == current_file.join('')) { 
             return current; 
         }
 
