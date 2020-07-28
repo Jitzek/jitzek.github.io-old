@@ -9,14 +9,15 @@
     <script src="../static/js/include.js" type="text/javascript"></script>
     <script src="../static/js/linux/filesystem.js" type="text/javascript"></script>
     <script src="../static/js/linux/console.js" type="text/javascript"></script>
-    <script src="../static/js/console_typewriter.js" type="text/javascript"></script>
+    <script src="../static/js/linux/linux.js" type="text/javascript"></script>
+    <script src="../static/js/typewriter.js" type="text/javascript"></script>
     <link rel="stylesheet" href="../static/css/linux/linux.css" />
-</head>
-
-<body onload="typeWriter()">
     <script>
         global_include();
     </script>
+</head>
+
+<body onload="twInit()">
     <!--<img src="#" hidden onerror="countUpTime()" />-->
     <div style="font-family: 'Quicksand', sans-serif;">
         <!-- Includes the navbar (include.js) -->
@@ -29,74 +30,13 @@
     </div>
     <div style="margin-bottom: 50px;"></div>
     <div class="container">
-        <div class="initial-console tw-container">
-            <a class="skip-btn tw" style="display: none;" onclick="skipBoot()">Skip Boot Sequence</a><br><br>
-            <span class="tw" style="display: none;">s=20;d=0;Uncompressing Linux....</span>
-            <span class="tw" style="display: none;">s=20;d=700; done, booting the kernel.</span><br><br>
-            <span class="tw" style="display: none;">s=0;d=1000;c=#01FF00;[  OK  ]</span>
-            <span class="tw" style="display: none;">s=10;d=0; Reached target Paths..</span><br>
-    
-            <span class="tw" style="display: none;">s=0;d=50;c=#01FF00;[  OK  ]</span>
-            <span class="tw" style="display: none;">s=0;d=0; Reached target Basic System.</span><br>
-    
-            <span class="tw" style="display: none;">s=0;d=50;c=#01FF00;[  OK  ]</span>
-            <span class="tw" style="display: none;">s=0;d=0; Found device JTZK00444AS.</span><br>
-            
-            <span class="tw" style="display: none;">s=0;d=50;c=#01FF00;[  OK  ]</span>
-            <span class="tw" style="display: none;">s=0;d=0; Reached target Remote File Systems (Pre).</span><br>
-    
-            <span class="tw" style="display: none;">s=0;d=100;c=#01FF00;[  OK  ]</span>
-            <span class="tw" style="display: none;">s=0;d=0; Reached target Remote File Systems.</span><br>
-    
-            <span class="tw" style="display: none;">s=0;d=50;c=#01FF00;[  OK  ]</span>
-            <span class="tw" style="display: none;">s=0;d=0; Started File System Check on /dev/disk/by-uuid/85e4ae33-c60e-4372-a6ba-9aeb23bf6d86.</span><br>
-    
-            <span class="tw" style="display: none;">s=0;d=50;            </span>
-            <span class="tw" style="display: none;">s=0;d=0;Mounting /root...</span><br>
-    
-            <span class="tw" style="display: none;">s=0;d=200;c=#01FF00;[  OK  ]</span>
-            <span class="tw" style="display: none;">s=0;d=0; Mounted /root.</span><br>
-    
-            <span class="tw" style="display: none;">s=0;d=50;c=#01FF00;[  OK  ]</span>
-            <span class="tw" style="display: none;">s=0;d=0; Reached target Initrd Root File System..</span><br>
-    
-            <span class="tw" style="display: none;">s=0;d=100;            </span>
-            <span class="tw" style="display: none;">s=0;d=0;Starting Reload Configuration from the Real Root...</span><br>
-    
-            <span class="tw" style="display: none;">s=0;d=250;c=#01FF00;[  OK  ]</span>
-            <span class="tw" style="display: none;">s=0;d=0; Started Reload Configuration from the Real Root.</span><br>
-    
-            <span class="tw" style="display: none;">s=0;d=100;c=#01FF00;[  OK  ]</span>
-            <span class="tw" style="display: none;">s=0;d=0; Reached target Initrd File Systems..</span><br>
-    
-            <span class="tw" style="display: none;">s=0;d=100;c=#01FF00;[  OK  ]</span>
-            <span class="tw" style="display: none;">s=0;d=0; Reached target Initrd Default Target.</span><br><br>
-    
-            <span class="tw" style="display: none;">s=0;d=500;c=#CF7496;Welcome to jitxekOS 0.1 (devPhase) (x86_64)! </span><br><br>
-    
-            <p class="tw" style="display: none;">s=50;d=1000;Preparing Terminal... please wait.</p>
-            <span class="tw" style="display: none;">d=1500;r=f;</span>
-            <span class="tw" style="display: none;">d=0;l=console;</span>
+        <div id="initial-console" style="color: white;">
         </div>
     </div>
     
     <br />
-    <div class="container console">
+    <div id="console" class="container console">
         <div id="terminal" class="console-history">
-            <!--<p id="terminal-line" style="color: rgb(230, 230, 230);">type help to get a list of commands</p>-->
-            <!--<pre>
-            <span style="color: #CF7496;"> 888888 888888 888    d8P  </span>
-            <span style="color: #F99F9F;">    "88b   "88b 888   d8P   </span>
-            <span style="color: #FAB69F;">     888    888 888  d8P    </span>
-            <span style="color: #F7D0A8;">     888    888 888d88K     </span>
-            <span style="color: #E0BDAE;">     888    888 8888888b    </span>
-            <span style="color: #CDA3B4">     888    888 888  Y88b   </span>
-            <span style="color: #C095B0;">     88P    88P 888   Y88b  </span>
-            <span style="color: #C56D92;">     888    888 888    Y88b </span>
-            <span style="color: #AA5C8D;">   .d88P  .d88P             </span>
-            <span style="color: #A1588F"> .d88P" .d88P"              </span>
-            <span style="color: #8B4E87;">888P"  888P"                </span>
-            </pre>-->
         </div>
         <div class="console-input">
             <label id="terminal-label" class="console-input-label">jitzek@jitzek:$</label> &nbsp;
@@ -105,6 +45,9 @@
     </div>
 </body>
 <footer>
+    <script>
+        includeHTML();
+    </script>
 </footer>
 
 </html>

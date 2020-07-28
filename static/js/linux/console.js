@@ -27,9 +27,8 @@ function handleInput(input) {
     var args = input.trim().split(" ");
     switch (args[0]) {
         case "cat":
-            var expected = Array;
             output = cat(args);
-            if (!(output instanceof expected)) {
+            if (!(output instanceof Array)) {
                 if (output) sendError(output);
                 break;
             }
@@ -39,9 +38,8 @@ function handleInput(input) {
             document.getElementById('terminal').innerHTML = "";
             break;
         case "ls":
-            var expected = Array;
             output = ls(args);
-            if (!(output instanceof expected)) {
+            if (!(output instanceof Array)) {
                 if (output) sendError(output);
                 break;
             }
@@ -62,8 +60,8 @@ function handleInput(input) {
 function ls(args) {
     if (args.length < 0) return;
     if (args.length > 3) return 'Too many arguments';
-    var result;
-    var path = args[1];
+    let result;
+    let path = args[1];
     if (path && path[0] === '-' && args.length > 2) {
         // Additional Arguments Given
         path = args[2];
@@ -93,15 +91,15 @@ function cat(args) {
     if (args.length < 0) return;
     if (args.length < 1) return 'Not enough arguments'
     if (args.length > 3) return 'Too many arguments';
-    var result;
-    var path = args[1];
+    let result;
+    let path = args[1];
     if (path && path[0] === '-' && args.length > 2) {
         // Additional Arguments Given
         path = args[2];
         // TODO
     }
     path = fs.convertToLegalPath(path);
-    var result = fs.getFileByPath(path);
+    result = fs.getFileByPath(path);
     if (!result) {
         return `cat: ${path}: No such file or directory`;
     }

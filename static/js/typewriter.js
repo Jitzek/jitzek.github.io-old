@@ -1,200 +1,100 @@
-var name = "tw";
+const typeWriters = [];
 
-argStart = '=';
-argEnd = ';';
-
-async function typeWriter() {
-    var elements = document.getElementsByClassName(name);
-    for (var i = 0; i < elements.length; i++) {
-        var at = 0;
-        await sleep(getDelay(elements[i].innerText));
-        if (getRemoval(elements[i].innerText) == 'y') {
-            remove();
-            continue;
-        } else if (getRemoval(elements[i].innerText) == 'f') {
-            fullRemove();
-            continue;
-        }
-        if (getLoad(elements[i].innerText) == 'console') {
-            document.getElementsByClassName('console')[0].style.setProperty('opacity', 1);
-        }
-        var speed = getSpeed(elements[i].innerText);
-        var txt = trimArgs(elements[i].innerText);
-        var display = getDisplay(elements[i].innerText);
-        elements[i].style.setProperty("color", getColor(elements[i].innerText));
-        
-        elements[i].innerText = "";
-        elements[i].style.setProperty("display", display);
-        while (at < txt.length) {
-            if (txt.charAt(at) == " ") {
-                elements[i].innerText += "\xa0";
-            } else {
-                elements[i].innerText += txt.charAt(at);
-            }
-            at++;
-            await sleep(speed);
-        }
-        if (i > 10) {
-            elements[i - 10].scrollIntoView();
-        }
-    }
+function getTW(containerid) {
+  return typeWriters.filter((tw) => {
+    return tw.containerid == containerid;
+  })[0];
 }
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+/**
+ * Initializes a TypeWriter for a specified HTML container
+ * @param {string} containerid HTML ID of container
+ * @param {string} childname Name of children elements inside container, only elements with this classname will be altered
+ * @returns {object} Initialized TypeWriter object
+ */
+function initializeTW(containerid, childname) {
+  let tw = {
+    containerid: containerid,
+    childname: childname,
+    get container() {
+      return document.getElementById(this.containerid);
+    },
+    /**
+     * Adds line to container
+     * @param {string} content Content to be written
+     * @param {string} type HTML element type, default "p" (paragraph)
+     * @param {number} delay ms between each letter (animation), default 50 (ms)
+     */
+    write: async function (content, type = "p", delay = 50, custom_class = false, custom_styling = false) {
+      let element = document.createElement(type);
+      element.setAttribute("class", this.childname);
+      if (custom_class) element.className += ` ${custom_class}`;
+      if (custom_styling) element.style.cssText = custom_styling;
+      this.container.appendChild(element);
+
+      /* Write Animation */
+      let i = 0;
+      while (i < content.length) {
+        element.innerHTML += content[i];
+        await sleep(delay);
+        i++;
+      }
+      /* -------------- */
+    },
+    /**
+     * Erases last child of container
+     * @param {number} delay ms between each letter (animation), default 50 (ms)
+     */
+    erase: async function (delay = 50) {
+      let lastChild = this.container.querySelectorAll(`.${this.childname}:last-child`)[0];
+
+      /* Erase Animation */
+      let i = element.innerHTML.length;
+      while (i > 0) {
+        element.innerHTML = element.innerHTML.slice(0, -1);
+        await sleep(delay);
+        i--;
+      }
+      /* -------------- */
+
+      this.container.removeChild(lastChild);
+    },
+    /**
+     * Remove all children from container
+     */
+    clean: async function () {
+      const elements = this.container.getElementsByClassName(this.childname);
+      while (elements.length > 0) elements[0].remove();
+    },
+    /**
+     * Remove container and all it's children from HTML document
+     */
+    delete: function () {
+      this.container.remove();
+      typeWriters.pop(this);
+    },
+  };
+  typeWriters.push(tw);
+  return tw;
 }
 
-function trimArgs(element) {
-    var fullcount = 0;
-    var partcount = 0;
-    for (var i = 0; i < element.length; i++) {
-        fullcount++;
-        if (element[i] == argEnd) {
-            partcount = fullcount;
-        }
-    }
-    return element.slice(partcount, element.length);
+async function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function getSpeed(element) {
-    var prefix = 's';
-    var start = false;
-    var arg = '';
-    for (var i = 0; i < element.length; i++) {
-        if (start && element[i] == argEnd) {
-            break;
-        }
-        if (start) {
-            arg += element.charAt(i);
-        } else if (element[i] == argStart && element[i - 1] == prefix) {
-            start = true;
-        }
-    }
-    if (arg.length < 1) {
-        return 0;
-    }
-    return parseInt(arg);
+async function writeAnimation(element, content, delay) {
+  let i = 0;
+  while (i < content.length) {
+    element.innerHTML += content[i];
+    await sleep(delay);
+    i++;
+  }
 }
-
-function getDelay(element) {
-    var prefix = 'd';
-    var start = false;
-    var arg = '';
-    for (var i = 0; i < element.length; i++) {
-        if (start && element[i] == argEnd) {
-            break;
-        }
-        if (start) {
-            arg += element.charAt(i);
-        } else if (element[i] == argStart && element[i - 1] == prefix) {
-            start = true;
-        }
-    }
-    if (arg.length < 1) {
-        return 0;
-    }
-    return parseInt(arg);
-}
-
-function getDisplay(element) {
-    var prefix = 'display';
-    var start = false;
-    var arg = '';
-    for (var i = 0; i < element.length; i++) {
-        if (start && element[i] == argEnd) {
-            break;
-        }
-        if (start) {
-            arg += element.charAt(i);
-        } else if (element[i] == argStart) {
-            var check = '';
-            if ((i - prefix.length) < 0) {
-                continue;
-            }
-            for (var j = prefix.length; j > 0; j--) {
-                check += element[i - j];
-            }
-            if (check == prefix) {
-                start = true;
-            }
-        }
-    }
-    if (arg.length < 1) {
-        return 'inline';
-    }
-    console.log(arg);
-    return arg;
-}
-
-function getColor(element) {
-    var prefix = 'c';
-    var start = false;
-    var arg = '';
-    for (var i = 0; i < element.length; i++) {
-        if (start && element[i] == argEnd) {
-            break;
-        }
-        if (start) {
-            arg += element.charAt(i);
-        } else if (element[i] == argStart && element[i - 1] == prefix) {
-            start = true;
-        }
-    }
-    if (arg.length < 1) {
-        return 'white';
-    }
-    return arg;
-}
-
-function getLoad(element) {
-    var prefix = 'l';
-    var start = false;
-    var arg = '';
-    for (var i = 0; i < element.length; i++) {
-        if (start && element[i] == argEnd) {
-            break;
-        }
-        if (start) {
-            arg += element.charAt(i);
-        } else if (element[i] == argStart && element[i - 1] == prefix) {
-            start = true;
-        }
-    }
-    return arg;
-}
-
-function remove(till) {
-    elements = document.getElementsByClassName(name);
-    for (var i = 0; i < till; i++) {
-        elements[i].style.setProperty("display","none");
-    }
-}
-
-function fullRemove() {
-    var container = document.getElementsByClassName("tw-container");
-    for (var i = 0; i < container.length; i++) {
-        container[i].style.setProperty("display","none");
-        container[i].style.setProperty("width","0");
-    }
-}
-
-function loadMainConsole() {
-    document.getElementsByClassName("console")[0].style.setProperty("opacity", 1);
-}
-
-function getRemoval(element) {
-    var prefix = 'r';
-    var start = false;
-    var arg = '';
-    for (var i = 0; i < element.length; i++) {
-        if (start && element[i] == argEnd) {
-            break;
-        }
-        if (start) {
-            arg += element.charAt(i);
-        } else if (element[i] == argStart && element[i - 1] == prefix) {
-            start = true;
-        }
-    }
-    return arg;
+async function eraseAnimation(element, delay) {
+  let i = element.innerHTML.length;
+  while (i > 0) {
+    element.innerHTML = element.innerHTML.slice(0, -1);
+    await sleep(delay);
+    i--;
+  }
 }
