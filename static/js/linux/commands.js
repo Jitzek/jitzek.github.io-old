@@ -1,8 +1,9 @@
 class Command {
-  constructor(terminal, id, man) {
+  hasOutput = true;
+  constructor(terminal, id, help) {
     this.terminal = terminal;
     this.id = id;
-    this.man = man;
+    this.help = help;
   }
 
   execute(args) {
@@ -28,17 +29,26 @@ class Command {
     }
     return a_args;
   }
+
+  getHelp(args) {
+    if (args[1] != "--help") return false;
+    return this.help;
+  }
 }
 
 class Cat extends Command {
   constructor(terminal) {
-    super(terminal, "cat", "concatenate files and print on the standard output");
+    super(
+      terminal,
+      "cat",
+      "concatenate files and print on the standard output"
+    );
   }
 
   execute(args) {
     if (args.length < 0) return;
     if (args.length < 1) return "Not enough arguments";
-    if (args.length > 3) return "Too many arguments";
+    if (this.getHelp(args)) return [this.getHelp(args)];
     let result;
     let path = args[1];
     if (path && path[0] === "-" && args.length > 2) {
@@ -68,10 +78,6 @@ class Cat extends Command {
       "</span> &nbsp;";
     return true;
   }
-
-  hasOutput() {
-    return true;
-  }
 }
 
 class Clear extends Command {
@@ -80,11 +86,24 @@ class Clear extends Command {
   }
 
   execute(args) {
+    this.hasOutput = true;
+    if (this.getHelp(args)) return [this.getHelp(args)];
+    this.hasOutput = false;
     terminal.innerHTML = "";
   }
 
-  hasOutput() {
-    return false;
+  printToHTML(content) {
+    if (!(content instanceof Array)) {
+      if (content) sendError(content);
+      return false;
+    }
+    terminal.innerHTML +=
+      '<span id="terminal-line" style="color: ' +
+      COLOR_OUTPUT +
+      ';">' +
+      content[0] +
+      "</span> &nbsp;";
+    return true;
   }
 }
 
@@ -95,6 +114,7 @@ class Ls extends Command {
 
   execute(args) {
     if (args.length < 0) return;
+    if (this.getHelp(args)) return [this.getHelp(args)];
     let result;
     let path = args[1];
     let a_args = [];
@@ -149,10 +169,6 @@ class Ls extends Command {
           "</span> &nbsp;";
       }
     });
-    return true;
-  }
-
-  hasOutput() {
     return true;
   }
 }

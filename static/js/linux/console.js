@@ -46,7 +46,7 @@ function handleInput(input) {
   for (let i = 0; i < commands.length; i++) {
     if (commands[i].id == cid) {
       let output = commands[i].execute(args);
-      if (commands[i].hasOutput()) commands[i].printToHTML(output);
+      if (commands[i].hasOutput) commands[i].printToHTML(output);
       break;
     }
     if (i + 1 >= commands.length) {
