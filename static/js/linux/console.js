@@ -43,10 +43,19 @@ function sendMSG(msg) {
 function handleInput(input) {
   var args = input.trim().split(" ");
   let cid = args[0];
+  if (cid == 'help') {
+    commands.forEach(command => {
+      terminal.innerHTML +=
+        `<span id="terminal-line" style="color: ${COLOR_OUTPUT};">
+        ${command.id} - ${command.help}
+        </span><br>`;
+    });
+    return;
+  }
   for (let i = 0; i < commands.length; i++) {
     if (commands[i].id == cid) {
-      let output = commands[i].execute(args);
-      if (commands[i].hasOutput) commands[i].printToHTML(output);
+      let output = args[1] == "--help" ? [commands[i].help] : commands[i].execute(args);
+      if (output != false && output != undefined) commands[i].printToHTML(output);
       break;
     }
     if (i + 1 >= commands.length) {
