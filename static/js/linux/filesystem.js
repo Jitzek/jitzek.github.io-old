@@ -186,7 +186,7 @@ class FileSystem {
         }
         // Check if '/' should be appended
         if (path.slice(-1)[0].slice(-1) != '/') {
-            let newpath = path.slice(0);
+            let newpath = [...path];
             newpath[newpath.length - 1] = newpath[newpath.length - 1] + '/';
             if ((this.getFileByPath(path) == false || this.getFileByPath(path) === undefined) && this.getFileByPath(newpath) != false)  {
                 path = newpath;
