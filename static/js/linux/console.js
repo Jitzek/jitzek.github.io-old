@@ -6,17 +6,17 @@ const COLOR_ERR = "rgb(255, 0, 0)";
 
 const fs = new FileSystem();
 let terminal = document.getElementById("terminal");
-const commands = [new Cat(terminal), new Clear(terminal), new Ls(terminal)];
+const commands = [new Cat(terminal, fs), new Clear(terminal, fs), new Ls(terminal, fs)];
 
 function sendCommand(event) {
   if (event.keyCode === 13) {
     event.preventDefault();
-    document.getElementById("terminal").innerHTML +=
-      '<p id="terminal-line" style="color: ' +
-      COLOR_INPUT +
-      ';"><strong style="color: #09EB00;"> > </strong>' +
-      document.getElementById("terminal-input").value +
-      "</p>";
+    document.getElementById(
+      "terminal"
+    ).innerHTML += `<p id="terminal-line" style="color: ${COLOR_INPUT};">
+        <strong style="color: #09EB00;"> > </strong>
+        ${document.getElementById("terminal-input").value}
+      </p>`;
     handleInput(document.getElementById("terminal-input").value);
     document.getElementById("terminal-input").value = "";
   }
@@ -43,10 +43,9 @@ function sendMSG(msg) {
 function handleInput(input) {
   var args = input.trim().split(" ");
   let cid = args[0];
-  if (cid == 'help') {
-    commands.forEach(command => {
-      terminal.innerHTML +=
-        `<span id="terminal-line" style="color: ${COLOR_OUTPUT};">
+  if (cid == "help") {
+    commands.forEach((command) => {
+      terminal.innerHTML += `<span id="terminal-line" style="color: ${COLOR_OUTPUT};">
         ${command.id} - ${command.help}
         </span><br>`;
     });
@@ -54,8 +53,8 @@ function handleInput(input) {
   }
   for (let i = 0; i < commands.length; i++) {
     if (commands[i].id == cid) {
-      let output = args[1] == "--help" ? [commands[i].help] : commands[i].execute(args);
-      if (output != false && output != undefined) commands[i].printToHTML(output);
+      let output = commands[i].execute(args);
+      if (output != false && output != undefined) commands[i].print(output);
       break;
     }
     if (i + 1 >= commands.length) {

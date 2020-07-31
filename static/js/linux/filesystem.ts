@@ -1,0 +1,266 @@
+class FileSystem {
+  storage: any;
+  current_dir: any;
+  constructor() {
+    this.storage = JSON.parse(`
+        {
+            "/":
+            {
+                "bin/":
+                {
+                    "test.txt":
+                    {
+                        "content": "test document"
+                    }
+                },
+                "boot/":
+                {
+        
+                },
+                "dev/":
+                {
+        
+                },
+                "etc/":
+                {
+        
+                },
+                "home/":
+                {
+        
+                },
+                "lib/":
+                {
+                    
+                },
+                "lib32/":
+                {
+        
+                },
+                "lib64/":
+                {
+        
+                },
+                "libx32/":
+                {
+        
+                },
+                "media/":
+                {
+        
+                },
+                "mnt/":
+                {
+        
+                },
+                "opt/":
+                {
+        
+                },
+                "proc/":
+                {
+        
+                },
+                "root/":
+                {
+        
+                },
+                "run/":
+                {
+        
+                },
+                "sbin/":
+                {
+        
+                },
+                "snap/":
+                {
+        
+                },
+                "srv/":
+                {
+        
+                },
+                "sys/":
+                {
+        
+                },
+                "tmp/":
+                {
+        
+                },
+                "usr/":
+                {
+                    "local/":
+                    {
+                        "projects/":
+                        {
+                            "project1":
+                            {
+                                "content": "this file is executable",
+                                "executable": true
+                            }
+                        },
+                        "readme.txt":
+                        {
+                            "content": "this is a readme",
+                            "executable": false
+                        }
+                    },
+                    "share/":
+                    {
+        
+                    }
+                },
+                "var/":
+                {
+                    
+                }
+            } 
+        }
+        `);
+    this.current_dir = this.storage["/"];
+  }
+
+  isDirectory(object: any) {
+    return object[object.length - 1] === "/";
+  }
+
+  isFile(object: any) {
+    return object[object.length - 1] !== "/";
+  }
+
+  pathDividerCount(path: string) {
+    var count = 0;
+    for (var i = 0; i < path.length; i++) {
+      if (path.charAt(i) === "/") count++;
+    }
+    return count;
+  }
+
+  getLocationAsPath(location: any, parent = this.storage, path = ""): any {
+    var result;
+    if (location == parent) return path;
+
+    for (let child in parent) {
+      if (this.isDirectory(child))
+        result = this.getLocationAsPath(
+          location,
+          parent[child],
+          path + "" + child
+        );
+      else if (parent[child] == location) result = path + "" + child;
+      if (result) return result;
+    }
+    return false;
+  }
+
+  getPathAsArray(path = this.getLocationAsPath(this.current_dir)) {
+    var result = [];
+    var count = 0;
+    for (var i = 0; i < path.length; i++) {
+      if (path.charAt(i) === "/" || i >= path.length - 1) {
+        var item = "";
+        for (var j = i - count; j <= i; j++) {
+          item += path.charAt(j);
+        }
+        result.push(item);
+        count = 0;
+      } else {
+        count++;
+      }
+    }
+    return result;
+  }
+
+  convertToLegalPath(path = this.getLocationAsPath(this.current_dir)) {
+    //path = path[0][0] == '/' ? path : this.getLocationAsPath(this.current_dir) + path;
+    if (!Array.isArray(path)) path = this.getPathAsArray(path);
+    if (path[0][0] != "/" && path[0][1] != ".") {
+      if (path[0][0] == ".") path.shift();
+      path.unshift(this.getLocationAsPath(this.current_dir));
+    }
+    let i = 0;
+    while (i <= path.length) {
+      if (path[i] == "./") {
+        path = [].concat(path.splice(0, i), path.splice(1, path.length));
+      } else if (path[i] == "../") {
+        path.splice(i - 1, 2);
+        i--;
+      } else i++;
+    }
+    // Check if '/' should be appended
+    if (path.slice(-1)[0].slice(-1) != "/") {
+      let newpath = [...path];
+      newpath[newpath.length - 1] = newpath[newpath.length - 1] + "/";
+      if (
+        (this.getFileByPath(path) == false ||
+          this.getFileByPath(path) === undefined) &&
+        this.getFileByPath(newpath) != false
+      ) {
+        path = newpath;
+      }
+    }
+    return path.join("");
+  }
+
+  /**
+   * Gets parent of given Directory
+   * @param {Given Directory} dir
+   * @param {Current Directory (recursion)} current
+   */
+  dirUP(dir: any, current = this.storage["/"]): any {
+    var result;
+    for (let child in current) {
+      if (current[child] == dir) return current;
+      result = this.dirUP(dir, current[child]);
+
+      if (result !== false) {
+        return result;
+      }
+    }
+    return false;
+  }
+
+  /**
+   *
+   * @param {Directory to search for} dir
+   * @param {Starting Directory} current_dir
+   * @param {Current directory} current
+   * @param {Pointer for current_dir, e.g: "/usr/local/projects/" where pointer = 1 gives "local/"} pointer
+   */
+  getFileByPath(file: any, current_file: string[] = [], current = this.storage, pointer = 0): any {
+    var result;
+    if (!Array.isArray(file)) file = this.getPathAsArray(file);
+    if (
+      file.join("") == current_file.join("") ||
+      file.join("") + "/" == current_file.join("")
+    ) {
+      return current;
+    }
+
+    // Prevent unnecessary recursion
+    if (pointer > this.pathDividerCount(file.join(""))) return false;
+
+    // If current directory contains next directory
+    if (current.hasOwnProperty(file[pointer])) {
+      current_file.push(file[pointer]);
+      result = this.getFileByPath(
+        file,
+        current_file,
+        current[file[pointer]],
+        pointer + 1
+      );
+    }
+    if (result !== false) return result;
+    return false;
+  }
+
+  getDirByName(dir: string): JSON {
+    return this.storage[dir];
+  }
+
+  changeDir(dir: string) {
+    this.current_dir = this.getDirByName(dir);
+  }
+}

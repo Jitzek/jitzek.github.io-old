@@ -6,7 +6,7 @@ async function twInit() {
   let ok =`<span style="color: ${GREEN}">[ OK ]</span>`;
 
   let tw = initializeTW(STARTUP_CONTAINER, "tw");
-  await tw.write("Uncompressing Linux.... ", 'span', 20);
+  /*await tw.write("Uncompressing Linux.... ", 'span', 20);
   await sleep(1500);
   await tw.write("done, ", 'span', 50); 
   await sleep(300);
@@ -29,7 +29,7 @@ async function twInit() {
   tw.container.innerHTML += '<br>';
   await tw.write("Preparing Terminal... please wait.", 'p', 50);
   tw.container.lastChild.scrollIntoView();
-  await sleep(1500);
+  await sleep(1500);*/
 
   // Load Console
   tw.delete();

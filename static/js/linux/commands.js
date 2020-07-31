@@ -1,174 +1,235 @@
-class Command {
-  hasOutput = true;
-  constructor(terminal, id, help) {
-    this.terminal = terminal;
-    this.id = id;
-    this.help = help;
-  }
-
-  execute(args) {
-    throw "Function not implemented";
-  }
-
-  printToHTML(content) {
-    throw "Function not implemented";
-  }
-
-  hasOutput() {
-    throw "Function not implemented";
-  }
-
-  getAdditionalArgs(args) {
-    let a_args = [];
-    for (let i = 1; i < args.length; i++) {
-      if (args[i][0] == "-") {
-        for (let j = 1; j < args[i].length; j++) {
-          a_args.push(args[i][j]);
+// NOTICE
+// Will throw error because FileSystem is undefined
+// As long as the filesystem.js is called before the commands.js it should work
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+function getAdditionalArgs(args) {
+    var a_args = [];
+    for (var i = 1; i < args.length; i++) {
+        if (args[i][0] == "-") {
+            for (var j = 1; j < args[i].length; j++) {
+                a_args.push(args[i][j]);
+            }
         }
-      }
     }
     return a_args;
-  }
-
-  getHelp(args) {
-    if (args[1] != "--help") return false;
-    return this.help;
-  }
 }
-
-class Cat extends Command {
-  constructor(terminal) {
-    super(
-      terminal,
-      "cat",
-      "concatenate files and print on the standard output"
-    );
-  }
-
-  execute(args) {
-    if (args.length < 0) return;
-    if (args.length < 1) return "Not enough arguments";
-    if (this.getHelp(args)) return [this.getHelp(args)];
-    let result;
-    let path = args[1];
-    if (path && path[0] === "-" && args.length > 2) {
-      // Additional Arguments Given
-      path = args[2];
-      // TODO
-    }
-    path = fs.convertToLegalPath(path);
-    result = fs.getFileByPath(path);
-    if (!result) {
-      return `cat: ${path}: No such file or directory`;
-    }
-    if (!fs.isFile(path)) return `cat: ${path}: Is a directory`;
-    return [result.content];
-  }
-
-  printToHTML(content) {
-    if (!(content instanceof Array)) {
-      if (content) sendError(content);
-      return false;
-    }
-    terminal.innerHTML +=
-      '<span id="terminal-line" style="color: ' +
-      COLOR_OUTPUT +
-      ';">' +
-      content[0] +
-      "</span> &nbsp;";
-    return true;
-  }
+function helpCalled(args) {
+    return args[1] == "--help";
 }
-
-class Clear extends Command {
-  constructor() {
-    super(terminal, "clear", "clear the terminal screen");
-  }
-
-  execute(args) {
-    this.hasOutput = true;
-    if (this.getHelp(args)) return [this.getHelp(args)];
-    this.hasOutput = false;
-    terminal.innerHTML = "";
-  }
-
-  printToHTML(content) {
-    if (!(content instanceof Array)) {
-      if (content) sendError(content);
-      return false;
+var OutputType;
+(function (OutputType) {
+    OutputType[OutputType["STDOUT"] = 0] = "STDOUT";
+    OutputType[OutputType["STDERR"] = 1] = "STDERR";
+    OutputType[OutputType["NONE"] = 2] = "NONE";
+})(OutputType || (OutputType = {}));
+var Command = /** @class */ (function () {
+    function Command(terminal, filesystem) {
+        this.COLOR_OUTPUT = "#FFFFFF";
+        this.COLOR_ERR = "rgb(255, 0, 0)";
+        this.terminal = terminal;
+        this.filesystem = filesystem;
     }
-    terminal.innerHTML +=
-      '<span id="terminal-line" style="color: ' +
-      COLOR_OUTPUT +
-      ';">' +
-      content[0] +
-      "</span> &nbsp;";
-    return true;
-  }
-}
-
-class Ls extends Command {
-  constructor(terminal) {
-    super(terminal, "ls", "list directory contents");
-  }
-
-  execute(args) {
-    if (args.length < 0) return;
-    if (this.getHelp(args)) return [this.getHelp(args)];
-    let result;
-    let path = args[1];
-    let a_args = [];
-    if (path && path[0] == "-" && args.length > 2) {
-      a_args = super.getAdditionalArgs(args);
-      path = path[a_args.length + 1];
+    Command.prototype.execute = function (args) {
+        throw new Error("Method not implemented.");
+    };
+    Command.prototype.print = function (output) {
+        // Print generic output
+        if (output.type == OutputType.STDOUT) {
+            this.printGenericMessage(output.output);
+            return true;
+        }
+        if (output.type == OutputType.STDERR) {
+            this.printGenericError(output.output);
+            return true;
+        }
+        return false;
+    };
+    Command.prototype.printGenericMessage = function (msg) {
+        this.terminal.innerHTML +=
+            '<p id="terminal-line" style="color: ' +
+                this.COLOR_OUTPUT +
+                ';">' +
+                msg +
+                "</p>";
+    };
+    Command.prototype.printGenericError = function (errormsg) {
+        this.terminal.innerHTML +=
+            '<p id="terminal-line" style="color: ' +
+                this.COLOR_ERR +
+                ';">' +
+                errormsg +
+                "</p>";
+    };
+    return Command;
+}());
+var Cat = /** @class */ (function (_super) {
+    __extends(Cat, _super);
+    function Cat(terminal, filesystem) {
+        var _this = _super.call(this, terminal, filesystem) || this;
+        _this.id = "cat";
+        _this.help = "concatenate files and print on the standard output";
+        return _this;
     }
-    path = fs.convertToLegalPath(path);
-    if (args.length > 1) {
-      result = fs.getFileByPath(path);
-      if (!result) {
-        return `ls: cannot access '${path}': No such file or directory`;
-      }
+    Cat.prototype.execute = function (args) {
+        // Catch help (--help)
+        if (helpCalled(args))
+            return { output: this.help, type: OutputType.STDOUT };
+        // Catch additional args (-)
+        var a_args = getAdditionalArgs(args);
+        //
+        // @TODO Do something with additional args
+        //
+        // Get given path
+        var path = args[1];
+        for (var i = 1; i < args.length; i++) {
+            path = args[i];
+            if (args[i][0] != "-")
+                break;
+        }
+        // Convert given path to legal path
+        path = this.filesystem.convertToLegalPath(path);
+        var result = this.filesystem.getFileByPath(path);
+        // Handle no file found
+        if (!result)
+            return {
+                output: "cat: " + path + ": No such file or directory",
+                type: OutputType.STDERR
+            };
+        // Handle not a file
+        if (!this.filesystem.isFile(path))
+            return {
+                output: "cat: " + path + ": Is a directory",
+                type: OutputType.STDERR
+            };
+        // Return file
+        return { output: result.content, type: OutputType.STDOUT };
+    };
+    Cat.prototype.print = function (output) {
+        return _super.prototype.print.call(this, output);
+    };
+    return Cat;
+}(Command));
+var Clear = /** @class */ (function (_super) {
+    __extends(Clear, _super);
+    function Clear(terminal, filesystem) {
+        var _this = _super.call(this, terminal, filesystem) || this;
+        _this.id = "clear";
+        _this.help = "clear the terminal screen";
+        return _this;
     }
-    if (!result) result = fs.current_dir;
-    if (fs.isFile(fs.getLocationAsPath(result))) {
-      let file = fs.getPathAsArray(path);
-      terminal.innerHTML +=
-        '<span id="terminal-line" style="color: ' +
-        COLOR_FILE +
-        ';">' +
-        file[file.length - 1] +
-        "</span> &nbsp;";
-      return;
+    Clear.prototype.execute = function (args) {
+        // Catch help (--help)
+        if (helpCalled(args))
+            return { output: this.help, type: OutputType.STDOUT };
+        // Catch additional args (-)
+        var a_args = getAdditionalArgs(args);
+        //
+        // @TODO Do something with additional args
+        //
+        this.terminal.innerHTML = "";
+        return { output: null, type: OutputType.NONE };
+    };
+    Clear.prototype.print = function (output) {
+        return _super.prototype.print.call(this, output);
+    };
+    return Clear;
+}(Command));
+var Ls = /** @class */ (function (_super) {
+    __extends(Ls, _super);
+    function Ls(terminal, filesystem) {
+        var _this = _super.call(this, terminal, filesystem) || this;
+        _this.COLOR_FILE = "#FFFFFF";
+        _this.COLOR_DIR = "#038CFC";
+        _this.CTYPE_FILE = "CTYPE_FILE";
+        _this.CTYPE_DIR = "CTYPE_DIR";
+        _this.id = "ls";
+        _this.help = "list directory contents";
+        return _this;
     }
-    let arr = [];
-    for (let object in result) {
-      arr.push(object);
-    }
-    return arr;
-  }
-
-  printToHTML(content) {
-    if (!(content instanceof Array)) {
-      if (content) sendError(content);
-      return false;
-    }
-    content.forEach((item) => {
-      if (fs.isDirectory(item)) {
-        terminal.innerHTML +=
-          '<span id="terminal-line" style="color: ' +
-          COLOR_DIR +
-          ';">' +
-          item +
-          "</span> &nbsp;";
-      } else if (fs.isFile(item)) {
-        terminal.innerHTML +=
-          '<span id="terminal-line" style="color: ' +
-          COLOR_FILE +
-          ';">' +
-          item +
-          "</span> &nbsp;";
-      }
-    });
-    return true;
-  }
-}
+    Ls.prototype.execute = function (args) {
+        // Catch help (--help)
+        if (helpCalled(args))
+            return { output: this.help, type: OutputType.STDOUT };
+        // Catch additional args (-)
+        var a_args = getAdditionalArgs(args);
+        //
+        // @TODO Do something with additional args
+        //
+        // Get given path
+        var path = args[1];
+        for (var i = 1; i < args.length; i++) {
+            path = args[i];
+            if (args[i][0] != "-")
+                break;
+        }
+        // Convert given path to legal path
+        path = this.filesystem.convertToLegalPath(path);
+        var req = args.length > 1
+            ? this.filesystem.getFileByPath(path)
+            : this.filesystem.current_dir;
+        // Handle no file found
+        if (!req)
+            return {
+                output: "ls: cannot access '" + path + "': No such file or directory",
+                type: OutputType.STDERR
+            };
+        // If requested object is a File
+        if (this.filesystem.isFile(this.filesystem.getLocationAsPath(req))) {
+            var file = this.filesystem.getPathAsArray(path);
+            return { output: file[file.length - 1], type: this.CTYPE_FILE };
+        }
+        return { output: Object.keys(req), type: this.CTYPE_DIR };
+    };
+    Ls.prototype.print = function (output) {
+        var _this = this;
+        if (output.type == OutputType.STDOUT || output.type == OutputType.STDERR)
+            return _super.prototype.print.call(this, output);
+        if (output.type == this.CTYPE_FILE) {
+            this.terminal.innerHTML +=
+                '<span id="terminal-line" style="color: ' +
+                    this.COLOR_FILE +
+                    ';">' +
+                    output.output +
+                    "</span> &nbsp;";
+            return true;
+        }
+        if (output.type == this.CTYPE_DIR) {
+            if (!(output.output instanceof Array)) {
+                return false;
+            }
+            output.output.forEach(function (item) {
+                if (_this.filesystem.isDirectory(item)) {
+                    _this.terminal.innerHTML +=
+                        '<span id="terminal-line" style="color: ' +
+                            _this.COLOR_DIR +
+                            ';">' +
+                            item +
+                            "</span> &nbsp;";
+                }
+                else if (_this.filesystem.isFile(item)) {
+                    _this.terminal.innerHTML +=
+                        '<span id="terminal-line" style="color: ' +
+                            _this.COLOR_FILE +
+                            ';">' +
+                            item +
+                            "</span> &nbsp;";
+                }
+            });
+            return true;
+        }
+        return false;
+    };
+    return Ls;
+}(Command));
