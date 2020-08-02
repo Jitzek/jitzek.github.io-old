@@ -45,7 +45,7 @@ class Command {
   public print(output: any): boolean {
     // Print generic output
     if (output.type == OutputType.STDOUT) {
-      this.printGenericMessage(output.output);
+      this.printGenericOutput(output.output);
       return true;
     }
     if (output.type == OutputType.STDERR) {
@@ -55,7 +55,7 @@ class Command {
     return false;
   }
 
-  private printGenericMessage(msg: string) {
+  private printGenericOutput(msg: string) {
     this.terminal.innerHTML +=
       '<p id="terminal-line" style="color: ' +
       this.COLOR_OUTPUT +
