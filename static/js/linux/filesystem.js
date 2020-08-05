@@ -60,10 +60,59 @@ var FileSystem = /** @class */ (function () {
         return result;
     };
     FileSystem.prototype.convertToLegalPath = function (path) {
-        if (path === void 0) { path = this.getLocationAsPath(this.current_dir); }
-        //path = path[0][0] == '/' ? path : this.getLocationAsPath(this.current_dir) + path;
         if (!Array.isArray(path))
             path = this.getPathAsArray(path);
+        console.log(path);
+        // if given path doesn't start with '/' (not absolute), append the current_dir
+        if (path[0] != '/') {
+            switch (path[0]) {
+                // if given path starts with '../', unshift the parent of the current directory and remove the '../'
+                case "../":
+                    // Remove "../" from array
+                    path.shift();
+                    // unshift parent of current directory
+                    path.unshift(this.getLocationAsPath(this.dirUP(this.current_dir)));
+                    break;
+                // if given path starts with './', unshift the current directory and remove the './'
+                case "./":
+                    path.shift();
+                // if given path starts with anything else, unshift the current directory
+                default:
+                    path.unshift(this.getLocationAsPath(this.current_dir));
+                    break;
+            }
+        }
+        /* TODO: REFACTORING AND COMMENTING */
+        var i = 0;
+        while (i <= path.length) {
+            if (path[i] == "./") {
+                path = [].concat(path.splice(0, i), path.splice(1, path.length));
+            }
+            else if (path[i] == "../") {
+                path.splice(i - 1, 2);
+                i--;
+            }
+            else
+                i++;
+        }
+        // Check if '/' should be appended
+        if (path.slice(-1)[0].slice(-1) != "/") {
+            var newpath = __spreadArrays(path);
+            newpath[newpath.length - 1] = newpath[newpath.length - 1] + "/";
+            if ((this.getFileByPath(path) == false ||
+                this.getFileByPath(path) === undefined) &&
+                this.getFileByPath(newpath) != false) {
+                path = newpath;
+            }
+        }
+        console.log(path);
+        return path.join("");
+    };
+    FileSystem.prototype.convertToLegalPathOld = function (path) {
+        if (path === void 0) { path = this.getLocationAsPath(this.current_dir); }
+        if (!Array.isArray(path))
+            path = this.getPathAsArray(path);
+        console.log(path);
         if (path[0][0] != "/" && path[0][1] != ".") {
             if (path[0][0] == ".")
                 path.shift();
@@ -101,6 +150,8 @@ var FileSystem = /** @class */ (function () {
     FileSystem.prototype.dirUP = function (dir, current) {
         if (current === void 0) { current = this.storage["/"]; }
         var result;
+        if (dir == current)
+            return current;
         for (var child in current) {
             if (current[child] == dir)
                 return current;

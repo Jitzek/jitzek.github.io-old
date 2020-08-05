@@ -125,6 +125,57 @@ class Cat extends Command {
   }
 }
 
+class Cd extends Command {
+  constructor(terminal: HTMLElement, filesystem: FileSystem) {
+    super(terminal, filesystem);
+    this.id = "cd";
+    this.help = "Change the shell working directory.";
+  }
+
+  execute(args: string[]): Object {
+    // Catch help (--help)
+    if (helpCalled(args)) return { output: this.help, type: OutputType.STDOUT };
+
+    // Catch additional args (-)
+    let a_args: string[] = getAdditionalArgs(args);
+
+    //
+    // @TODO Do something with additional args
+    //
+
+    // Get given path
+    let path: string = args[1];
+    for (let i = 1; i < args.length; i++) {
+      path = args[i];
+      if (args[i][0] != "-") break;
+    }
+
+    // Convert given path to legal path
+    path = this.filesystem.convertToLegalPath(path);
+    let result: any = this.filesystem.getFileByPath(path);
+
+    // Handle no file found
+    if (!result)
+      return {
+        output: `cd: ${path}: No such file or directory`,
+        type: OutputType.STDERR,
+      };
+
+    // Handle not a file
+    if (!this.filesystem.isDirectory(path))
+      return {
+        output: `cd: ${path}: Not a directory`,
+        type: OutputType.STDERR,
+      };
+    
+    return {output: null, type: OutputType.NONE};
+  }
+
+  print(output: any): boolean {
+    return super.print(output);
+  }
+}
+
 class Clear extends Command {
   constructor(terminal: HTMLElement, filesystem: FileSystem) {
     super(terminal, filesystem);
