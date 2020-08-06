@@ -8,6 +8,8 @@
     },
     "files": [
         "./filesystem.ts",
-        "./commands.ts"
+        "./commands.ts",
+        "./terminal.ts",
+        "./console.ts"
     ]
 }
