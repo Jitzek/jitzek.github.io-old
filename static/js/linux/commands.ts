@@ -16,7 +16,7 @@ interface Command {
   output: Object;
   fs: Filesystem;
 
-  execute(): void;
+  execute(args: Array<string>, is_privileged: boolean): void;
   print(terminal: Terminal): void;
 }
 
@@ -31,10 +31,12 @@ class Cat implements Command {
     this.fs = fs;
   }
 
-  execute(): void {
-    throw new Error("Method not implemented.");
+  execute(args: Array<string>, is_privileged: boolean): void {
+    // Determine additional parameters ('-', '--')
+   this.fs.getLocation(args[0]);
+
+
   }
   print(terminal: Terminal): void {
-    throw new Error("Method not implemented.");
   }
 }

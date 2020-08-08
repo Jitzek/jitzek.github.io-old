@@ -18,11 +18,11 @@ var Cat = /** @class */ (function () {
         this.man = {};
         this.fs = fs;
     }
-    Cat.prototype.execute = function () {
-        throw new Error("Method not implemented.");
+    Cat.prototype.execute = function (args, is_privileged) {
+        // Determine additional parameters ('-', '--')
+        this.fs.getLocation(args[0]);
     };
     Cat.prototype.print = function (terminal) {
-        throw new Error("Method not implemented.");
     };
     return Cat;
 }());
