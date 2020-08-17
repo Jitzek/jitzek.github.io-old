@@ -28,25 +28,30 @@ var Filesystem = /** @class */ (function () {
     Filesystem.prototype.getLocation = function (path) {
         // Convert string to array (cutting out '/')
         var path_arr = this.convertToLegalPathArray(this.pathAsArray(path));
-        console.log(this.getLocationFromArray(path_arr));
         return this.getLocationFromArray(path_arr);
     };
-    Filesystem.prototype.getLocationFromArray = function (array, current_location) {
+    Filesystem.prototype.isFile = function (location) {
+        return location.type == "file";
+    };
+    Filesystem.prototype.isDirectory = function (location) {
+        return location.type == "directory";
+    };
+    Filesystem.prototype.getLocationFromArray = function (path_array, current_location) {
         if (current_location === void 0) { current_location = this.storage; }
-        if (array.length < 1)
+        if (path_array.length < 1)
             return current_location;
-        if (array[0] == '/')
-            array.shift();
+        if (path_array[0] == '/')
+            path_array.shift();
         var location = null;
         for (var i = 0; i < current_location.content.length; i++) {
-            if (current_location.content[i].name == array[0]) {
+            if (current_location.content[i].name == path_array[0]) {
                 location = current_location.content[i];
                 break;
             }
         }
         if (location == null || location == undefined)
             return false;
-        return this.getLocationFromArray(array.slice(1), location);
+        return this.getLocationFromArray(path_array.slice(1), location);
     };
     Filesystem.prototype.pathAsArray = function (path) {
         var path_arr = [];

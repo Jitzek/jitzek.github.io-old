@@ -35,18 +35,26 @@ class Filesystem {
     return this.getLocationFromArray(path_arr);
   }
 
-  getLocationFromArray(array: Array<string>, current_location = this.storage): any {
-    if (array.length < 1) return current_location;
-    if (array[0] == '/') array.shift();
+  isFile(location: any) {
+    return location.type == "file";
+  }
+  
+  isDirectory(location: any) {
+    return location.type == "directory";
+  }
+
+  getLocationFromArray(path_array: Array<string>, current_location = this.storage): any {
+    if (path_array.length < 1) return current_location;
+    if (path_array[0] == '/') path_array.shift();
     let location: Object = null;
     for (let i = 0; i < current_location.content.length; i++) {
-      if (current_location.content[i].name == array[0]) {
+      if (current_location.content[i].name == path_array[0]) {
         location = current_location.content[i];
         break;
       }
     }
     if (location == null || location == undefined) return false;
-    return this.getLocationFromArray(array.slice(1), location);
+    return this.getLocationFromArray(path_array.slice(1), location);
   }
 
   private pathAsArray(path: string): Array<string> {

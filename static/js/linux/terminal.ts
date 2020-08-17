@@ -19,26 +19,19 @@ class Terminal {
       this.ui_input.value = "";
 
       // Do something with input //
-      let output: Object = this._console.execute(input.split(" "));
-      console.log(output);
+      let result: any = this._console.execute(this, input.split(" "));
+      
+      if (result) this._console.execute(this, ['echo', result]);
       //
       return true;
     } catch (error) {
-      this.sendError(error.message);
+      this.print(error.message);
     }
     return false;
   }
 
-  sendError(errormsg: string): void {
-    this.ui.innerHTML +=
-      '<p id="terminal-line" style="color: ' +
-      COLOR_ERR +
-      ';">' +
-      errormsg +
-      "</p>";
-  }
-
-  sendMSG(msg: string): void {
+  print(msg: string): void {
+    // TODO: Inline color codes recognition
     this.ui.innerHTML +=
       '<p id="terminal-line" style="color: ' +
       COLOR_OUTPUT +

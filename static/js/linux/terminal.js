@@ -15,25 +15,19 @@ var Terminal = /** @class */ (function () {
             this.ui.innerHTML += "<p id=\"terminal-line\" style=\"color: " + COLOR_INPUT + ";\">\n            <strong style=\"color: #09EB00;\"> > </strong>\n            " + input + "\n          </p>";
             this.ui_input.value = "";
             // Do something with input //
-            var output = this._console.execute(input.split(" "));
-            console.log(output);
+            var result = this._console.execute(this, input.split(" "));
+            if (result)
+                this._console.execute(this, ['echo', result]);
             //
             return true;
         }
         catch (error) {
-            this.sendError(error.message);
+            this.print(error.message);
         }
         return false;
     };
-    Terminal.prototype.sendError = function (errormsg) {
-        this.ui.innerHTML +=
-            '<p id="terminal-line" style="color: ' +
-                COLOR_ERR +
-                ';">' +
-                errormsg +
-                "</p>";
-    };
-    Terminal.prototype.sendMSG = function (msg) {
+    Terminal.prototype.print = function (msg) {
+        // TODO: Inline color codes recognition
         this.ui.innerHTML +=
             '<p id="terminal-line" style="color: ' +
                 COLOR_OUTPUT +
