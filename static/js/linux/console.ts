@@ -1,8 +1,13 @@
 class Console {
     filesystem = new Filesystem();
-    commands = new Commands(this.filesystem);
+    commands: Commands;
+    current_command: Command;
 
-    execute(terminal: Terminal, args: Array<string>): string {
+    constructor(terminal: Terminal) {
+        this.commands = new Commands(this.filesystem, terminal);
+    }
+
+    execute(args: Array<string>): string {
         let sudo = args[0] == 'sudo';
         if (sudo) args.shift();
         // Check if the only given input is sudo or whitespace
@@ -15,6 +20,10 @@ class Console {
         }
         let command: any = this.commands.getCommand(args[0]);
         if (!command) return `bash: ${args[0]}: command not found`;
-        return command.execute(terminal.ui, args.slice(1), /* user */);
+        return command.execute(args.slice(1), /* user */);
+    }
+
+    forceStop() {
+        this.current_command.stop();
     }
 }

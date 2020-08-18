@@ -5,11 +5,14 @@ const COLOR_FILE = "#FFFFFF";
 const COLOR_ERR = "rgb(255, 0, 0)";
 
 class Terminal {
-  _console: Console = new Console();
+  _console: Console = new Console(this);
   ui: HTMLElement = document.getElementById("terminal");
   ui_input: any = document.getElementById("terminal-input");
 
-  handleUserInput(): boolean {
+  tline_start = `<p id="terminal-line" style="color: ${COLOR_OUTPUT};">`
+  tline_end = "</p>";
+
+  async handleUserInput() {
     try {
       let input: string = this.ui_input.value;
       this.ui.innerHTML += `<p id="terminal-line" style="color: ${COLOR_INPUT};">
@@ -19,15 +22,15 @@ class Terminal {
       this.ui_input.value = "";
 
       // Do something with input //
-      let result: any = this._console.execute(this, input.split(" "));
-      
-      if (result) this._console.execute(this, ['echo', result]);
+      let result: any = this._console.execute(input.split(" "));
       //
-      return true;
     } catch (error) {
       this.print(error.message);
     }
-    return false;
+  }
+
+  async stopExecution() {
+    this._console.forceStop();
   }
 
   print(msg: string): void {

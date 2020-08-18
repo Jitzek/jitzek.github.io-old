@@ -1,9 +1,9 @@
 var Console = /** @class */ (function () {
-    function Console() {
+    function Console(terminal) {
         this.filesystem = new Filesystem();
-        this.commands = new Commands(this.filesystem);
+        this.commands = new Commands(this.filesystem, terminal);
     }
-    Console.prototype.execute = function (terminal, args) {
+    Console.prototype.execute = function (args) {
         var sudo = args[0] == 'sudo';
         if (sudo)
             args.shift();
@@ -18,7 +18,10 @@ var Console = /** @class */ (function () {
         var command = this.commands.getCommand(args[0]);
         if (!command)
             return "bash: " + args[0] + ": command not found";
-        return command.execute(terminal.ui, args.slice(1));
+        return command.execute(args.slice(1));
+    };
+    Console.prototype.forceStop = function () {
+        this.current_command.stop();
     };
     return Console;
 }());
