@@ -1,7 +1,10 @@
+function removeWhiteSpaceEntries(array) {
+    return array.filter(function (str) { return /\S/.test(str); });
+}
 var Commands = /** @class */ (function () {
     function Commands(filesystem, terminal) {
         this.commands = [];
-        this.commands = [new Cat(filesystem, terminal), new Clear(filesystem, terminal), new Echo(filesystem, terminal)];
+        this.commands = [new Cat(filesystem, terminal), new Clear(filesystem, terminal), new Echo(filesystem, terminal), new Sudo(filesystem, terminal)];
     }
     Commands.prototype.getCommand = function (commandid) {
         for (var i = 0; i < this.commands.length; i++)
@@ -13,16 +16,23 @@ var Commands = /** @class */ (function () {
 }());
 var Cat = /** @class */ (function () {
     function Cat(fs, terminal) {
-        this.forcestop = false;
         this.id = 'cat';
         this.man = {};
+        this.forcestop = false;
+        this.sub_command = null;
         this.fs = fs;
         this.terminal = terminal;
     }
     Cat.prototype.execute = function (args, user, print) {
-        // Determine additional parameters ('-', '--')
         if (user === void 0) { user = null; }
         if (print === void 0) { print = true; }
+        if (removeWhiteSpaceEntries(args).length < 1) {
+            // Display help
+            if (print)
+                this.print('cat: help placeholder text');
+            return;
+        }
+        // Determine additional parameters ('-', '--')
         //
         // Get location of file
         var location = this.fs.getLocation(args[0]);
@@ -44,14 +54,16 @@ var Cat = /** @class */ (function () {
     };
     Cat.prototype.stop = function () {
         this.forcestop = true;
+        this.sub_command.stop();
     };
     return Cat;
 }());
 var Clear = /** @class */ (function () {
     function Clear(fs, terminal) {
-        this.forcestop = false;
         this.id = 'clear';
         this.man = {};
+        this.forcestop = false;
+        this.sub_command = null;
         this.fs = fs;
         this.terminal = terminal;
     }
@@ -77,14 +89,15 @@ var Clear = /** @class */ (function () {
     };
     Clear.prototype.stop = function () {
         this.forcestop = true;
+        this.sub_command.stop();
     };
     return Clear;
 }());
 var Echo = /** @class */ (function () {
     function Echo(fs, terminal) {
-        this.forcestop = false;
         this.id = 'echo';
-        this.man = {};
+        this.forcestop = false;
+        this.sub_command = null;
         this.fs = fs;
         this.terminal = terminal;
     }
@@ -104,6 +117,48 @@ var Echo = /** @class */ (function () {
     };
     Echo.prototype.stop = function () {
         this.forcestop = true;
+        this.sub_command.stop();
     };
     return Echo;
+}());
+var Sudo = /** @class */ (function () {
+    function Sudo(fs, terminal) {
+        this.id = 'sudo';
+        this.man = {};
+        this.sub_command = null;
+        this.fs = fs;
+        this.terminal = terminal;
+    }
+    Sudo.prototype.execute = function (args, user, print) {
+        if (print === void 0) { print = true; }
+        if (removeWhiteSpaceEntries(args).length < 1) {
+            // Display help
+            if (print)
+                this.print('sudo: help placeholder text');
+            return;
+        }
+        // Do some password checks
+        // Execute command as root user
+        var command = new Commands(this.fs, this.terminal).getCommand(args[0]);
+        if (!command) {
+            if (print)
+                this.print("sudo: " + args[0] + ": command not found");
+        }
+        if (command)
+            this.sub_command = command;
+        var result = this.sub_command.execute(args.slice(1), user = null /* root */, print = true);
+        return result;
+    };
+    Sudo.prototype.print = function (output) {
+        if (this.sub_command != undefined && this.sub_command != null) {
+            this.sub_command.print(output);
+            return;
+        }
+        this.terminal.ui.innerHTML += this.terminal.tline_start + " " + output + " " + this.terminal.tline_end;
+    };
+    Sudo.prototype.stop = function () {
+        this.forcestop = true;
+        this.sub_command.stop();
+    };
+    return Sudo;
 }());

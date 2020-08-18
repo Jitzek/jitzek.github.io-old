@@ -29,7 +29,11 @@ class Terminal {
     }
   }
 
-  async stopExecution() {
+  async softStopExecution() {
+    //
+  }
+
+  async forceStopExecution() {
     this._console.forceStop();
   }
 

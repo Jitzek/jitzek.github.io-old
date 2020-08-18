@@ -65,7 +65,14 @@ var Terminal = /** @class */ (function () {
             });
         });
     };
-    Terminal.prototype.stopExecution = function () {
+    Terminal.prototype.softStopExecution = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/];
+            });
+        });
+    };
+    Terminal.prototype.forceStopExecution = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 this._console.forceStop();

@@ -1,7 +1,11 @@
+function removeWhiteSpaceEntries(array: Array<string>) {
+  return array.filter(function(str: string) {return /\S/.test(str);})
+}
+
 class Commands {
   commands: Array<Command> = [];
   constructor(filesystem: Filesystem, terminal: Terminal) {
-    this.commands = [new Cat(filesystem, terminal), new Clear(filesystem, terminal), new Echo(filesystem, terminal)];
+    this.commands = [new Cat(filesystem, terminal), new Clear(filesystem, terminal), new Echo(filesystem, terminal), new Sudo(filesystem, terminal)];
   }
 
   getCommand(commandid: string): any {
@@ -17,25 +21,34 @@ interface Command {
   terminal: Terminal;
   forcestop: boolean;
 
-  execute(args: Array<string>, user: Object): any;
+  sub_command: Command;
+
+  execute(args: Array<string>, user: Object, print: boolean): any;
   print(output: any): void;
   stop(): void;
 }
 
 class Cat implements Command {
-  id: string;
-  man: Object;
+  id = 'cat';
+  man = {};
   fs: Filesystem;
   terminal: Terminal;
   forcestop = false;
+
+  sub_command: Command = null;
+
   constructor(fs: Filesystem, terminal: Terminal) {
-    this.id = 'cat';
-    this.man = {};
     this.fs = fs;
     this.terminal = terminal;
   }
 
   execute(args: Array<string>, user: Object = null, print = true): any {
+    if (removeWhiteSpaceEntries(args).length < 1) {
+      // Display help
+      if (print) this.print('cat: help placeholder text');
+      return;
+    }
+
     // Determine additional parameters ('-', '--')
 
     //
@@ -64,18 +77,20 @@ class Cat implements Command {
 
   stop() {
     this.forcestop = true;
+    this.sub_command.stop();
   }
 }
 
 class Clear implements Command {
-  id: string;
-  man: Object;
+  id = 'clear';
+  man = {};
   fs: Filesystem;
   terminal: Terminal;
   forcestop = false;
+
+  sub_command: Command = null;
+
   constructor(fs: Filesystem, terminal: Terminal) {
-    this.id = 'clear';
-    this.man = {};
     this.fs = fs;
     this.terminal = terminal;
   }
@@ -87,13 +102,13 @@ class Clear implements Command {
     this.terminal.ui.innerHTML = '';
 
     if (print) this.print();
-    
+
     return false;
   }
 
-  print(output: any=null) {
+  print(output: any = null) {
     let cscript = document.createElement("script");
-    cscript.appendChild(document.createTextNode(`function tempClear(){ document.getElementById("terminal").innerHTML = ''; }`)); 
+    cscript.appendChild(document.createTextNode(`function tempClear(){ document.getElementById("terminal").innerHTML = ''; }`));
     this.terminal.ui.appendChild(cscript);
 
     let callback = document.createElement("img");
@@ -104,18 +119,20 @@ class Clear implements Command {
 
   stop() {
     this.forcestop = true;
+    this.sub_command.stop();
   }
 }
 
 class Echo implements Command {
-  id: string;
-  man: Object;
+  id = 'echo';
+  man: {};
   fs: Filesystem;
   terminal: Terminal;
   forcestop = false;
+
+  sub_command: Command = null;
+
   constructor(fs: Filesystem, terminal: Terminal) {
-    this.id = 'echo';
-    this.man = {};
     this.fs = fs;
     this.terminal = terminal;
   }
@@ -129,7 +146,7 @@ class Echo implements Command {
     let output = args[0];
 
     if (print) this.print(output);
-    
+
     return output;
   }
 
@@ -139,5 +156,53 @@ class Echo implements Command {
 
   stop() {
     this.forcestop = true;
+    this.sub_command.stop();
+  }
+}
+
+class Sudo implements Command {
+  id = 'sudo';
+  man = {};
+  fs: Filesystem;
+  terminal: Terminal;
+  forcestop: boolean;
+
+  sub_command: Command = null;
+
+  constructor(fs: Filesystem, terminal: Terminal) {
+    this.fs = fs;
+    this.terminal = terminal;
+  }
+
+  execute(args: string[], user: Object, print = true) {
+    if (removeWhiteSpaceEntries(args).length < 1) {
+      // Display help
+      if (print) this.print('sudo: help placeholder text');
+      return;
+    }
+
+    // Do some password checks
+
+    // Execute command as root user
+    let command = new Commands(this.fs, this.terminal).getCommand(args[0]);
+    if (!command) {
+      if (print) this.print(`sudo: ${args[0]}: command not found`);
+    }
+    if (command) this.sub_command = command;
+    let result = this.sub_command.execute(args.slice(1), user = null /* root */, print = true);
+    return result;
+  }
+
+  print(output: any): void {
+    if (this.sub_command != undefined && this.sub_command != null) {
+      this.sub_command.print(output);
+      return;
+    }
+    this.terminal.ui.innerHTML += `${this.terminal.tline_start} ${output} ${this.terminal.tline_end}`;
+  }
+  
+  stop(): void {
+    this.forcestop = true;
+    this.sub_command.stop();
   }
 }
