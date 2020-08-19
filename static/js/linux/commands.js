@@ -38,7 +38,7 @@ var Cat = /** @class */ (function () {
         var location = this.fs.getLocation(args[0]);
         // Check if location is file
         if (!this.fs.isFile(location)) {
-            var output_1 = "cat: cannot open " + location.name;
+            var output_1 = "cat: cannot open " + args[0];
             if (print)
                 this.print(output_1);
             return output_1;
@@ -73,8 +73,7 @@ var Clear = /** @class */ (function () {
         if (print === void 0) { print = false; }
         //
         this.terminal.ui.innerHTML = '';
-        if (print)
-            this.print();
+        //if (print) this.print();
         return false;
     };
     Clear.prototype.print = function (output) {

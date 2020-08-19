@@ -58,7 +58,7 @@ class Cat implements Command {
 
     // Check if location is file
     if (!this.fs.isFile(location)) {
-      let output = `cat: cannot open ${location.name}`;
+      let output = `cat: cannot open ${args[0]}`;
       if (print) this.print(output);
       return output;
     }
@@ -101,7 +101,7 @@ class Clear implements Command {
     //
     this.terminal.ui.innerHTML = '';
 
-    if (print) this.print();
+    //if (print) this.print();
 
     return false;
   }
