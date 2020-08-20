@@ -1,235 +1,215 @@
-// NOTICE
-// Will throw error because FileSystem is undefined
-// As long as the filesystem.js is called before the commands.js it should work
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-function getAdditionalArgs(args) {
-    var a_args = [];
-    for (var i = 1; i < args.length; i++) {
-        if (args[i][0] == "-") {
-            for (var j = 1; j < args[i].length; j++) {
-                a_args.push(args[i][j]);
-            }
-        }
-    }
-    return a_args;
+function removeWhiteSpaceEntries(array) {
+    return array.filter(function (str) { return /\S/.test(str); });
 }
-function helpCalled(args) {
-    return args[1] == "--help";
-}
-var OutputType;
-(function (OutputType) {
-    OutputType[OutputType["STDOUT"] = 0] = "STDOUT";
-    OutputType[OutputType["STDERR"] = 1] = "STDERR";
-    OutputType[OutputType["NONE"] = 2] = "NONE";
-})(OutputType || (OutputType = {}));
-var Command = /** @class */ (function () {
-    function Command(terminal, filesystem) {
-        this.COLOR_OUTPUT = "#FFFFFF";
-        this.COLOR_ERR = "rgb(255, 0, 0)";
-        this.terminal = terminal;
-        this.filesystem = filesystem;
+var Commands = /** @class */ (function () {
+    function Commands(filesystem, terminal) {
+        this.commands = [];
+        this.commands = [new Cat(filesystem, terminal), new Clear(filesystem, terminal), new Echo(filesystem, terminal), new Help(filesystem, terminal), new Sudo(filesystem, terminal)];
     }
-    Command.prototype.execute = function (args) {
-        throw new Error("Method not implemented.");
-    };
-    Command.prototype.print = function (output) {
-        // Print generic output
-        if (output.type == OutputType.STDOUT) {
-            this.printGenericMessage(output.output);
-            return true;
-        }
-        if (output.type == OutputType.STDERR) {
-            this.printGenericError(output.output);
-            return true;
-        }
+    Commands.prototype.getCommand = function (commandid) {
+        for (var i = 0; i < this.commands.length; i++)
+            if (this.commands[i].id == commandid)
+                return this.commands[i];
         return false;
     };
-    Command.prototype.printGenericMessage = function (msg) {
-        this.terminal.innerHTML +=
-            '<p id="terminal-line" style="color: ' +
-                this.COLOR_OUTPUT +
-                ';">' +
-                msg +
-                "</p>";
-    };
-    Command.prototype.printGenericError = function (errormsg) {
-        this.terminal.innerHTML +=
-            '<p id="terminal-line" style="color: ' +
-                this.COLOR_ERR +
-                ';">' +
-                errormsg +
-                "</p>";
-    };
-    return Command;
+    return Commands;
 }());
-var Cat = /** @class */ (function (_super) {
-    __extends(Cat, _super);
-    function Cat(terminal, filesystem) {
-        var _this = _super.call(this, terminal, filesystem) || this;
-        _this.id = "cat";
-        _this.help = "concatenate files and print on the standard output";
-        return _this;
+var Cat = /** @class */ (function () {
+    function Cat(fs, terminal) {
+        this.id = 'cat';
+        this.help = 'concatenate files and print on the standard output';
+        this.man = {};
+        this.forcestop = false;
+        this.fs = fs;
+        this.terminal = terminal;
     }
-    Cat.prototype.execute = function (args) {
-        // Catch help (--help)
-        if (helpCalled(args))
-            return { output: this.help, type: OutputType.STDOUT };
-        // Catch additional args (-)
-        var a_args = getAdditionalArgs(args);
-        //
-        // @TODO Do something with additional args
-        //
-        // Get given path
-        var path = args[1];
-        for (var i = 1; i < args.length; i++) {
-            path = args[i];
-            if (args[i][0] != "-")
-                break;
+    Cat.prototype.execute = function (args, user, print) {
+        if (user === void 0) { user = null; }
+        if (print === void 0) { print = true; }
+        if (removeWhiteSpaceEntries(args).length < 1) {
+            // Display help
+            if (print)
+                this.print('cat: help placeholder text');
+            return;
         }
-        // Convert given path to legal path
-        path = this.filesystem.convertToLegalPath(path);
-        var result = this.filesystem.getFileByPath(path);
-        // Handle no file found
-        if (!result)
-            return {
-                output: "cat: " + path + ": No such file or directory",
-                type: OutputType.STDERR
-            };
-        // Handle not a file
-        if (!this.filesystem.isFile(path))
-            return {
-                output: "cat: " + path + ": Is a directory",
-                type: OutputType.STDERR
-            };
-        // Return file
-        return { output: result.content, type: OutputType.STDOUT };
+        // Determine additional parameters ('-', '--')
+        //
+        // Get location of file
+        var location = this.fs.getLocation(args[0]);
+        // Check if location is file
+        if (!this.fs.isFile(location)) {
+            var output_1 = "cat: cannot open " + args[0];
+            if (print)
+                this.print(output_1);
+            return output_1;
+        }
+        var output = location.content;
+        if (print)
+            this.print(output);
+        // Output is content of file
+        return output;
     };
     Cat.prototype.print = function (output) {
-        return _super.prototype.print.call(this, output);
+        this.terminal.ui.innerHTML += this.terminal.tline_start + " " + output + " " + this.terminal.tline_end;
+    };
+    Cat.prototype.stop = function () {
+        this.forcestop = true;
     };
     return Cat;
-}(Command));
-var Clear = /** @class */ (function (_super) {
-    __extends(Clear, _super);
-    function Clear(terminal, filesystem) {
-        var _this = _super.call(this, terminal, filesystem) || this;
-        _this.id = "clear";
-        _this.help = "clear the terminal screen";
-        return _this;
+}());
+var Clear = /** @class */ (function () {
+    function Clear(fs, terminal) {
+        this.id = 'clear';
+        this.help = 'clear the terminal screen';
+        this.man = {};
+        this.forcestop = false;
+        this.fs = fs;
+        this.terminal = terminal;
     }
-    Clear.prototype.execute = function (args) {
-        // Catch help (--help)
-        if (helpCalled(args))
-            return { output: this.help, type: OutputType.STDOUT };
-        // Catch additional args (-)
-        var a_args = getAdditionalArgs(args);
+    Clear.prototype.execute = function (args, user, print) {
+        // Determine additional parameters ('-', '--')
+        if (user === void 0) { user = null; }
+        if (print === void 0) { print = false; }
         //
-        // @TODO Do something with additional args
-        //
-        this.terminal.innerHTML = "";
-        return { output: null, type: OutputType.NONE };
-    };
-    Clear.prototype.print = function (output) {
-        return _super.prototype.print.call(this, output);
-    };
-    return Clear;
-}(Command));
-var Ls = /** @class */ (function (_super) {
-    __extends(Ls, _super);
-    function Ls(terminal, filesystem) {
-        var _this = _super.call(this, terminal, filesystem) || this;
-        _this.COLOR_FILE = "#FFFFFF";
-        _this.COLOR_DIR = "#038CFC";
-        _this.CTYPE_FILE = "CTYPE_FILE";
-        _this.CTYPE_DIR = "CTYPE_DIR";
-        _this.id = "ls";
-        _this.help = "list directory contents";
-        return _this;
-    }
-    Ls.prototype.execute = function (args) {
-        // Catch help (--help)
-        if (helpCalled(args))
-            return { output: this.help, type: OutputType.STDOUT };
-        // Catch additional args (-)
-        var a_args = getAdditionalArgs(args);
-        //
-        // @TODO Do something with additional args
-        //
-        // Get given path
-        var path = args[1];
-        for (var i = 1; i < args.length; i++) {
-            path = args[i];
-            if (args[i][0] != "-")
-                break;
-        }
-        // Convert given path to legal path
-        path = this.filesystem.convertToLegalPath(path);
-        var req = args.length > 1
-            ? this.filesystem.getFileByPath(path)
-            : this.filesystem.current_dir;
-        // Handle no file found
-        if (!req)
-            return {
-                output: "ls: cannot access '" + path + "': No such file or directory",
-                type: OutputType.STDERR
-            };
-        // If requested object is a File
-        if (this.filesystem.isFile(this.filesystem.getLocationAsPath(req))) {
-            var file = this.filesystem.getPathAsArray(path);
-            return { output: file[file.length - 1], type: this.CTYPE_FILE };
-        }
-        return { output: Object.keys(req), type: this.CTYPE_DIR };
-    };
-    Ls.prototype.print = function (output) {
-        var _this = this;
-        if (output.type == OutputType.STDOUT || output.type == OutputType.STDERR)
-            return _super.prototype.print.call(this, output);
-        if (output.type == this.CTYPE_FILE) {
-            this.terminal.innerHTML +=
-                '<span id="terminal-line" style="color: ' +
-                    this.COLOR_FILE +
-                    ';">' +
-                    output.output +
-                    "</span> &nbsp;";
-            return true;
-        }
-        if (output.type == this.CTYPE_DIR) {
-            if (!(output.output instanceof Array)) {
-                return false;
-            }
-            output.output.forEach(function (item) {
-                if (_this.filesystem.isDirectory(item)) {
-                    _this.terminal.innerHTML +=
-                        '<span id="terminal-line" style="color: ' +
-                            _this.COLOR_DIR +
-                            ';">' +
-                            item +
-                            "</span> &nbsp;";
-                }
-                else if (_this.filesystem.isFile(item)) {
-                    _this.terminal.innerHTML +=
-                        '<span id="terminal-line" style="color: ' +
-                            _this.COLOR_FILE +
-                            ';">' +
-                            item +
-                            "</span> &nbsp;";
-                }
-            });
-            return true;
-        }
+        this.terminal.ui.innerHTML = '';
+        //if (print) this.print();
         return false;
     };
-    return Ls;
-}(Command));
+    Clear.prototype.print = function (output) {
+        if (output === void 0) { output = null; }
+        var cscript = document.createElement("script");
+        cscript.appendChild(document.createTextNode("function tempClear(){ document.getElementById(\"terminal\").innerHTML = ''; }"));
+        this.terminal.ui.appendChild(cscript);
+        var callback = document.createElement("img");
+        callback.setAttribute("src", "");
+        callback.setAttribute("onerror", "tempClear()");
+        this.terminal.ui.appendChild(callback);
+    };
+    Clear.prototype.stop = function () {
+        this.forcestop = true;
+    };
+    return Clear;
+}());
+var Echo = /** @class */ (function () {
+    function Echo(fs, terminal) {
+        this.id = 'echo';
+        this.help = 'write arguments to the standard output.';
+        this.forcestop = false;
+        this.fs = fs;
+        this.terminal = terminal;
+    }
+    /// TODO: -e escape characters
+    Echo.prototype.execute = function (args, user, print) {
+        // Determine additional parameters ('-', '--')
+        if (user === void 0) { user = null; }
+        if (print === void 0) { print = true; }
+        //
+        var output = args[0];
+        if (print)
+            this.print(output);
+        return output;
+    };
+    Echo.prototype.print = function (output) {
+        this.terminal.ui.innerHTML += this.terminal.tline_start + " " + output + " " + this.terminal.tline_end;
+    };
+    Echo.prototype.stop = function () {
+        this.forcestop = true;
+    };
+    return Echo;
+}());
+var Help = /** @class */ (function () {
+    function Help(fs, terminal) {
+        this.id = 'help';
+        this.help = 'display info of supported commands';
+        this.man = {};
+        this.forcestop = false;
+        this.fs = fs;
+        this.terminal = terminal;
+    }
+    Help.prototype.execute = function (args, user, print) {
+        if (print === void 0) { print = true; }
+        if (args.length == 0) {
+            var output_2 = [];
+            new Commands(this.fs, this.terminal).commands.forEach(function (command) {
+                output_2.push(command.id + " - " + command.help);
+            });
+            if (print)
+                this.print(output_2);
+            return output_2;
+        }
+        if (args.length > 2) {
+            var output_3 = 'help: too many arguments';
+            if (print)
+                this.print(output_3);
+            return output_3;
+        }
+        // Catch argument as command
+        var command = new Commands(this.fs, this.terminal).getCommand(args[0]);
+        var output;
+        if (!command)
+            output = "help: '" + args[0] + "' is not a supported command";
+        else
+            output = command.id + " - " + command.help;
+        if (print)
+            this.print(output);
+        return output;
+    };
+    Help.prototype.print = function (output) {
+        var _this = this;
+        if (output instanceof Array) {
+            this.terminal.ui.innerHTML += this.terminal.tline_start;
+            output.forEach(function (element) {
+                _this.terminal.ui.innerHTML += "<span>" + element + "</span><br>";
+            });
+            this.terminal.ui.innerHTML += this.terminal.tline_end;
+            return;
+        }
+        this.terminal.ui.innerHTML += this.terminal.tline_start + " " + output + " " + this.terminal.tline_end;
+    };
+    Help.prototype.stop = function () {
+        throw new Error("Method not implemented.");
+    };
+    return Help;
+}());
+var Sudo = /** @class */ (function () {
+    function Sudo(fs, terminal) {
+        this.id = 'sudo';
+        this.help = 'execute a command as another user';
+        this.man = {};
+        this.sub_command = null;
+        this.fs = fs;
+        this.terminal = terminal;
+    }
+    Sudo.prototype.execute = function (args, user, print) {
+        if (print === void 0) { print = true; }
+        if (removeWhiteSpaceEntries(args).length < 1) {
+            // Display help
+            if (print)
+                this.print('sudo: help placeholder text');
+            return;
+        }
+        // Do some password checks
+        // Execute command as root user
+        var command = new Commands(this.fs, this.terminal).getCommand(args[0]);
+        if (!command) {
+            if (print)
+                this.print("sudo: " + args[0] + ": command not found");
+        }
+        if (command)
+            this.sub_command = command;
+        var result = this.sub_command.execute(args.slice(1), user = null /* root */, print = true);
+        return result;
+    };
+    Sudo.prototype.print = function (output) {
+        if (this.sub_command != undefined && this.sub_command != null) {
+            this.sub_command.print(output);
+            return;
+        }
+        this.terminal.ui.innerHTML += this.terminal.tline_start + " " + output + " " + this.terminal.tline_end;
+    };
+    Sudo.prototype.stop = function () {
+        this.forcestop = true;
+        this.sub_command.stop();
+    };
+    return Sudo;
+}());

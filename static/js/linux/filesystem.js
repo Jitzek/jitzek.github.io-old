@@ -1,202 +1,117 @@
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
-var FileSystem = /** @class */ (function () {
-    function FileSystem() {
-        this.storage = JSON.parse("\n        {\n            \"/\":\n            {\n                \"bin/\":\n                {\n                    \"test.txt\":\n                    {\n                        \"content\": \"test document\"\n                    }\n                },\n                \"boot/\":\n                {\n        \n                },\n                \"dev/\":\n                {\n        \n                },\n                \"etc/\":\n                {\n        \n                },\n                \"home/\":\n                {\n        \n                },\n                \"lib/\":\n                {\n                    \n                },\n                \"lib32/\":\n                {\n        \n                },\n                \"lib64/\":\n                {\n        \n                },\n                \"libx32/\":\n                {\n        \n                },\n                \"media/\":\n                {\n        \n                },\n                \"mnt/\":\n                {\n        \n                },\n                \"opt/\":\n                {\n        \n                },\n                \"proc/\":\n                {\n        \n                },\n                \"root/\":\n                {\n        \n                },\n                \"run/\":\n                {\n        \n                },\n                \"sbin/\":\n                {\n        \n                },\n                \"snap/\":\n                {\n        \n                },\n                \"srv/\":\n                {\n        \n                },\n                \"sys/\":\n                {\n        \n                },\n                \"tmp/\":\n                {\n        \n                },\n                \"usr/\":\n                {\n                    \"local/\":\n                    {\n                        \"projects/\":\n                        {\n                            \"project1\":\n                            {\n                                \"content\": \"this file is executable\",\n                                \"executable\": true\n                            }\n                        },\n                        \"readme.txt\":\n                        {\n                            \"content\": \"this is a readme\",\n                            \"executable\": false\n                        }\n                    },\n                    \"share/\":\n                    {\n        \n                    }\n                },\n                \"var/\":\n                {\n                    \n                }\n            } \n        }\n        ");
-        this.current_dir = this.storage["/"];
+var Filesystem = /** @class */ (function () {
+    function Filesystem() {
+        this.storage = {
+            name: "/",
+            type: "directory",
+            content: [
+                {
+                    name: "bin",
+                    type: "directory",
+                    content: [
+                        {
+                            name: "test.txt",
+                            type: "file",
+                            executable: false,
+                            content: "this is a text file"
+                        },
+                    ]
+                },
+                {
+                    name: "boot",
+                    type: "directory",
+                    content: []
+                },
+            ]
+        };
+        this.current_dir = this.storage;
     }
-    FileSystem.prototype.isDirectory = function (object) {
-        return object[object.length - 1] === "/";
+    Filesystem.prototype.getLocation = function (path) {
+        // Convert string to array (cutting out '/')
+        var path_arr = this.convertToLegalPathArray(this.pathAsArray(path));
+        return this.getLocationFromArray(path_arr);
     };
-    FileSystem.prototype.isFile = function (object) {
-        return object[object.length - 1] !== "/";
+    Filesystem.prototype.isFile = function (location) {
+        return location.type == "file";
     };
-    FileSystem.prototype.pathDividerCount = function (path) {
-        var count = 0;
+    Filesystem.prototype.isDirectory = function (location) {
+        return location.type == "directory";
+    };
+    Filesystem.prototype.getLocationFromArray = function (path_array, current_location) {
+        if (current_location === void 0) { current_location = this.storage; }
+        if (path_array.length < 1)
+            return current_location;
+        if (path_array[0] == '/')
+            path_array.shift();
+        var location = null;
+        for (var i = 0; i < current_location.content.length; i++) {
+            if (current_location.content[i].name == path_array[0]) {
+                location = current_location.content[i];
+                break;
+            }
+        }
+        if (location == null || location == undefined)
+            return false;
+        return this.getLocationFromArray(path_array.slice(1), location);
+    };
+    Filesystem.prototype.pathAsArray = function (path) {
+        var path_arr = [];
+        var pointer = 0;
         for (var i = 0; i < path.length; i++) {
-            if (path.charAt(i) === "/")
-                count++;
+            if (path[i] == "/") {
+                if (path_arr[pointer] == undefined)
+                    path_arr.push("/");
+                pointer++;
+                continue;
+            }
+            if (path_arr[pointer] == undefined)
+                path_arr.push(path[i]);
+            else
+                path_arr[pointer] += path[i];
         }
-        return count;
+        return path_arr;
     };
-    FileSystem.prototype.getLocationAsPath = function (location, parent, path) {
-        if (parent === void 0) { parent = this.storage; }
-        if (path === void 0) { path = ""; }
-        var result;
-        if (location == parent)
-            return path;
-        for (var child in parent) {
-            if (this.isDirectory(child))
-                result = this.getLocationAsPath(location, parent[child], path + "" + child);
-            else if (parent[child] == location)
-                result = path + "" + child;
-            if (result)
-                return result;
+    Filesystem.prototype.convertToLegalPathArray = function (path) {
+        if (path[0][0] == ".") {
+            var pre_path = path[0] == ".."
+                ? this.locationAsArray(this.getParentOfLocation(this.current_dir))
+                : this.locationAsArray(this.current_dir);
+            path = pre_path.concat(path.slice(1));
         }
-        return false;
+        for (var i = 0; i < path.length; i++) {
+            if (path[i] == ".")
+                path.splice(i, 1);
+            else if (path[i] == "..")
+                path.splice(i, -2);
+        }
+        if (path[0] != "/")
+            path.unshift("/");
+        return path;
     };
-    FileSystem.prototype.getPathAsArray = function (path) {
-        if (path === void 0) { path = this.getLocationAsPath(this.current_dir); }
+    Filesystem.prototype.locationAsArray = function (location) {
         var result = [];
-        var count = 0;
-        for (var i = 0; i < path.length; i++) {
-            if (path.charAt(i) === "/" || i >= path.length - 1) {
-                var item = "";
-                for (var j = i - count; j <= i; j++) {
-                    item += path.charAt(j);
-                }
-                result.push(item);
-                count = 0;
-            }
-            else {
-                count++;
-            }
+        while (true) {
+            var parent_1 = this.getParentOfLocation(location);
+            result.push(parent_1.name);
+            if (parent_1 == this.storage)
+                break;
         }
+        result.reverse();
+        if (location != this.storage)
+            result.push(location.name);
         return result;
     };
-    FileSystem.prototype.convertToLegalPath = function (path) {
-        if (!Array.isArray(path))
-            path = this.getPathAsArray(path);
-        console.log(path);
-        // if given path doesn't start with '/' (not absolute), append the current_dir
-        if (path[0] != '/') {
-            switch (path[0]) {
-                // if given path starts with '../', unshift the parent of the current directory and remove the '../'
-                case "../":
-                    // Remove "../" from array
-                    path.shift();
-                    // unshift parent of current directory
-                    path.unshift(this.getLocationAsPath(this.dirUP(this.current_dir)));
-                    break;
-                // if given path starts with './', unshift the current directory and remove the './'
-                case "./":
-                    path.shift();
-                // if given path starts with anything else, unshift the current directory
-                default:
-                    path.unshift(this.getLocationAsPath(this.current_dir));
-                    break;
-            }
-        }
-        /* TODO: REFACTORING AND COMMENTING */
-        var i = 0;
-        while (i <= path.length) {
-            if (path[i] == "./") {
-                path = [].concat(path.splice(0, i), path.splice(1, path.length));
-            }
-            else if (path[i] == "../") {
-                path.splice(i - 1, 2);
-                i--;
-            }
-            else
-                i++;
-        }
-        // Check if '/' should be appended
-        if (path.slice(-1)[0].slice(-1) != "/") {
-            var newpath = __spreadArrays(path);
-            newpath[newpath.length - 1] = newpath[newpath.length - 1] + "/";
-            if ((this.getFileByPath(path) == false ||
-                this.getFileByPath(path) === undefined) &&
-                this.getFileByPath(newpath) != false) {
-                path = newpath;
-            }
-        }
-        console.log(path);
-        return path.join("");
-    };
-    FileSystem.prototype.convertToLegalPathOld = function (path) {
-        if (path === void 0) { path = this.getLocationAsPath(this.current_dir); }
-        if (!Array.isArray(path))
-            path = this.getPathAsArray(path);
-        console.log(path);
-        if (path[0][0] != "/" && path[0][1] != ".") {
-            if (path[0][0] == ".")
-                path.shift();
-            path.unshift(this.getLocationAsPath(this.current_dir));
-        }
-        var i = 0;
-        while (i <= path.length) {
-            if (path[i] == "./") {
-                path = [].concat(path.splice(0, i), path.splice(1, path.length));
-            }
-            else if (path[i] == "../") {
-                path.splice(i - 1, 2);
-                i--;
-            }
-            else
-                i++;
-        }
-        // Check if '/' should be appended
-        if (path.slice(-1)[0].slice(-1) != "/") {
-            var newpath = __spreadArrays(path);
-            newpath[newpath.length - 1] = newpath[newpath.length - 1] + "/";
-            if ((this.getFileByPath(path) == false ||
-                this.getFileByPath(path) === undefined) &&
-                this.getFileByPath(newpath) != false) {
-                path = newpath;
-            }
-        }
-        return path.join("");
-    };
-    /**
-     * Gets parent of given Directory
-     * @param {Given Directory} dir
-     * @param {Current Directory (recursion)} current
-     */
-    FileSystem.prototype.dirUP = function (dir, current) {
-        if (current === void 0) { current = this.storage["/"]; }
-        var result;
-        if (dir == current)
-            return current;
-        for (var child in current) {
-            if (current[child] == dir)
-                return current;
-            result = this.dirUP(dir, current[child]);
-            if (result !== false) {
+    Filesystem.prototype.getParentOfLocation = function (location, current_location) {
+        if (current_location === void 0) { current_location = this.storage; }
+        if (location == this.storage)
+            return this.storage;
+        for (var i = 0; i < current_location.content.length; i++) {
+            if (current_location.content[i] == location)
+                return current_location;
+            var result = this.getParentOfLocation(location, current_location.content[i]);
+            if (result !== false)
                 return result;
-            }
         }
         return false;
     };
-    /**
-     *
-     * @param {Directory to search for} dir
-     * @param {Starting Directory} current_dir
-     * @param {Current directory} current
-     * @param {Pointer for current_dir, e.g: "/usr/local/projects/" where pointer = 1 gives "local/"} pointer
-     */
-    FileSystem.prototype.getFileByPath = function (file, current_file, current, pointer) {
-        if (current_file === void 0) { current_file = []; }
-        if (current === void 0) { current = this.storage; }
-        if (pointer === void 0) { pointer = 0; }
-        var result;
-        if (!Array.isArray(file))
-            file = this.getPathAsArray(file);
-        if (file.join("") == current_file.join("") ||
-            file.join("") + "/" == current_file.join("")) {
-            return current;
-        }
-        // Prevent unnecessary recursion
-        if (pointer > this.pathDividerCount(file.join("")))
-            return false;
-        // If current directory contains next directory
-        if (current.hasOwnProperty(file[pointer])) {
-            current_file.push(file[pointer]);
-            result = this.getFileByPath(file, current_file, current[file[pointer]], pointer + 1);
-        }
-        if (result !== false)
-            return result;
-        return false;
-    };
-    FileSystem.prototype.getDirByName = function (dir) {
-        return this.storage[dir];
-    };
-    FileSystem.prototype.changeDir = function (dir) {
-        this.current_dir = this.getDirByName(dir);
-    };
-    return FileSystem;
+    return Filesystem;
 }());

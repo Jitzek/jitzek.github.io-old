@@ -1,298 +1,256 @@
-// NOTICE
-// Will throw error because FileSystem is undefined
-// As long as the filesystem.js is called before the commands.js it should work
+function removeWhiteSpaceEntries(array: Array<string>) {
+  return array.filter(function(str: string) {return /\S/.test(str);})
+}
 
-function getAdditionalArgs(args: string[]): string[] {
-  let a_args = [];
-  for (let i = 1; i < args.length; i++) {
-    if (args[i][0] == "-") {
-      for (let j = 1; j < args[i].length; j++) {
-        a_args.push(args[i][j]);
-      }
-    }
+class Commands {
+  commands: Array<Command> = [];
+  constructor(filesystem: Filesystem, terminal: Terminal) {
+    this.commands = [new Cat(filesystem, terminal), new Clear(filesystem, terminal), new Echo(filesystem, terminal), new Help(filesystem, terminal), new Sudo(filesystem, terminal)];
   }
-  return a_args;
+
+  getCommand(commandid: string): any {
+    for (let i = 0; i < this.commands.length; i++) if (this.commands[i].id == commandid) return this.commands[i];
+    return false;
+  }
 }
 
-function helpCalled(args: string[]) {
-  return args[1] == "--help";
-}
-
-enum OutputType {
-  STDOUT,
-  STDERR,
-  NONE,
-}
-
-class Command {
+interface Command {
   id: string;
   help: string;
-  terminal: HTMLElement;
-  filesystem: FileSystem;
+  man: Object;
+  fs: Filesystem;
+  terminal: Terminal;
+  forcestop: boolean;
 
-  private COLOR_OUTPUT = "#FFFFFF";
-  private COLOR_ERR = "rgb(255, 0, 0)";
+  execute(args: Array<string>, user: Object, print: boolean): any;
+  print(output: any): void;
+  stop(): void;
+}
 
-  constructor(terminal: HTMLElement, filesystem: FileSystem) {
+class Cat implements Command {
+  id = 'cat';
+  help: string = 'concatenate files and print on the standard output';
+  man = {};
+  fs: Filesystem;
+  terminal: Terminal;
+  forcestop = false;
+
+  constructor(fs: Filesystem, terminal: Terminal) {
+    this.fs = fs;
     this.terminal = terminal;
-    this.filesystem = filesystem;
   }
 
-  public execute(args: string[]): Object {
+  execute(args: Array<string>, user: Object = null, print = true): any {
+    if (removeWhiteSpaceEntries(args).length < 1) {
+      // Display help
+      if (print) this.print('cat: help placeholder text');
+      return;
+    }
+
+    // Determine additional parameters ('-', '--')
+
+    //
+
+    // Get location of file
+    let location = this.fs.getLocation(args[0]);
+
+    // Check if location is file
+    if (!this.fs.isFile(location)) {
+      let output = `cat: cannot open ${args[0]}`;
+      if (print) this.print(output);
+      return output;
+    }
+
+    let output = location.content;
+
+    if (print) this.print(output);
+
+    // Output is content of file
+    return output;
+  }
+
+  print(output: any) {
+    this.terminal.ui.innerHTML += `${this.terminal.tline_start} ${output} ${this.terminal.tline_end}`;
+  }
+
+  stop() {
+    this.forcestop = true;
+  }
+}
+
+class Clear implements Command {
+  id = 'clear';
+  help = 'clear the terminal screen';
+  man = {};
+  fs: Filesystem;
+  terminal: Terminal;
+  forcestop = false;
+
+  constructor(fs: Filesystem, terminal: Terminal) {
+    this.fs = fs;
+    this.terminal = terminal;
+  }
+
+  execute(args: string[], user: Object = null, print = false): any {
+    // Determine additional parameters ('-', '--')
+
+    //
+    this.terminal.ui.innerHTML = '';
+
+    //if (print) this.print();
+
+    return false;
+  }
+
+  print(output: any = null) {
+    let cscript = document.createElement("script");
+    cscript.appendChild(document.createTextNode(`function tempClear(){ document.getElementById("terminal").innerHTML = ''; }`));
+    this.terminal.ui.appendChild(cscript);
+
+    let callback = document.createElement("img");
+    callback.setAttribute("src", "");
+    callback.setAttribute("onerror", "tempClear()");
+    this.terminal.ui.appendChild(callback);
+  }
+
+  stop() {
+    this.forcestop = true;
+  }
+}
+
+class Echo implements Command {
+  id = 'echo';
+  help = 'write arguments to the standard output.';
+  man: {};
+  fs: Filesystem;
+  terminal: Terminal;
+  forcestop = false;
+
+  constructor(fs: Filesystem, terminal: Terminal) {
+    this.fs = fs;
+    this.terminal = terminal;
+  }
+
+  /// TODO: -e escape characters
+  execute(args: string[], user: Object = null, print = true): any {
+    // Determine additional parameters ('-', '--')
+
+    //
+
+    let output = args[0];
+
+    if (print) this.print(output);
+
+    return output;
+  }
+
+  print(output: any) {
+    this.terminal.ui.innerHTML += `${this.terminal.tline_start} ${output} ${this.terminal.tline_end}`;
+  }
+
+  stop() {
+    this.forcestop = true;
+  }
+}
+
+class Help implements Command {
+  id: string = 'help';
+  help: string = 'display info of supported commands';
+  man: Object = {};
+  fs: Filesystem;
+  terminal: Terminal;
+  forcestop: boolean = false;
+  
+  constructor(fs: Filesystem, terminal: Terminal) {
+    this.fs = fs;
+    this.terminal = terminal;
+  }
+
+  execute(args: string[], user: Object, print: boolean = true) {
+    if (args.length == 0) {
+      let output: string[] = [];
+      new Commands(this.fs, this.terminal).commands.forEach(command => {
+        output.push(`${command.id} - ${command.help}`);
+      });
+      if (print) this.print(output);
+      return output;
+    }
+    if (args.length > 2) {
+      let output = 'help: too many arguments';
+      if (print) this.print(output);
+      return output;
+    }
+    // Catch argument as command
+    let command = new Commands(this.fs, this.terminal).getCommand(args[0]);
+    let output: string;
+    if (!command) output = `help: '${args[0]}' is not a supported command`;
+    else output = `${command.id} - ${command.help}`;
+    if (print) this.print(output);
+    return output;
+  }
+
+  print(output: any): void {
+    if (output instanceof Array) {
+      this.terminal.ui.innerHTML += this.terminal.tline_start;
+      output.forEach(element => {
+        this.terminal.ui.innerHTML += `<span>${element}</span><br>`;
+      });
+      this.terminal.ui.innerHTML += this.terminal.tline_end;
+      return;
+    }
+    this.terminal.ui.innerHTML += `${this.terminal.tline_start} ${output} ${this.terminal.tline_end}`;
+  }
+  
+  stop(): void {
     throw new Error("Method not implemented.");
   }
-
-  public print(output: any): boolean {
-    // Print generic output
-    if (output.type == OutputType.STDOUT) {
-      this.printGenericOutput(output.output);
-      return true;
-    }
-    if (output.type == OutputType.STDERR) {
-      this.printGenericError(output.output);
-      return true;
-    }
-    return false;
-  }
-
-  private printGenericOutput(msg: string) {
-    this.terminal.innerHTML +=
-      '<p id="terminal-line" style="color: ' +
-      this.COLOR_OUTPUT +
-      ';">' +
-      msg +
-      "</p>";
-  }
-  private printGenericError(errormsg: string) {
-    this.terminal.innerHTML +=
-      '<p id="terminal-line" style="color: ' +
-      this.COLOR_ERR +
-      ';">' +
-      errormsg +
-      "</p>";
-  }
+  
 }
 
-class Cat extends Command {
-  constructor(terminal: HTMLElement, filesystem: FileSystem) {
-    super(terminal, filesystem);
-    this.id = "cat";
-    this.help = "concatenate files and print on the standard output";
+class Sudo implements Command {
+  id = 'sudo';
+  help = 'execute a command as another user';
+  man = {};
+  fs: Filesystem;
+  terminal: Terminal;
+  forcestop: boolean;
+
+  sub_command: Command = null;
+
+  constructor(fs: Filesystem, terminal: Terminal) {
+    this.fs = fs;
+    this.terminal = terminal;
   }
 
-  execute(args: string[]): Object {
-    // Catch help (--help)
-    if (helpCalled(args)) return { output: this.help, type: OutputType.STDOUT };
-
-    // Catch additional args (-)
-    let a_args: string[] = getAdditionalArgs(args);
-
-    //
-    // @TODO Do something with additional args
-    //
-
-    // Get given path
-    let path: string = args[1];
-    for (let i = 1; i < args.length; i++) {
-      path = args[i];
-      if (args[i][0] != "-") break;
+  execute(args: string[], user: Object, print = true) {
+    if (removeWhiteSpaceEntries(args).length < 1) {
+      // Display help
+      if (print) this.print('sudo: help placeholder text');
+      return;
     }
 
-    // Convert given path to legal path
-    path = this.filesystem.convertToLegalPath(path);
-    let result: any = this.filesystem.getFileByPath(path);
+    // Do some password checks
 
-    // Handle no file found
-    if (!result)
-      return {
-        output: `cat: ${path}: No such file or directory`,
-        type: OutputType.STDERR,
-      };
-
-    // Handle not a file
-    if (!this.filesystem.isFile(path))
-      return {
-        output: `cat: ${path}: Is a directory`,
-        type: OutputType.STDERR,
-      };
-
-    // Return file
-    return { output: result.content, type: OutputType.STDOUT };
-  }
-
-  print(output: any): boolean {
-    return super.print(output);
-  }
-}
-
-class Cd extends Command {
-  constructor(terminal: HTMLElement, filesystem: FileSystem) {
-    super(terminal, filesystem);
-    this.id = "cd";
-    this.help = "Change the shell working directory.";
-  }
-
-  execute(args: string[]): Object {
-    // Catch help (--help)
-    if (helpCalled(args)) return { output: this.help, type: OutputType.STDOUT };
-
-    // Catch additional args (-)
-    let a_args: string[] = getAdditionalArgs(args);
-
-    //
-    // @TODO Do something with additional args
-    //
-
-    // Get given path
-    let path: string = args[1];
-    for (let i = 1; i < args.length; i++) {
-      path = args[i];
-      if (args[i][0] != "-") break;
+    // Execute command as root user
+    let command = new Commands(this.fs, this.terminal).getCommand(args[0]);
+    if (!command) {
+      if (print) this.print(`sudo: ${args[0]}: command not found`);
     }
-
-    // Convert given path to legal path
-    path = this.filesystem.convertToLegalPath(path);
-    let result: any = this.filesystem.getFileByPath(path);
-
-    // Handle no file found
-    if (!result)
-      return {
-        output: `cd: ${path}: No such file or directory`,
-        type: OutputType.STDERR,
-      };
-
-    // Handle not a file
-    if (!this.filesystem.isDirectory(path))
-      return {
-        output: `cd: ${path}: Not a directory`,
-        type: OutputType.STDERR,
-      };
-    
-    return {output: null, type: OutputType.NONE};
+    if (command) this.sub_command = command;
+    let result = this.sub_command.execute(args.slice(1), user = null /* root */, print = true);
+    return result;
   }
 
-  print(output: any): boolean {
-    return super.print(output);
-  }
-}
-
-class Clear extends Command {
-  constructor(terminal: HTMLElement, filesystem: FileSystem) {
-    super(terminal, filesystem);
-    this.id = "clear";
-    this.help = "clear the terminal screen";
-  }
-
-  execute(args: string[]): Object {
-    // Catch help (--help)
-    if (helpCalled(args)) return { output: this.help, type: OutputType.STDOUT };
-
-    // Catch additional args (-)
-    let a_args: string[] = getAdditionalArgs(args);
-
-    //
-    // @TODO Do something with additional args
-    //
-
-    this.terminal.innerHTML = "";
-
-    return { output: null, type: OutputType.NONE };
-  }
-
-  print(output: any): boolean {
-    return super.print(output);
-  }
-}
-
-class Ls extends Command {
-  COLOR_FILE = "#FFFFFF";
-  COLOR_DIR = "#038CFC";
-
-  public CTYPE_FILE = "CTYPE_FILE";
-  public CTYPE_DIR = "CTYPE_DIR";
-
-  constructor(terminal: HTMLElement, filesystem: FileSystem) {
-    super(terminal, filesystem);
-    this.id = "ls";
-    this.help = "list directory contents";
-  }
-
-  execute(args: string[]): Object {
-    // Catch help (--help)
-    if (helpCalled(args)) return { output: this.help, type: OutputType.STDOUT };
-
-    // Catch additional args (-)
-    let a_args: string[] = getAdditionalArgs(args);
-
-    //
-    // @TODO Do something with additional args
-    //
-
-    // Get given path
-    let path: string = args[1];
-    for (let i = 1; i < args.length; i++) {
-      path = args[i];
-      if (args[i][0] != "-") break;
+  print(output: any): void {
+    if (this.sub_command != undefined && this.sub_command != null) {
+      this.sub_command.print(output);
+      return;
     }
-
-    // Convert given path to legal path
-    path = this.filesystem.convertToLegalPath(path);
-
-    let req: any =
-      args.length > 1
-        ? this.filesystem.getFileByPath(path)
-        : this.filesystem.current_dir;
-
-    // Handle no file found
-    if (!req)
-      return {
-        output: `ls: cannot access '${path}': No such file or directory`,
-        type: OutputType.STDERR,
-      };
-
-    // If requested object is a File
-    if (this.filesystem.isFile(this.filesystem.getLocationAsPath(req))) {
-      let file = this.filesystem.getPathAsArray(path);
-      return { output: file[file.length - 1], type: this.CTYPE_FILE };
-    }
-    
-    return { output: Object.keys(req), type: this.CTYPE_DIR };
+    this.terminal.ui.innerHTML += `${this.terminal.tline_start} ${output} ${this.terminal.tline_end}`;
   }
-
-  print(output: any): boolean {
-    if (output.type == OutputType.STDOUT || output.type == OutputType.STDERR) return super.print(output);
-    if (output.type == this.CTYPE_FILE) {
-      this.terminal.innerHTML +=
-        '<span id="terminal-line" style="color: ' +
-        this.COLOR_FILE +
-        ';">' +
-        output.output +
-        "</span> &nbsp;";
-      return true;
-    }
-    if (output.type == this.CTYPE_DIR) {
-      if (!(output.output instanceof Array)) {
-        return false;
-      }
-      output.output.forEach((item: Object) => {
-        if (this.filesystem.isDirectory(item)) {
-          this.terminal.innerHTML +=
-            '<span id="terminal-line" style="color: ' +
-            this.COLOR_DIR +
-            ';">' +
-            item +
-            "</span> &nbsp;";
-        } else if (this.filesystem.isFile(item)) {
-          this.terminal.innerHTML +=
-            '<span id="terminal-line" style="color: ' +
-            this.COLOR_FILE +
-            ';">' +
-            item +
-            "</span> &nbsp;";
-        }
-      });
-      return true;
-    }
-    return false;
+  
+  stop(): void {
+    this.forcestop = true;
+    this.sub_command.stop();
   }
 }
