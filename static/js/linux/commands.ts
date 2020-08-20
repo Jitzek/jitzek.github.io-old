@@ -5,7 +5,7 @@ function removeWhiteSpaceEntries(array: Array<string>) {
 class Commands {
   commands: Array<Command> = [];
   constructor(filesystem: Filesystem, terminal: Terminal) {
-    this.commands = [new Cat(filesystem, terminal), new Clear(filesystem, terminal), new Echo(filesystem, terminal), new Sudo(filesystem, terminal)];
+    this.commands = [new Cat(filesystem, terminal), new Clear(filesystem, terminal), new Echo(filesystem, terminal), new Help(filesystem, terminal), new Sudo(filesystem, terminal)];
   }
 
   getCommand(commandid: string): any {
@@ -16,12 +16,11 @@ class Commands {
 
 interface Command {
   id: string;
+  help: string;
   man: Object;
   fs: Filesystem;
   terminal: Terminal;
   forcestop: boolean;
-
-  sub_command: Command;
 
   execute(args: Array<string>, user: Object, print: boolean): any;
   print(output: any): void;
@@ -30,12 +29,11 @@ interface Command {
 
 class Cat implements Command {
   id = 'cat';
+  help: string = 'concatenate files and print on the standard output';
   man = {};
   fs: Filesystem;
   terminal: Terminal;
   forcestop = false;
-
-  sub_command: Command = null;
 
   constructor(fs: Filesystem, terminal: Terminal) {
     this.fs = fs;
@@ -77,18 +75,16 @@ class Cat implements Command {
 
   stop() {
     this.forcestop = true;
-    this.sub_command.stop();
   }
 }
 
 class Clear implements Command {
   id = 'clear';
+  help = 'clear the terminal screen';
   man = {};
   fs: Filesystem;
   terminal: Terminal;
   forcestop = false;
-
-  sub_command: Command = null;
 
   constructor(fs: Filesystem, terminal: Terminal) {
     this.fs = fs;
@@ -119,18 +115,16 @@ class Clear implements Command {
 
   stop() {
     this.forcestop = true;
-    this.sub_command.stop();
   }
 }
 
 class Echo implements Command {
   id = 'echo';
+  help = 'write arguments to the standard output.';
   man: {};
   fs: Filesystem;
   terminal: Terminal;
   forcestop = false;
-
-  sub_command: Command = null;
 
   constructor(fs: Filesystem, terminal: Terminal) {
     this.fs = fs;
@@ -156,12 +150,66 @@ class Echo implements Command {
 
   stop() {
     this.forcestop = true;
-    this.sub_command.stop();
   }
+}
+
+class Help implements Command {
+  id: string = 'help';
+  help: string = 'display info of supported commands';
+  man: Object = {};
+  fs: Filesystem;
+  terminal: Terminal;
+  forcestop: boolean = false;
+  
+  constructor(fs: Filesystem, terminal: Terminal) {
+    this.fs = fs;
+    this.terminal = terminal;
+  }
+
+  execute(args: string[], user: Object, print: boolean = true) {
+    if (args.length == 0) {
+      let output: string[] = [];
+      new Commands(this.fs, this.terminal).commands.forEach(command => {
+        output.push(`${command.id} - ${command.help}`);
+      });
+      if (print) this.print(output);
+      return output;
+    }
+    if (args.length > 2) {
+      let output = 'help: too many arguments';
+      if (print) this.print(output);
+      return output;
+    }
+    // Catch argument as command
+    let command = new Commands(this.fs, this.terminal).getCommand(args[0]);
+    let output: string;
+    if (!command) output = `help: '${args[0]}' is not a supported command`;
+    else output = `${command.id} - ${command.help}`;
+    if (print) this.print(output);
+    return output;
+  }
+
+  print(output: any): void {
+    if (output instanceof Array) {
+      this.terminal.ui.innerHTML += this.terminal.tline_start;
+      output.forEach(element => {
+        this.terminal.ui.innerHTML += `<span>${element}</span><br>`;
+      });
+      this.terminal.ui.innerHTML += this.terminal.tline_end;
+      return;
+    }
+    this.terminal.ui.innerHTML += `${this.terminal.tline_start} ${output} ${this.terminal.tline_end}`;
+  }
+  
+  stop(): void {
+    throw new Error("Method not implemented.");
+  }
+  
 }
 
 class Sudo implements Command {
   id = 'sudo';
+  help = 'execute a command as another user';
   man = {};
   fs: Filesystem;
   terminal: Terminal;

@@ -4,7 +4,7 @@ function removeWhiteSpaceEntries(array) {
 var Commands = /** @class */ (function () {
     function Commands(filesystem, terminal) {
         this.commands = [];
-        this.commands = [new Cat(filesystem, terminal), new Clear(filesystem, terminal), new Echo(filesystem, terminal), new Sudo(filesystem, terminal)];
+        this.commands = [new Cat(filesystem, terminal), new Clear(filesystem, terminal), new Echo(filesystem, terminal), new Help(filesystem, terminal), new Sudo(filesystem, terminal)];
     }
     Commands.prototype.getCommand = function (commandid) {
         for (var i = 0; i < this.commands.length; i++)
@@ -17,9 +17,9 @@ var Commands = /** @class */ (function () {
 var Cat = /** @class */ (function () {
     function Cat(fs, terminal) {
         this.id = 'cat';
+        this.help = 'concatenate files and print on the standard output';
         this.man = {};
         this.forcestop = false;
-        this.sub_command = null;
         this.fs = fs;
         this.terminal = terminal;
     }
@@ -54,16 +54,15 @@ var Cat = /** @class */ (function () {
     };
     Cat.prototype.stop = function () {
         this.forcestop = true;
-        this.sub_command.stop();
     };
     return Cat;
 }());
 var Clear = /** @class */ (function () {
     function Clear(fs, terminal) {
         this.id = 'clear';
+        this.help = 'clear the terminal screen';
         this.man = {};
         this.forcestop = false;
-        this.sub_command = null;
         this.fs = fs;
         this.terminal = terminal;
     }
@@ -88,15 +87,14 @@ var Clear = /** @class */ (function () {
     };
     Clear.prototype.stop = function () {
         this.forcestop = true;
-        this.sub_command.stop();
     };
     return Clear;
 }());
 var Echo = /** @class */ (function () {
     function Echo(fs, terminal) {
         this.id = 'echo';
+        this.help = 'write arguments to the standard output.';
         this.forcestop = false;
-        this.sub_command = null;
         this.fs = fs;
         this.terminal = terminal;
     }
@@ -116,13 +114,67 @@ var Echo = /** @class */ (function () {
     };
     Echo.prototype.stop = function () {
         this.forcestop = true;
-        this.sub_command.stop();
     };
     return Echo;
+}());
+var Help = /** @class */ (function () {
+    function Help(fs, terminal) {
+        this.id = 'help';
+        this.help = 'display info of supported commands';
+        this.man = {};
+        this.forcestop = false;
+        this.fs = fs;
+        this.terminal = terminal;
+    }
+    Help.prototype.execute = function (args, user, print) {
+        if (print === void 0) { print = true; }
+        if (args.length == 0) {
+            var output_2 = [];
+            new Commands(this.fs, this.terminal).commands.forEach(function (command) {
+                output_2.push(command.id + " - " + command.help);
+            });
+            if (print)
+                this.print(output_2);
+            return output_2;
+        }
+        if (args.length > 2) {
+            var output_3 = 'help: too many arguments';
+            if (print)
+                this.print(output_3);
+            return output_3;
+        }
+        // Catch argument as command
+        var command = new Commands(this.fs, this.terminal).getCommand(args[0]);
+        var output;
+        if (!command)
+            output = "help: '" + args[0] + "' is not a supported command";
+        else
+            output = command.id + " - " + command.help;
+        if (print)
+            this.print(output);
+        return output;
+    };
+    Help.prototype.print = function (output) {
+        var _this = this;
+        if (output instanceof Array) {
+            this.terminal.ui.innerHTML += this.terminal.tline_start;
+            output.forEach(function (element) {
+                _this.terminal.ui.innerHTML += "<span>" + element + "</span><br>";
+            });
+            this.terminal.ui.innerHTML += this.terminal.tline_end;
+            return;
+        }
+        this.terminal.ui.innerHTML += this.terminal.tline_start + " " + output + " " + this.terminal.tline_end;
+    };
+    Help.prototype.stop = function () {
+        throw new Error("Method not implemented.");
+    };
+    return Help;
 }());
 var Sudo = /** @class */ (function () {
     function Sudo(fs, terminal) {
         this.id = 'sudo';
+        this.help = 'execute a command as another user';
         this.man = {};
         this.sub_command = null;
         this.fs = fs;
