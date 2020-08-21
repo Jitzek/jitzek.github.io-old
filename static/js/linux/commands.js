@@ -88,13 +88,7 @@ var Clear = /** @class */ (function (_super) {
     };
     Clear.prototype.print = function (output) {
         if (output === void 0) { output = null; }
-        var cscript = document.createElement("script");
-        cscript.appendChild(document.createTextNode("function tempClear(){ document.getElementById(\"terminal\").innerHTML = ''; }"));
-        this.terminal.ui.appendChild(cscript);
-        var callback = document.createElement("img");
-        callback.setAttribute("src", "");
-        callback.setAttribute("onerror", "tempClear()");
-        this.terminal.ui.appendChild(callback);
+        return;
     };
     Clear.prototype.stop = function () {
         this.forcestop = true;
@@ -189,7 +183,10 @@ var Help = /** @class */ (function (_super) {
 var Ls = /** @class */ (function (_super) {
     __extends(Ls, _super);
     function Ls(fs, terminal) {
-        return _super.call(this, fs, terminal) || this;
+        var _this = _super.call(this, fs, terminal) || this;
+        _this.id = 'ls';
+        _this.help = 'list directory contents';
+        return _this;
     }
     Ls.prototype.execute = function (args, user, print) {
         throw new Error("Method not implemented.");
@@ -252,7 +249,7 @@ var CommandFactory = /** @class */ (function () {
         var index = this.command_ids.indexOf(id);
         return index != -1 ? new this.command_classes[index](filesystem, terminal) : false;
     };
-    CommandFactory.command_ids = ['cat', 'clear', 'echo', 'help', 'ls', 'sudo'];
-    CommandFactory.command_classes = [Cat, Clear, Echo, Help, Ls, Sudo];
+    CommandFactory.command_ids = ['cat', 'clear', 'echo', 'help', /*'ls'*/ , 'sudo'];
+    CommandFactory.command_classes = [Cat, Clear, Echo, Help, /*Ls*/ , Sudo];
     return CommandFactory;
 }());

@@ -88,14 +88,7 @@ class Clear extends Command {
   }
 
   print(output: any = null) {
-    let cscript = document.createElement("script");
-    cscript.appendChild(document.createTextNode(`function tempClear(){ document.getElementById("terminal").innerHTML = ''; }`));
-    this.terminal.ui.appendChild(cscript);
-
-    let callback = document.createElement("img");
-    callback.setAttribute("src", "");
-    callback.setAttribute("onerror", "tempClear()");
-    this.terminal.ui.appendChild(callback);
+    return;
   }
 
   stop() {
@@ -190,13 +183,13 @@ class Help extends Command {
 }
 
 class Ls extends Command {
+  id: string = 'ls';
+  help: string = 'list directory contents';
+  man: Object;
+
   constructor(fs: Filesystem, terminal: Terminal) {
     super(fs, terminal);
   }
-
-  id: string;
-  help: string;
-  man: Object;
   
   execute(args: string[], user: Object, print: boolean) {
     throw new Error("Method not implemented.");
@@ -257,8 +250,8 @@ class Sudo extends Command {
 }
 
 class CommandFactory {
-  static command_ids: string[] = ['cat', 'clear', 'echo', 'help', 'ls', 'sudo'];
-  static command_classes: typeof Command[] = [Cat, Clear, Echo, Help, Ls, Sudo];
+  static command_ids: string[] = ['cat', 'clear', 'echo', 'help', /*'ls'*/, 'sudo'];
+  static command_classes: typeof Command[] = [Cat, Clear, Echo, Help, /*Ls*/, Sudo];
 
   static getCommand(id: string, filesystem: Filesystem, terminal: Terminal): any {
     let index = this.command_ids.indexOf(id);
