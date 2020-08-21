@@ -1,5 +1,9 @@
+function delay(ms: number) {
+  return new Promise( resolve => setTimeout(resolve, ms) );
+}
+
 function removeWhiteSpaceEntries(array: Array<string>) {
-  return array.filter(function(str: string) {return /\S/.test(str);})
+  return array.filter(function (str: string) { return /\S/.test(str); })
 }
 
 class Command {
@@ -8,16 +12,18 @@ class Command {
   man: Object;
   fs: Filesystem;
   terminal: Terminal;
-  forcestop: boolean;
+  forcestop: boolean = false;
 
-  constructor(fs: Filesystem, terminal: Terminal) { 
+  constructor(fs: Filesystem, terminal: Terminal) {
     this.fs = fs;
     this.terminal = terminal;
   };
 
-  execute(args: Array<string>, user: Object, print: boolean): any { }
+  async execute(args: Array<string>, user: Object, print: boolean): Promise<any> { }
   print(output: any): void { }
-  stop(): void { }
+  async stop(): Promise<void> { 
+    this.forcestop = true;
+  }
 }
 
 class Cat extends Command {
@@ -61,10 +67,6 @@ class Cat extends Command {
   print(output: any) {
     this.terminal.ui.innerHTML += `${this.terminal.tline_start} ${output} ${this.terminal.tline_end}`;
   }
-
-  stop() {
-    this.forcestop = true;
-  }
 }
 
 class Clear extends Command {
@@ -76,7 +78,7 @@ class Clear extends Command {
     super(fs, terminal);
   }
 
-  execute(args: string[], user: Object = null, print = false): any {
+  async execute(args: string[], user: Object = null, print = false): Promise<any> {
     // Determine additional parameters ('-', '--')
 
     //
@@ -90,10 +92,6 @@ class Clear extends Command {
   print(output: any = null) {
     return;
   }
-
-  stop() {
-    this.forcestop = true;
-  }
 }
 
 class Echo extends Command {
@@ -106,7 +104,7 @@ class Echo extends Command {
   }
 
   /// TODO: -e escape characters
-  execute(args: string[], user: Object = null, print = true): any {
+  async execute(args: string[], user: Object = null, print = true): Promise<any> {
     // Determine additional parameters ('-', '--')
 
     //
@@ -121,25 +119,21 @@ class Echo extends Command {
   print(output: any) {
     this.terminal.ui.innerHTML += `${this.terminal.tline_start} ${output} ${this.terminal.tline_end}`;
   }
-
-  stop() {
-    this.forcestop = true;
-  }
 }
 
 class Help extends Command {
   id: string = 'help';
   help: string = 'display info of supported commands';
   man: Object = {};
-  
+
   constructor(fs: Filesystem, terminal: Terminal) {
     super(fs, terminal);
   }
 
-  execute(args: string[], user: Object, print: boolean = true) {
+  async execute(args: string[], user: Object, print: boolean = true): Promise<any> {
     if (args.length == 0) {
       let output: string[] = [];
-      
+
       let commands: Command[] = [];
       CommandFactory.command_ids.forEach(id => {
         commands.push(CommandFactory.getCommand(id, this.fs, this.terminal));
@@ -176,10 +170,7 @@ class Help extends Command {
     }
     this.terminal.ui.innerHTML += `${this.terminal.tline_start} ${output} ${this.terminal.tline_end}`;
   }
-  
-  stop(): void {
-  }
-  
+
 }
 
 class Ls extends Command {
@@ -190,19 +181,14 @@ class Ls extends Command {
   constructor(fs: Filesystem, terminal: Terminal) {
     super(fs, terminal);
   }
-  
-  execute(args: string[], user: Object, print: boolean) {
+
+  async execute(args: string[], user: Object, print: boolean): Promise<any> {
     throw new Error("Method not implemented.");
   }
 
   print(output: any): void {
     throw new Error("Method not implemented.");
   }
-
-  stop(): void {
-    throw new Error("Method not implemented.");
-  }
-  
 }
 
 class Sudo extends Command {
@@ -216,7 +202,7 @@ class Sudo extends Command {
     super(fs, terminal);
   }
 
-  execute(args: string[], user: Object, print = true) {
+  async execute(args: string[], user: Object, print = true): Promise<any> {
     if (removeWhiteSpaceEntries(args).length < 1) {
       // Display help
       if (print) this.print('sudo: help placeholder text');
@@ -242,8 +228,8 @@ class Sudo extends Command {
     }
     this.terminal.ui.innerHTML += `${this.terminal.tline_start} ${output} ${this.terminal.tline_end}`;
   }
-  
-  stop(): void {
+
+  async stop(): Promise<void> {
     this.forcestop = true;
     this.sub_command.stop();
   }

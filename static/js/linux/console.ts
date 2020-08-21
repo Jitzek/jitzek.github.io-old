@@ -2,12 +2,12 @@ class Pipeline {
     pipeline: Command[] = [];
     commands: string[][] = [];
 
-    execute(user: Object = null): any {
+    async execute(user: Object = null): Promise<any> {
         let result: any = false;
         for (let i = 0; i < this.commands.length; i++) {
             let print = i + 1 >= this.commands.length;
-            if (result) this.commands[i][this.commands.length - 1] = result;
-            result = this.pipeline[i].execute(this.commands[i].slice(1), null, print);
+            if (result) this.commands[i].push(result);
+            result = await this.pipeline[i].execute(this.commands[i].slice(1), null, print);
         }
         return result;
     }
@@ -15,6 +15,12 @@ class Pipeline {
     push(command: Command, command_array: string[]) {
         this.pipeline.push(command);
         this.commands.push(command_array);
+    }
+
+    async stop() {
+        this.pipeline.forEach(command => {
+            command.stop();
+        });
     }
 }
 
@@ -29,7 +35,7 @@ class Console {
         this.terminal = terminal;
     }
 
-    execute(args: Array<string>): string {
+    async execute(args: Array<string>) {
         args = removeWhiteSpaceEntries(args);
 
         // Construct command stack
@@ -96,12 +102,11 @@ class Console {
 
         let result: any = false;
         for (let i = 0; i < this.command_stack.length; i++) {
-            if (this.command_stack[i].type == 'pipe') result = this.command_stack[i].executable.execute(null);
-            else if (this.command_stack[i].type == 'command') result = this.command_stack[i].executable.execute(this.command_stack[i].args, null);
+            if (this.command_stack[i].type == 'pipe') await this.command_stack[i].executable.execute(null);
+            else if (this.command_stack[i].type == 'command') await this.command_stack[i].executable.execute(this.command_stack[i].args, null);
         }
 
         this.clean();
-        return result;
     }
 
     private commandNotFound(command: string) {
@@ -125,7 +130,7 @@ class Console {
 
     forceStop() {
         this.command_stack.forEach(command => {
-            command.stop();
+            command.executable.stop();
         });
         this.clean();
     }

@@ -11,8 +11,11 @@ class Terminal {
 
   tline_start = `<p id="terminal-line" style="color: ${COLOR_OUTPUT};">`
   tline_end = "</p>";
+  
 
   async handleUserInput() {
+    let initial_display_style = document.getElementById('console-input').style.display;
+    document.getElementById('console-input').style.display = 'none';
     try {
       let input: string = this.ui_input.value;
       this.ui.innerHTML += `<p id="terminal-line" style="color: ${COLOR_INPUT};">
@@ -22,11 +25,13 @@ class Terminal {
       this.ui_input.value = "";
 
       // Do something with input //
-      let result: any = this._console.execute(input.split(" "));
+      await this._console.execute(input.split(" "));
       //
     } catch (error) {
       this.print(error.message);
     }
+    document.getElementById('console-input').style.display = initial_display_style;
+
   }
 
   async softStopExecution() {

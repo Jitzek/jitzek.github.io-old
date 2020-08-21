@@ -11,18 +11,69 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+function delay(ms) {
+    return new Promise(function (resolve) { return setTimeout(resolve, ms); });
+}
 function removeWhiteSpaceEntries(array) {
     return array.filter(function (str) { return /\S/.test(str); });
 }
 var Command = /** @class */ (function () {
     function Command(fs, terminal) {
+        this.forcestop = false;
         this.fs = fs;
         this.terminal = terminal;
     }
     ;
-    Command.prototype.execute = function (args, user, print) { };
+    Command.prototype.execute = function (args, user, print) {
+        return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); });
+    };
     Command.prototype.print = function (output) { };
-    Command.prototype.stop = function () { };
+    Command.prototype.stop = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.forcestop = true;
+                return [2 /*return*/];
+            });
+        });
+    };
     return Command;
 }());
 var Cat = /** @class */ (function (_super) {
@@ -63,9 +114,6 @@ var Cat = /** @class */ (function (_super) {
     Cat.prototype.print = function (output) {
         this.terminal.ui.innerHTML += this.terminal.tline_start + " " + output + " " + this.terminal.tline_end;
     };
-    Cat.prototype.stop = function () {
-        this.forcestop = true;
-    };
     return Cat;
 }(Command));
 var Clear = /** @class */ (function (_super) {
@@ -78,20 +126,21 @@ var Clear = /** @class */ (function (_super) {
         return _this;
     }
     Clear.prototype.execute = function (args, user, print) {
-        // Determine additional parameters ('-', '--')
         if (user === void 0) { user = null; }
         if (print === void 0) { print = false; }
-        //
-        this.terminal.ui.innerHTML = '';
-        //if (print) this.print();
-        return false;
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                // Determine additional parameters ('-', '--')
+                //
+                this.terminal.ui.innerHTML = '';
+                //if (print) this.print();
+                return [2 /*return*/, false];
+            });
+        });
     };
     Clear.prototype.print = function (output) {
         if (output === void 0) { output = null; }
         return;
-    };
-    Clear.prototype.stop = function () {
-        this.forcestop = true;
     };
     return Clear;
 }(Command));
@@ -105,20 +154,20 @@ var Echo = /** @class */ (function (_super) {
     }
     /// TODO: -e escape characters
     Echo.prototype.execute = function (args, user, print) {
-        // Determine additional parameters ('-', '--')
         if (user === void 0) { user = null; }
         if (print === void 0) { print = true; }
-        //
-        var output = args[0];
-        if (print)
-            this.print(output);
-        return output;
+        return __awaiter(this, void 0, void 0, function () {
+            var output;
+            return __generator(this, function (_a) {
+                output = args[0];
+                if (print)
+                    this.print(output);
+                return [2 /*return*/, output];
+            });
+        });
     };
     Echo.prototype.print = function (output) {
         this.terminal.ui.innerHTML += this.terminal.tline_start + " " + output + " " + this.terminal.tline_end;
-    };
-    Echo.prototype.stop = function () {
-        this.forcestop = true;
     };
     return Echo;
 }(Command));
@@ -132,37 +181,40 @@ var Help = /** @class */ (function (_super) {
         return _this;
     }
     Help.prototype.execute = function (args, user, print) {
-        var _this = this;
         if (print === void 0) { print = true; }
-        if (args.length == 0) {
-            var output_2 = [];
-            var commands_1 = [];
-            CommandFactory.command_ids.forEach(function (id) {
-                commands_1.push(CommandFactory.getCommand(id, _this.fs, _this.terminal));
+        return __awaiter(this, void 0, void 0, function () {
+            var output_2, commands_1, output_3, command, output;
+            var _this = this;
+            return __generator(this, function (_a) {
+                if (args.length == 0) {
+                    output_2 = [];
+                    commands_1 = [];
+                    CommandFactory.command_ids.forEach(function (id) {
+                        commands_1.push(CommandFactory.getCommand(id, _this.fs, _this.terminal));
+                    });
+                    commands_1.forEach(function (command) {
+                        output_2.push(command.id + " - " + command.help);
+                    });
+                    if (print)
+                        this.print(output_2);
+                    return [2 /*return*/, output_2];
+                }
+                if (args.length > 2) {
+                    output_3 = 'help: too many arguments';
+                    if (print)
+                        this.print(output_3);
+                    return [2 /*return*/, output_3];
+                }
+                command = CommandFactory.getCommand(args[0], this.fs, this.terminal);
+                if (!command)
+                    output = "help: '" + args[0] + "' is not a supported command";
+                else
+                    output = command.id + " - " + command.help;
+                if (print)
+                    this.print(output);
+                return [2 /*return*/, output];
             });
-            commands_1.forEach(function (command) {
-                output_2.push(command.id + " - " + command.help);
-            });
-            if (print)
-                this.print(output_2);
-            return output_2;
-        }
-        if (args.length > 2) {
-            var output_3 = 'help: too many arguments';
-            if (print)
-                this.print(output_3);
-            return output_3;
-        }
-        // Catch argument as command
-        var command = CommandFactory.getCommand(args[0], this.fs, this.terminal);
-        var output;
-        if (!command)
-            output = "help: '" + args[0] + "' is not a supported command";
-        else
-            output = command.id + " - " + command.help;
-        if (print)
-            this.print(output);
-        return output;
+        });
     };
     Help.prototype.print = function (output) {
         var _this = this;
@@ -176,8 +228,6 @@ var Help = /** @class */ (function (_super) {
         }
         this.terminal.ui.innerHTML += this.terminal.tline_start + " " + output + " " + this.terminal.tline_end;
     };
-    Help.prototype.stop = function () {
-    };
     return Help;
 }(Command));
 var Ls = /** @class */ (function (_super) {
@@ -189,12 +239,13 @@ var Ls = /** @class */ (function (_super) {
         return _this;
     }
     Ls.prototype.execute = function (args, user, print) {
-        throw new Error("Method not implemented.");
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                throw new Error("Method not implemented.");
+            });
+        });
     };
     Ls.prototype.print = function (output) {
-        throw new Error("Method not implemented.");
-    };
-    Ls.prototype.stop = function () {
         throw new Error("Method not implemented.");
     };
     return Ls;
@@ -211,23 +262,26 @@ var Sudo = /** @class */ (function (_super) {
     }
     Sudo.prototype.execute = function (args, user, print) {
         if (print === void 0) { print = true; }
-        if (removeWhiteSpaceEntries(args).length < 1) {
-            // Display help
-            if (print)
-                this.print('sudo: help placeholder text');
-            return;
-        }
-        // Do some password checks
-        // Execute command as root user
-        var command = CommandFactory.getCommand(args[0], this.fs, this.terminal);
-        if (!command) {
-            if (print)
-                this.print("sudo: " + args[0] + ": command not found");
-        }
-        if (command)
-            this.sub_command = command;
-        var result = this.sub_command.execute(args.slice(1), user = null /* root */, print = true);
-        return result;
+        return __awaiter(this, void 0, void 0, function () {
+            var command, result;
+            return __generator(this, function (_a) {
+                if (removeWhiteSpaceEntries(args).length < 1) {
+                    // Display help
+                    if (print)
+                        this.print('sudo: help placeholder text');
+                    return [2 /*return*/];
+                }
+                command = CommandFactory.getCommand(args[0], this.fs, this.terminal);
+                if (!command) {
+                    if (print)
+                        this.print("sudo: " + args[0] + ": command not found");
+                }
+                if (command)
+                    this.sub_command = command;
+                result = this.sub_command.execute(args.slice(1), user = null /* root */, print = true);
+                return [2 /*return*/, result];
+            });
+        });
     };
     Sudo.prototype.print = function (output) {
         if (this.sub_command != undefined && this.sub_command != null) {
@@ -237,8 +291,13 @@ var Sudo = /** @class */ (function (_super) {
         this.terminal.ui.innerHTML += this.terminal.tline_start + " " + output + " " + this.terminal.tline_end;
     };
     Sudo.prototype.stop = function () {
-        this.forcestop = true;
-        this.sub_command.stop();
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.forcestop = true;
+                this.sub_command.stop();
+                return [2 /*return*/];
+            });
+        });
     };
     return Sudo;
 }(Command));

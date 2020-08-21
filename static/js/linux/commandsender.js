@@ -1,8 +1,13 @@
 const terminal = new Terminal();
 
+async function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function sendCommand(event) {
   if (event.keyCode === 13) {
     event.preventDefault();
+
     terminal.handleUserInput();
   }
 }

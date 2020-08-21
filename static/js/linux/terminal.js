@@ -49,19 +49,32 @@ var Terminal = /** @class */ (function () {
     }
     Terminal.prototype.handleUserInput = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var input, result;
+            var initial_display_style, input, error_1;
             return __generator(this, function (_a) {
-                try {
-                    input = this.ui_input.value;
-                    this.ui.innerHTML += "<p id=\"terminal-line\" style=\"color: " + COLOR_INPUT + ";\">\n            <strong style=\"color: #09EB00;\"> > </strong>\n            " + input + "\n          </p>";
-                    this.ui_input.value = "";
-                    result = this._console.execute(input.split(" "));
-                    //
+                switch (_a.label) {
+                    case 0:
+                        initial_display_style = document.getElementById('console-input').style.display;
+                        document.getElementById('console-input').style.display = 'none';
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        input = this.ui_input.value;
+                        this.ui.innerHTML += "<p id=\"terminal-line\" style=\"color: " + COLOR_INPUT + ";\">\n            <strong style=\"color: #09EB00;\"> > </strong>\n            " + input + "\n          </p>";
+                        this.ui_input.value = "";
+                        // Do something with input //
+                        return [4 /*yield*/, this._console.execute(input.split(" "))];
+                    case 2:
+                        // Do something with input //
+                        _a.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        error_1 = _a.sent();
+                        this.print(error_1.message);
+                        return [3 /*break*/, 4];
+                    case 4:
+                        document.getElementById('console-input').style.display = initial_display_style;
+                        return [2 /*return*/];
                 }
-                catch (error) {
-                    this.print(error.message);
-                }
-                return [2 /*return*/];
             });
         });
     };
