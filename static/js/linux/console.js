@@ -24,7 +24,6 @@ var Console = /** @class */ (function () {
     function Console(terminal) {
         this.filesystem = new Filesystem();
         this.command_stack = [];
-        this.commands = new Commands(this.filesystem, terminal);
         this.terminal = terminal;
     }
     Console.prototype.execute = function (args) {
@@ -36,7 +35,7 @@ var Console = /** @class */ (function () {
             // if pipeline exists : add last command to pipeline and append pipeline to stack
             if (i + 1 >= args.length) {
                 c_command_array.push(args[i]);
-                var new_command = this.commands.getCommand(c_command_array[0]);
+                var new_command = CommandFactory.getCommand(c_command_array[0], this.filesystem, this.terminal);
                 if (!new_command)
                     return this.commandNotFound(c_command_array[0]);
                 if (c_pipeline != null) {
@@ -52,7 +51,7 @@ var Console = /** @class */ (function () {
                 // if no pipeline exists : create
                 if (c_pipeline == null)
                     c_pipeline = new Pipeline();
-                var new_command = this.commands.getCommand(c_command_array[0]);
+                var new_command = CommandFactory.getCommand(c_command_array[0], this.filesystem, this.terminal);
                 if (!new_command)
                     return this.commandNotFound(c_command_array[0]);
                 // append command (if valid) to pipeline
@@ -61,7 +60,7 @@ var Console = /** @class */ (function () {
                 continue;
             }
             else if (args[i] == ';' || args[i] == '&' || args[i] == '&&' /* etc */) {
-                var new_command = this.commands.getCommand(c_command_array[0]);
+                var new_command = CommandFactory.getCommand(c_command_array[0], this.filesystem, this.terminal);
                 if (!new_command)
                     return this.commandNotFound(c_command_array[0]);
                 // if pipeline exists : add last command to pipeline and append pipeline to stack

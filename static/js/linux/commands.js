@@ -1,27 +1,38 @@
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 function removeWhiteSpaceEntries(array) {
     return array.filter(function (str) { return /\S/.test(str); });
 }
-var Commands = /** @class */ (function () {
-    function Commands(filesystem, terminal) {
-        this.commands = [];
-        this.commands = [new Cat(filesystem, terminal), new Clear(filesystem, terminal), new Echo(filesystem, terminal), new Help(filesystem, terminal), new Sudo(filesystem, terminal)];
-    }
-    Commands.prototype.getCommand = function (commandid) {
-        for (var i = 0; i < this.commands.length; i++)
-            if (this.commands[i].id == commandid)
-                return this.commands[i];
-        return false;
-    };
-    return Commands;
-}());
-var Cat = /** @class */ (function () {
-    function Cat(fs, terminal) {
-        this.id = 'cat';
-        this.help = 'concatenate files and print on the standard output';
-        this.man = {};
-        this.forcestop = false;
+var Command = /** @class */ (function () {
+    function Command(fs, terminal) {
         this.fs = fs;
         this.terminal = terminal;
+    }
+    ;
+    Command.prototype.execute = function (args, user, print) { };
+    Command.prototype.print = function (output) { };
+    Command.prototype.stop = function () { };
+    return Command;
+}());
+var Cat = /** @class */ (function (_super) {
+    __extends(Cat, _super);
+    function Cat(fs, terminal) {
+        var _this = _super.call(this, fs, terminal) || this;
+        _this.id = 'cat';
+        _this.help = 'concatenate files and print on the standard output';
+        _this.man = {};
+        return _this;
     }
     Cat.prototype.execute = function (args, user, print) {
         if (user === void 0) { user = null; }
@@ -56,15 +67,15 @@ var Cat = /** @class */ (function () {
         this.forcestop = true;
     };
     return Cat;
-}());
-var Clear = /** @class */ (function () {
+}(Command));
+var Clear = /** @class */ (function (_super) {
+    __extends(Clear, _super);
     function Clear(fs, terminal) {
-        this.id = 'clear';
-        this.help = 'clear the terminal screen';
-        this.man = {};
-        this.forcestop = false;
-        this.fs = fs;
-        this.terminal = terminal;
+        var _this = _super.call(this, fs, terminal) || this;
+        _this.id = 'clear';
+        _this.help = 'clear the terminal screen';
+        _this.man = {};
+        return _this;
     }
     Clear.prototype.execute = function (args, user, print) {
         // Determine additional parameters ('-', '--')
@@ -89,14 +100,14 @@ var Clear = /** @class */ (function () {
         this.forcestop = true;
     };
     return Clear;
-}());
-var Echo = /** @class */ (function () {
+}(Command));
+var Echo = /** @class */ (function (_super) {
+    __extends(Echo, _super);
     function Echo(fs, terminal) {
-        this.id = 'echo';
-        this.help = 'write arguments to the standard output.';
-        this.forcestop = false;
-        this.fs = fs;
-        this.terminal = terminal;
+        var _this = _super.call(this, fs, terminal) || this;
+        _this.id = 'echo';
+        _this.help = 'write arguments to the standard output.';
+        return _this;
     }
     /// TODO: -e escape characters
     Echo.prototype.execute = function (args, user, print) {
@@ -116,21 +127,26 @@ var Echo = /** @class */ (function () {
         this.forcestop = true;
     };
     return Echo;
-}());
-var Help = /** @class */ (function () {
+}(Command));
+var Help = /** @class */ (function (_super) {
+    __extends(Help, _super);
     function Help(fs, terminal) {
-        this.id = 'help';
-        this.help = 'display info of supported commands';
-        this.man = {};
-        this.forcestop = false;
-        this.fs = fs;
-        this.terminal = terminal;
+        var _this = _super.call(this, fs, terminal) || this;
+        _this.id = 'help';
+        _this.help = 'display info of supported commands';
+        _this.man = {};
+        return _this;
     }
     Help.prototype.execute = function (args, user, print) {
+        var _this = this;
         if (print === void 0) { print = true; }
         if (args.length == 0) {
             var output_2 = [];
-            new Commands(this.fs, this.terminal).commands.forEach(function (command) {
+            var commands_1 = [];
+            CommandFactory.command_ids.forEach(function (id) {
+                commands_1.push(CommandFactory.getCommand(id, _this.fs, _this.terminal));
+            });
+            commands_1.forEach(function (command) {
                 output_2.push(command.id + " - " + command.help);
             });
             if (print)
@@ -144,7 +160,7 @@ var Help = /** @class */ (function () {
             return output_3;
         }
         // Catch argument as command
-        var command = new Commands(this.fs, this.terminal).getCommand(args[0]);
+        var command = CommandFactory.getCommand(args[0], this.fs, this.terminal);
         var output;
         if (!command)
             output = "help: '" + args[0] + "' is not a supported command";
@@ -167,18 +183,34 @@ var Help = /** @class */ (function () {
         this.terminal.ui.innerHTML += this.terminal.tline_start + " " + output + " " + this.terminal.tline_end;
     };
     Help.prototype.stop = function () {
-        throw new Error("Method not implemented.");
     };
     return Help;
-}());
-var Sudo = /** @class */ (function () {
+}(Command));
+var Ls = /** @class */ (function (_super) {
+    __extends(Ls, _super);
+    function Ls(fs, terminal) {
+        return _super.call(this, fs, terminal) || this;
+    }
+    Ls.prototype.execute = function (args, user, print) {
+        throw new Error("Method not implemented.");
+    };
+    Ls.prototype.print = function (output) {
+        throw new Error("Method not implemented.");
+    };
+    Ls.prototype.stop = function () {
+        throw new Error("Method not implemented.");
+    };
+    return Ls;
+}(Command));
+var Sudo = /** @class */ (function (_super) {
+    __extends(Sudo, _super);
     function Sudo(fs, terminal) {
-        this.id = 'sudo';
-        this.help = 'execute a command as another user';
-        this.man = {};
-        this.sub_command = null;
-        this.fs = fs;
-        this.terminal = terminal;
+        var _this = _super.call(this, fs, terminal) || this;
+        _this.id = 'sudo';
+        _this.help = 'execute a command as another user';
+        _this.man = {};
+        _this.sub_command = null;
+        return _this;
     }
     Sudo.prototype.execute = function (args, user, print) {
         if (print === void 0) { print = true; }
@@ -190,7 +222,7 @@ var Sudo = /** @class */ (function () {
         }
         // Do some password checks
         // Execute command as root user
-        var command = new Commands(this.fs, this.terminal).getCommand(args[0]);
+        var command = CommandFactory.getCommand(args[0], this.fs, this.terminal);
         if (!command) {
             if (print)
                 this.print("sudo: " + args[0] + ": command not found");
@@ -212,4 +244,15 @@ var Sudo = /** @class */ (function () {
         this.sub_command.stop();
     };
     return Sudo;
+}(Command));
+var CommandFactory = /** @class */ (function () {
+    function CommandFactory() {
+    }
+    CommandFactory.getCommand = function (id, filesystem, terminal) {
+        var index = this.command_ids.indexOf(id);
+        return index != -1 ? new this.command_classes[index](filesystem, terminal) : false;
+    };
+    CommandFactory.command_ids = ['cat', 'clear', 'echo', 'help', 'ls', 'sudo'];
+    CommandFactory.command_classes = [Cat, Clear, Echo, Help, Ls, Sudo];
+    return CommandFactory;
 }());
