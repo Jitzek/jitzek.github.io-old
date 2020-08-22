@@ -1,8 +1,98 @@
+class mFile {
+  parent: mDirectory = null;
+  name: string;
+  content: string;
+
+  constructor(parent: mDirectory, name: string) {
+    this.parent = parent;
+    this.name = name;
+  }
+
+  getContent(): string {
+    return this.content
+  }
+  setContent(content: string) {
+    this.content = content;
+  }
+  appendContent(content: string) {
+    this.content += content;
+  }
+}
+
+class mDirectory {
+  parent: mDirectory = null;
+  subdirectories: mDirectory[] = [];
+  files: mFile[] = [];
+
+  name: string;
+
+  constructor(parent: mDirectory, name: string) {
+    this.parent = parent;
+    this.name = name;
+  }
+
+  getContent() {
+    return [].concat(this.subdirectories).concat(this.files);
+  }
+
+  addFile(file: mFile) {
+    this.files.push(file);
+  }
+  addFileByName(filename: string) {
+    this.files.push(new mFile(this, filename))
+  }
+
+  removeFile(file: mFile) {
+    const index: number = this.files.indexOf(file, 0);
+    if (index > -1) {
+      this.files.splice(index, 1);
+    }
+  }
+  removeFileByName(filename: string) {
+    for (let i = 0; i < this.files.length; i++) {
+      if (this.files[i].name == filename) {
+        this.removeFile(this.files[i]);
+        return;
+      }
+    }
+  }
+
+  addDirectory(directory: mDirectory) {
+    this.subdirectories.push(directory);
+  }
+  addDirectoryByName(directoryname: string) {
+    this.subdirectories.push(new mDirectory(this, directoryname));
+  }
+
+  removeDirectory(directory: mDirectory) {
+    const index: number = this.subdirectories.indexOf(directory, 0);
+    if (index > -1) {
+      this.subdirectories.splice(index, 1);
+    }
+  }
+  removeDirectoryByName(directoryname: string) {
+    for (let i = 0; i < this.subdirectories.length; i++) {
+      if (this.subdirectories[i].name == directoryname) {
+        this.removeDirectory(this.subdirectories[i]);
+        return;
+      }
+    }
+  }
+}
+
 class Filesystem {
+  root: mDirectory;
   storage: any;
   current_dir: any;
   constructor() {
-    this.storage = {
+    this.root = new mDirectory(null, '/');
+    let bin = new mDirectory(this.root, 'bin');
+    let testtxt = new mFile(bin, 'test.txt');
+    testtxt.setContent('this is a text file');
+    bin.addFile(testtxt);
+    this.root.addDirectory(bin);
+
+    /*this.storage = {
       name: "/",
       type: "directory",
       content: [
@@ -22,34 +112,50 @@ class Filesystem {
           name: "boot",
           type: "directory",
           content: [],
-        },
+        }
       ],
-    };
-    this.current_dir = this.storage;
+    };*/
+    this.current_dir = this.root;
   }
 
   getLocation(path: string): any {
     // Convert string to array (cutting out '/')
     let path_arr = this.convertToLegalPathArray(this.pathAsArray(path));
-    
+
     return this.getLocationFromArray(path_arr);
   }
 
   isFile(location: any) {
-    return location.type == "file";
-  }
-  
-  isDirectory(location: any) {
-    return location.type == "directory";
+    return location instanceof mFile;
   }
 
-  getLocationFromArray(path_array: Array<string>, current_location = this.storage): any {
+  isDirectory(location: any) {
+    return location instanceof mDirectory;
+  }
+
+  getLocationFromArrayOld(path_array: Array<string>, current_location = this.storage): any {
     if (path_array.length < 1) return current_location;
     if (path_array[0] == '/') path_array.shift();
     let location: Object = null;
     for (let i = 0; i < current_location.content.length; i++) {
       if (current_location.content[i].name == path_array[0]) {
         location = current_location.content[i];
+        break;
+      }
+    }
+    if (location == null || location == undefined) return false;
+    return this.getLocationFromArrayOld(path_array.slice(1), location);
+  }
+
+  getLocationFromArray(path_array: Array<string>, current_location = this.root): any {
+    if (path_array.length < 1) return current_location;
+    if (path_array[0] == '/') path_array.shift();
+    let location: mDirectory = null;
+
+    let content: any[] = current_location.getContent();
+    for (let i = 0; i < content.length; i++) {
+      if (content[i].name == path_array[0]) {
+        location = content[i];
         break;
       }
     }
@@ -87,8 +193,8 @@ class Filesystem {
     if (path[0] != "/") path.unshift("/");
     return path;
   }
-
-  private locationAsArray(location: any): Array<string> {
+  
+  private locationAsArrayOld(location: any): Array<string> {
     let result: Array<string> = [];
     while (true) {
       let parent: any = this.getParentOfLocation(location);
@@ -100,19 +206,52 @@ class Filesystem {
     return result;
   }
 
-  private getParentOfLocation(
+  private locationAsArray(location: any): Array<string> {
+    let result: Array<string> = [];
+    while (true) {
+      let parent: any = this.getParentOfLocation(location);
+      result.push(parent.name);
+      if (parent == this.root) break;
+    }
+    result.reverse();
+    if (location != this.root) result.push(location.name);
+    return result;
+  }
+
+  private getParentOfLocationOld(
     location: Object,
     current_location: any = this.storage
   ): any {
     if (location == this.storage) return this.storage;
     for (let i = 0; i < current_location.content.length; i++) {
       if (current_location.content[i] == location) return current_location;
-      let result = this.getParentOfLocation(
+      let result = this.getParentOfLocationOld(
         location,
         current_location.content[i]
       );
       if (result !== false) return result;
     }
     return false;
+  }
+
+  private getParentOfLocation(location: Object, current_location: mDirectory = this.root): any {
+    if (location == this.root) return this.root;
+    for (let i = 0; i < current_location.subdirectories.length; i++) {
+      if (current_location.subdirectories[i] == location) return current_location;
+      let result = this.getParentOfLocation(
+        location,
+        current_location.subdirectories[i]
+      );
+      if (result !== false) return result;
+    }
+    return false;
+  }
+
+  private arrayAsString(path_arr: string[]) {
+    let result = '/';
+    path_arr.forEach(e => {
+      result += `/${e}`;
+    });
+    return result;
   }
 }

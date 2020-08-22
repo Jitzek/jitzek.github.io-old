@@ -1,5 +1,5 @@
 function delay(ms: number) {
-  return new Promise( resolve => setTimeout(resolve, ms) );
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function removeWhiteSpaceEntries(array: Array<string>) {
@@ -19,9 +19,9 @@ class Command {
     this.terminal = terminal;
   };
 
-  async execute(args: Array<string>, user: Object, print: boolean): Promise<any> { }
+  async execute(args: Array<any>, user: Object, print: boolean): Promise<any> { }
   print(output: any): void { }
-  async stop(): Promise<void> { 
+  async stop(): Promise<void> {
     this.forcestop = true;
   }
 }
@@ -35,8 +35,8 @@ class Cat extends Command {
     super(fs, terminal);
   }
 
-  execute(args: Array<string>, user: Object = null, print = true): any {
-    if (removeWhiteSpaceEntries(args).length < 1) {
+  execute(args: Array<any>, user: Object = null, print = true): any {
+    if (args.length < 1) {
       // Display help
       if (print) this.print('cat: help placeholder text');
       return;
@@ -47,7 +47,7 @@ class Cat extends Command {
     //
 
     // Get location of file
-    let location = this.fs.getLocation(args[0]);
+    let location = args[0] instanceof mFile || args[0] instanceof mDirectory ? args[0] : this.fs.getLocation(args[0]);
 
     // Check if location is file
     if (!this.fs.isFile(location)) {

@@ -1,29 +1,105 @@
+var mFile = /** @class */ (function () {
+    function mFile(parent, name) {
+        this.parent = null;
+        this.parent = parent;
+        this.name = name;
+    }
+    mFile.prototype.getContent = function () {
+        return this.content;
+    };
+    mFile.prototype.setContent = function (content) {
+        this.content = content;
+    };
+    mFile.prototype.appendContent = function (content) {
+        this.content += content;
+    };
+    return mFile;
+}());
+var mDirectory = /** @class */ (function () {
+    function mDirectory(parent, name) {
+        this.parent = null;
+        this.subdirectories = [];
+        this.files = [];
+        this.parent = parent;
+        this.name = name;
+    }
+    mDirectory.prototype.getContent = function () {
+        return [].concat(this.subdirectories).concat(this.files);
+    };
+    mDirectory.prototype.addFile = function (file) {
+        this.files.push(file);
+    };
+    mDirectory.prototype.addFileByName = function (filename) {
+        this.files.push(new mFile(this, filename));
+    };
+    mDirectory.prototype.removeFile = function (file) {
+        var index = this.files.indexOf(file, 0);
+        if (index > -1) {
+            this.files.splice(index, 1);
+        }
+    };
+    mDirectory.prototype.removeFileByName = function (filename) {
+        for (var i = 0; i < this.files.length; i++) {
+            if (this.files[i].name == filename) {
+                this.removeFile(this.files[i]);
+                return;
+            }
+        }
+    };
+    mDirectory.prototype.addDirectory = function (directory) {
+        this.subdirectories.push(directory);
+    };
+    mDirectory.prototype.addDirectoryByName = function (directoryname) {
+        this.subdirectories.push(new mDirectory(this, directoryname));
+    };
+    mDirectory.prototype.removeDirectory = function (directory) {
+        var index = this.subdirectories.indexOf(directory, 0);
+        if (index > -1) {
+            this.subdirectories.splice(index, 1);
+        }
+    };
+    mDirectory.prototype.removeDirectoryByName = function (directoryname) {
+        for (var i = 0; i < this.subdirectories.length; i++) {
+            if (this.subdirectories[i].name == directoryname) {
+                this.removeDirectory(this.subdirectories[i]);
+                return;
+            }
+        }
+    };
+    return mDirectory;
+}());
 var Filesystem = /** @class */ (function () {
     function Filesystem() {
-        this.storage = {
-            name: "/",
-            type: "directory",
-            content: [
+        this.root = new mDirectory(null, '/');
+        var bin = new mDirectory(this.root, 'bin');
+        var testtxt = new mFile(bin, 'test.txt');
+        testtxt.setContent('this is a text file');
+        bin.addFile(testtxt);
+        this.root.addDirectory(bin);
+        /*this.storage = {
+          name: "/",
+          type: "directory",
+          content: [
+            {
+              name: "bin",
+              type: "directory",
+              content: [
                 {
-                    name: "bin",
-                    type: "directory",
-                    content: [
-                        {
-                            name: "test.txt",
-                            type: "file",
-                            executable: false,
-                            content: "this is a text file"
-                        },
-                    ]
+                  name: "test.txt",
+                  type: "file",
+                  executable: false,
+                  content: "this is a text file",
                 },
-                {
-                    name: "boot",
-                    type: "directory",
-                    content: []
-                },
-            ]
-        };
-        this.current_dir = this.storage;
+              ],
+            },
+            {
+              name: "boot",
+              type: "directory",
+              content: [],
+            }
+          ],
+        };*/
+        this.current_dir = this.root;
     }
     Filesystem.prototype.getLocation = function (path) {
         // Convert string to array (cutting out '/')
@@ -31,12 +107,12 @@ var Filesystem = /** @class */ (function () {
         return this.getLocationFromArray(path_arr);
     };
     Filesystem.prototype.isFile = function (location) {
-        return location.type == "file";
+        return location instanceof mFile;
     };
     Filesystem.prototype.isDirectory = function (location) {
-        return location.type == "directory";
+        return location instanceof mDirectory;
     };
-    Filesystem.prototype.getLocationFromArray = function (path_array, current_location) {
+    Filesystem.prototype.getLocationFromArrayOld = function (path_array, current_location) {
         if (current_location === void 0) { current_location = this.storage; }
         if (path_array.length < 1)
             return current_location;
@@ -46,6 +122,24 @@ var Filesystem = /** @class */ (function () {
         for (var i = 0; i < current_location.content.length; i++) {
             if (current_location.content[i].name == path_array[0]) {
                 location = current_location.content[i];
+                break;
+            }
+        }
+        if (location == null || location == undefined)
+            return false;
+        return this.getLocationFromArrayOld(path_array.slice(1), location);
+    };
+    Filesystem.prototype.getLocationFromArray = function (path_array, current_location) {
+        if (current_location === void 0) { current_location = this.root; }
+        if (path_array.length < 1)
+            return current_location;
+        if (path_array[0] == '/')
+            path_array.shift();
+        var location = null;
+        var content = current_location.getContent();
+        for (var i = 0; i < content.length; i++) {
+            if (content[i].name == path_array[0]) {
+                location = content[i];
                 break;
             }
         }
@@ -87,7 +181,7 @@ var Filesystem = /** @class */ (function () {
             path.unshift("/");
         return path;
     };
-    Filesystem.prototype.locationAsArray = function (location) {
+    Filesystem.prototype.locationAsArrayOld = function (location) {
         var result = [];
         while (true) {
             var parent_1 = this.getParentOfLocation(location);
@@ -100,18 +194,51 @@ var Filesystem = /** @class */ (function () {
             result.push(location.name);
         return result;
     };
-    Filesystem.prototype.getParentOfLocation = function (location, current_location) {
+    Filesystem.prototype.locationAsArray = function (location) {
+        var result = [];
+        while (true) {
+            var parent_2 = this.getParentOfLocation(location);
+            result.push(parent_2.name);
+            if (parent_2 == this.root)
+                break;
+        }
+        result.reverse();
+        if (location != this.root)
+            result.push(location.name);
+        return result;
+    };
+    Filesystem.prototype.getParentOfLocationOld = function (location, current_location) {
         if (current_location === void 0) { current_location = this.storage; }
         if (location == this.storage)
             return this.storage;
         for (var i = 0; i < current_location.content.length; i++) {
             if (current_location.content[i] == location)
                 return current_location;
-            var result = this.getParentOfLocation(location, current_location.content[i]);
+            var result = this.getParentOfLocationOld(location, current_location.content[i]);
             if (result !== false)
                 return result;
         }
         return false;
+    };
+    Filesystem.prototype.getParentOfLocation = function (location, current_location) {
+        if (current_location === void 0) { current_location = this.root; }
+        if (location == this.root)
+            return this.root;
+        for (var i = 0; i < current_location.subdirectories.length; i++) {
+            if (current_location.subdirectories[i] == location)
+                return current_location;
+            var result = this.getParentOfLocation(location, current_location.subdirectories[i]);
+            if (result !== false)
+                return result;
+        }
+        return false;
+    };
+    Filesystem.prototype.arrayAsString = function (path_arr) {
+        var result = '/';
+        path_arr.forEach(function (e) {
+            result += "/" + e;
+        });
+        return result;
     };
     return Filesystem;
 }());

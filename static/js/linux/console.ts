@@ -1,13 +1,26 @@
 class Pipeline {
     pipeline: Command[] = [];
-    commands: string[][] = [];
+    commands: any[][] = [];
+
+    private fs: Filesystem;
+
+    constructor(fs: Filesystem) {
+        this.fs = fs;
+    }
 
     async execute(user: Object = null): Promise<any> {
         let result: any = false;
         for (let i = 0; i < this.commands.length; i++) {
             let print = i + 1 >= this.commands.length;
-            if (result) this.commands[i].push(result);
+
+            let temp = new mFile(null, 'temp');
+            temp.setContent(result);
+            
+            if (result) this.commands[i].push(temp); // !
             result = await this.pipeline[i].execute(this.commands[i].slice(1), null, print);
+            if (result) {
+                this.fs
+            }
         }
         return result;
     }
@@ -62,7 +75,7 @@ class Console {
 
             if (args[i] == '|') {
                 // if no pipeline exists : create
-                if (c_pipeline == null) c_pipeline = new Pipeline();
+                if (c_pipeline == null) c_pipeline = new Pipeline(this.filesystem);
                 
                 let new_command = CommandFactory.getCommand(c_command_array[0], this.filesystem, this.terminal);
                 if (!new_command) return this.commandNotFound(c_command_array[0]);

@@ -88,7 +88,7 @@ var Cat = /** @class */ (function (_super) {
     Cat.prototype.execute = function (args, user, print) {
         if (user === void 0) { user = null; }
         if (print === void 0) { print = true; }
-        if (removeWhiteSpaceEntries(args).length < 1) {
+        if (args.length < 1) {
             // Display help
             if (print)
                 this.print('cat: help placeholder text');
@@ -97,7 +97,7 @@ var Cat = /** @class */ (function (_super) {
         // Determine additional parameters ('-', '--')
         //
         // Get location of file
-        var location = this.fs.getLocation(args[0]);
+        var location = args[0] instanceof mFile || args[0] instanceof mDirectory ? args[0] : this.fs.getLocation(args[0]);
         // Check if location is file
         if (!this.fs.isFile(location)) {
             var output_1 = "cat: cannot open " + args[0];

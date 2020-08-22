@@ -35,14 +35,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var Pipeline = /** @class */ (function () {
-    function Pipeline() {
+    function Pipeline(fs) {
         this.pipeline = [];
         this.commands = [];
+        this.fs = fs;
     }
     Pipeline.prototype.execute = function (user) {
         if (user === void 0) { user = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var result, i, print_1;
+            var result, i, print_1, temp;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -52,11 +53,16 @@ var Pipeline = /** @class */ (function () {
                     case 1:
                         if (!(i < this.commands.length)) return [3 /*break*/, 4];
                         print_1 = i + 1 >= this.commands.length;
+                        temp = new mFile(null, 'temp');
+                        temp.setContent(result);
                         if (result)
-                            this.commands[i].push(result);
+                            this.commands[i].push(temp); // !
                         return [4 /*yield*/, this.pipeline[i].execute(this.commands[i].slice(1), null, print_1)];
                     case 2:
                         result = _a.sent();
+                        if (result) {
+                            this.fs;
+                        }
                         _a.label = 3;
                     case 3:
                         i++;
@@ -116,7 +122,7 @@ var Console = /** @class */ (function () {
                             if (args[i] == '|') {
                                 // if no pipeline exists : create
                                 if (c_pipeline == null)
-                                    c_pipeline = new Pipeline();
+                                    c_pipeline = new Pipeline(this.filesystem);
                                 new_command = CommandFactory.getCommand(c_command_array[0], this.filesystem, this.terminal);
                                 if (!new_command)
                                     return [2 /*return*/, this.commandNotFound(c_command_array[0])];
