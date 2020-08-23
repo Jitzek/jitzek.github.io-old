@@ -76,29 +76,6 @@ var Filesystem = /** @class */ (function () {
         testtxt.setContent('this is a text file');
         bin.addFile(testtxt);
         this.root.addDirectory(bin);
-        /*this.storage = {
-          name: "/",
-          type: "directory",
-          content: [
-            {
-              name: "bin",
-              type: "directory",
-              content: [
-                {
-                  name: "test.txt",
-                  type: "file",
-                  executable: false,
-                  content: "this is a text file",
-                },
-              ],
-            },
-            {
-              name: "boot",
-              type: "directory",
-              content: [],
-            }
-          ],
-        };*/
         this.current_dir = this.root;
     }
     Filesystem.prototype.getLocation = function (path) {
@@ -111,23 +88,6 @@ var Filesystem = /** @class */ (function () {
     };
     Filesystem.prototype.isDirectory = function (location) {
         return location instanceof mDirectory;
-    };
-    Filesystem.prototype.getLocationFromArrayOld = function (path_array, current_location) {
-        if (current_location === void 0) { current_location = this.storage; }
-        if (path_array.length < 1)
-            return current_location;
-        if (path_array[0] == '/')
-            path_array.shift();
-        var location = null;
-        for (var i = 0; i < current_location.content.length; i++) {
-            if (current_location.content[i].name == path_array[0]) {
-                location = current_location.content[i];
-                break;
-            }
-        }
-        if (location == null || location == undefined)
-            return false;
-        return this.getLocationFromArrayOld(path_array.slice(1), location);
     };
     Filesystem.prototype.getLocationFromArray = function (path_array, current_location) {
         if (current_location === void 0) { current_location = this.root; }
@@ -181,44 +141,18 @@ var Filesystem = /** @class */ (function () {
             path.unshift("/");
         return path;
     };
-    Filesystem.prototype.locationAsArrayOld = function (location) {
+    Filesystem.prototype.locationAsArray = function (location) {
         var result = [];
         while (true) {
             var parent_1 = this.getParentOfLocation(location);
             result.push(parent_1.name);
-            if (parent_1 == this.storage)
-                break;
-        }
-        result.reverse();
-        if (location != this.storage)
-            result.push(location.name);
-        return result;
-    };
-    Filesystem.prototype.locationAsArray = function (location) {
-        var result = [];
-        while (true) {
-            var parent_2 = this.getParentOfLocation(location);
-            result.push(parent_2.name);
-            if (parent_2 == this.root)
+            if (parent_1 == this.root)
                 break;
         }
         result.reverse();
         if (location != this.root)
             result.push(location.name);
         return result;
-    };
-    Filesystem.prototype.getParentOfLocationOld = function (location, current_location) {
-        if (current_location === void 0) { current_location = this.storage; }
-        if (location == this.storage)
-            return this.storage;
-        for (var i = 0; i < current_location.content.length; i++) {
-            if (current_location.content[i] == location)
-                return current_location;
-            var result = this.getParentOfLocationOld(location, current_location.content[i]);
-            if (result !== false)
-                return result;
-        }
-        return false;
     };
     Filesystem.prototype.getParentOfLocation = function (location, current_location) {
         if (current_location === void 0) { current_location = this.root; }

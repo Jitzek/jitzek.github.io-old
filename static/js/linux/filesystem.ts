@@ -92,29 +92,6 @@ class Filesystem {
     bin.addFile(testtxt);
     this.root.addDirectory(bin);
 
-    /*this.storage = {
-      name: "/",
-      type: "directory",
-      content: [
-        {
-          name: "bin",
-          type: "directory",
-          content: [
-            {
-              name: "test.txt",
-              type: "file",
-              executable: false,
-              content: "this is a text file",
-            },
-          ],
-        },
-        {
-          name: "boot",
-          type: "directory",
-          content: [],
-        }
-      ],
-    };*/
     this.current_dir = this.root;
   }
 
@@ -131,20 +108,6 @@ class Filesystem {
 
   isDirectory(location: any) {
     return location instanceof mDirectory;
-  }
-
-  getLocationFromArrayOld(path_array: Array<string>, current_location = this.storage): any {
-    if (path_array.length < 1) return current_location;
-    if (path_array[0] == '/') path_array.shift();
-    let location: Object = null;
-    for (let i = 0; i < current_location.content.length; i++) {
-      if (current_location.content[i].name == path_array[0]) {
-        location = current_location.content[i];
-        break;
-      }
-    }
-    if (location == null || location == undefined) return false;
-    return this.getLocationFromArrayOld(path_array.slice(1), location);
   }
 
   getLocationFromArray(path_array: Array<string>, current_location = this.root): any {
@@ -193,18 +156,6 @@ class Filesystem {
     if (path[0] != "/") path.unshift("/");
     return path;
   }
-  
-  private locationAsArrayOld(location: any): Array<string> {
-    let result: Array<string> = [];
-    while (true) {
-      let parent: any = this.getParentOfLocation(location);
-      result.push(parent.name);
-      if (parent == this.storage) break;
-    }
-    result.reverse();
-    if (location != this.storage) result.push(location.name);
-    return result;
-  }
 
   private locationAsArray(location: any): Array<string> {
     let result: Array<string> = [];
@@ -216,22 +167,6 @@ class Filesystem {
     result.reverse();
     if (location != this.root) result.push(location.name);
     return result;
-  }
-
-  private getParentOfLocationOld(
-    location: Object,
-    current_location: any = this.storage
-  ): any {
-    if (location == this.storage) return this.storage;
-    for (let i = 0; i < current_location.content.length; i++) {
-      if (current_location.content[i] == location) return current_location;
-      let result = this.getParentOfLocationOld(
-        location,
-        current_location.content[i]
-      );
-      if (result !== false) return result;
-    }
-    return false;
   }
 
   private getParentOfLocation(location: Object, current_location: mDirectory = this.root): any {

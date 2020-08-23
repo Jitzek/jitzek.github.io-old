@@ -217,7 +217,7 @@ class Sudo extends Command {
       if (print) this.print(`sudo: ${args[0]}: command not found`);
     }
     if (command) this.sub_command = command;
-    let result = this.sub_command.execute(args.slice(1), user = null /* root */, print = true);
+    let result = this.sub_command.execute(args.slice(1), user = null /* root */, print);
     return result;
   }
 

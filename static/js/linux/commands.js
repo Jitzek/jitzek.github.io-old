@@ -278,7 +278,7 @@ var Sudo = /** @class */ (function (_super) {
                 }
                 if (command)
                     this.sub_command = command;
-                result = this.sub_command.execute(args.slice(1), user = null /* root */, print = true);
+                result = this.sub_command.execute(args.slice(1), user = null /* root */, print);
                 return [2 /*return*/, result];
             });
         });
