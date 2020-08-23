@@ -182,8 +182,31 @@ class Ls extends Command {
     super(fs, terminal);
   }
 
-  async execute(args: string[], user: Object, print: boolean): Promise<any> {
-    throw new Error("Method not implemented.");
+  async execute(args: any[], user: Object, print: boolean): Promise<any> {
+    // Determine additional parameters ('-', '--')
+
+    //
+    
+    let path = args[0];
+    let content: any[];
+    let output: string[] = [];
+    if (typeof path === 'string') {
+      let location: any = this.fs.getLocation(path);
+      if (!this.fs.isDirectory(location)) {
+        return;
+      }
+      let directory: mDirectory = location;
+      content = directory.getContent();
+      content.forEach(e => {
+        output.push(e.name);
+      });
+    } else if (path === 'mDirectory') {
+      
+    } else {
+      return;
+    }
+    if (print) this.print(content);
+    return;
   }
 
   print(output: any): void {
