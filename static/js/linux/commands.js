@@ -157,9 +157,16 @@ var Echo = /** @class */ (function (_super) {
         if (user === void 0) { user = null; }
         if (print === void 0) { print = true; }
         return __awaiter(this, void 0, void 0, function () {
-            var output;
+            var valid, i, output;
             return __generator(this, function (_a) {
-                output = args[0];
+                valid = true;
+                for (i = 0; i < args.length; i++) {
+                    if (typeof args[i] !== "string") {
+                        valid = false;
+                        break;
+                    }
+                }
+                output = valid ? args.join(' ') : '\xa0';
                 if (print)
                     this.print(output);
                 return [2 /*return*/, output];
@@ -240,8 +247,29 @@ var Ls = /** @class */ (function (_super) {
     }
     Ls.prototype.execute = function (args, user, print) {
         return __awaiter(this, void 0, void 0, function () {
+            var path, content, output, location_1, directory;
             return __generator(this, function (_a) {
-                throw new Error("Method not implemented.");
+                path = args[0];
+                output = [];
+                if (typeof path === 'string') {
+                    location_1 = this.fs.getLocation(path);
+                    if (!this.fs.isDirectory(location_1)) {
+                        return [2 /*return*/];
+                    }
+                    directory = location_1;
+                    content = directory.getContent();
+                    content.forEach(function (e) {
+                        output.push(e.name);
+                    });
+                }
+                else if (path === 'mDirectory') {
+                }
+                else {
+                    return [2 /*return*/];
+                }
+                if (print)
+                    this.print(content);
+                return [2 /*return*/];
             });
         });
     };
@@ -278,7 +306,7 @@ var Sudo = /** @class */ (function (_super) {
                 }
                 if (command)
                     this.sub_command = command;
-                result = this.sub_command.execute(args.slice(1), user = null /* root */, print);
+                result = this.sub_command.execute(args.slice(1), user = null /* root */, print = true);
                 return [2 /*return*/, result];
             });
         });

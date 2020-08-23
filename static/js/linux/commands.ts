@@ -104,12 +104,20 @@ class Echo extends Command {
   }
 
   /// TODO: -e escape characters
-  async execute(args: string[], user: Object = null, print = true): Promise<any> {
+  async execute(args: any[], user: Object = null, print = true): Promise<any> {
     // Determine additional parameters ('-', '--')
 
     //
 
-    let output = args[0];
+    let valid = true;
+    for (let i = 0; i < args.length; i++) {
+      if (typeof args[i] !== "string") {
+        valid = false;
+        break;
+      }
+    }
+
+    let output: string = valid ? args.join(' ') : '\xa0';
 
     if (print) this.print(output);
 
@@ -186,7 +194,7 @@ class Ls extends Command {
     // Determine additional parameters ('-', '--')
 
     //
-    
+
     let path = args[0];
     let content: any[];
     let output: string[] = [];
@@ -201,7 +209,7 @@ class Ls extends Command {
         output.push(e.name);
       });
     } else if (path === 'mDirectory') {
-      
+
     } else {
       return;
     }
@@ -240,7 +248,7 @@ class Sudo extends Command {
       if (print) this.print(`sudo: ${args[0]}: command not found`);
     }
     if (command) this.sub_command = command;
-    let result = this.sub_command.execute(args.slice(1), user = null /* root */, print);
+    let result = this.sub_command.execute(args.slice(1), user = null /* root */, print = true);
     return result;
   }
 
