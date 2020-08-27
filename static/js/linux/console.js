@@ -53,16 +53,14 @@ var Pipeline = /** @class */ (function () {
                     case 1:
                         if (!(i < this.commands.length)) return [3 /*break*/, 4];
                         print_1 = i + 1 >= this.commands.length;
-                        temp = new mFile(null, 'temp');
-                        temp.setContent(result);
-                        if (result)
-                            this.commands[i].push(temp); // !
+                        if (result) {
+                            temp = new mFile(null, 'temp');
+                            temp.setContent(this.convertOutputToString(result));
+                            this.commands[i].push(temp);
+                        }
                         return [4 /*yield*/, this.pipeline[i].execute(this.commands[i].slice(1), null, print_1)];
                     case 2:
                         result = _a.sent();
-                        if (result) {
-                            this.fs;
-                        }
                         _a.label = 3;
                     case 3:
                         i++;
@@ -86,20 +84,36 @@ var Pipeline = /** @class */ (function () {
             });
         });
     };
+    Pipeline.prototype.convertOutputToString = function (output) {
+        if (typeof output == 'string')
+            return output;
+        if (Array.isArray(output)) {
+            var result = '';
+            for (var i = 0; i < output.length; i++)
+                result += i + 1 < output.length ? output[i] + "\n" : output[i];
+            return result;
+        }
+    };
     return Pipeline;
 }());
 var Console = /** @class */ (function () {
     function Console(terminal) {
         this.filesystem = new Filesystem();
         this.command_stack = [];
+        this.special_chars = [
+            '<', '>', '>>', ';', '&&', '&', '||', '|'
+        ];
         this.terminal = terminal;
     }
-    Console.prototype.execute = function (args) {
+    Console.prototype.execute = function (command) {
         return __awaiter(this, void 0, void 0, function () {
-            var c_command_array, c_pipeline, i, new_command, new_command, new_command, result, i;
+            var args, c_command_array, c_pipeline, i, new_command, new_command, new_command, i;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        args = [];
+                        args = command.split(' '); // TEMP
+                        args = this.convertGivenCommandToArgs(command);
                         args = removeWhiteSpaceEntries(args);
                         c_command_array = [];
                         c_pipeline = null;
@@ -151,7 +165,6 @@ var Console = /** @class */ (function () {
                             else
                                 c_command_array.push(args[i]);
                         }
-                        result = false;
                         i = 0;
                         _a.label = 1;
                     case 1:
@@ -176,6 +189,41 @@ var Console = /** @class */ (function () {
                 }
             });
         });
+    };
+    Console.prototype.convertGivenCommandToArgs = function (command) {
+        var result = [];
+        // Iterate through each character of the command string
+        var c_arg = '';
+        conversion: for (var i = 0; i < command.length; i++) {
+            // If character is a whitespace, add previous gathered entry (if not empty)
+            if (command[i] == ' ') {
+                if (c_arg == '')
+                    continue;
+                result.push(c_arg);
+                c_arg = '';
+                continue;
+            }
+            // If character is a special character, add previous gathered entry (if not empty) and push special character as seperate entry
+            for (var j = 0; j < this.special_chars.length; j++) {
+                var s = '';
+                for (var k = 0; k < this.special_chars[j].length; k++)
+                    s += "\\" + this.special_chars[j][k];
+                var match = new RegExp(s, 'g').exec(command.slice(i, command.length));
+                if (!match || match.index != 0)
+                    continue;
+                if (c_arg != '') {
+                    result.push(c_arg);
+                    c_arg = '';
+                }
+                i += (match[0].length - 1);
+                result.push(match[0]);
+                continue conversion;
+            }
+            c_arg += command[i];
+            if (i + 1 >= command.length)
+                result.push(c_arg);
+        }
+        return result;
     };
     Console.prototype.commandNotFound = function (command) {
         this.clean();

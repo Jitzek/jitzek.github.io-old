@@ -13,14 +13,12 @@ class Pipeline {
         for (let i = 0; i < this.commands.length; i++) {
             let print = i + 1 >= this.commands.length;
 
-            let temp = new mFile(null, 'temp');
-            temp.setContent(result);
-            
-            if (result) this.commands[i].push(temp); // !
-            result = await this.pipeline[i].execute(this.commands[i].slice(1), null, print);
             if (result) {
-                this.fs
+                let temp = new mFile(null, 'temp');
+                temp.setContent(this.convertOutputToString(result));
+                this.commands[i].push(temp);
             }
+            result = await this.pipeline[i].execute(this.commands[i].slice(1), null, print);
         }
         return result;
     }
@@ -35,6 +33,15 @@ class Pipeline {
             command.stop();
         });
     }
+    private convertOutputToString(output: any): string {
+        if (typeof output == 'string') return output;
+        if (Array.isArray(output)) {
+            let result = '';
+            for (let i = 0; i < output.length; i++)
+                result += i + 1 < output.length ? `${output[i]}\n` : output[i];
+            return result;
+        }
+    }
 }
 
 class Console {
@@ -48,7 +55,15 @@ class Console {
         this.terminal = terminal;
     }
 
-    async execute(args: Array<string>) {
+    special_chars: string[] = [
+        '<', '>', '>>', ';', '&&', '&', '||', '|'
+    ];
+
+    async execute(command: string) {
+        // Split command by whitespace and/or special characters
+        let args: string[] = [];
+        args = command.split(' '); // TEMP
+        args = this.convertGivenCommandToArgs(command);
         args = removeWhiteSpaceEntries(args);
 
         // Construct command stack
@@ -76,7 +91,7 @@ class Console {
             if (args[i] == '|') {
                 // if no pipeline exists : create
                 if (c_pipeline == null) c_pipeline = new Pipeline(this.filesystem);
-                
+
                 let new_command = CommandFactory.getCommand(c_command_array[0], this.filesystem, this.terminal);
                 if (!new_command) return this.commandNotFound(c_command_array[0]);
 
@@ -113,13 +128,45 @@ class Console {
             else c_command_array.push(args[i]);
         }
 
-        let result: any = false;
         for (let i = 0; i < this.command_stack.length; i++) {
             if (this.command_stack[i].type == 'pipe') await this.command_stack[i].executable.execute(null);
             else if (this.command_stack[i].type == 'command') await this.command_stack[i].executable.execute(this.command_stack[i].args, null);
         }
 
         this.clean();
+    }
+
+    private convertGivenCommandToArgs(command: string): string[] {
+        let result: string[] = [];
+        // Iterate through each character of the command string
+        let c_arg = '';
+        conversion:
+        for (let i = 0; i < command.length; i++) {
+            // If character is a whitespace, add previous gathered entry (if not empty)
+            if (command[i] == ' ') {
+                if (c_arg == '') continue;
+                result.push(c_arg);
+                c_arg = '';
+                continue;
+            }
+            // If character is a special character, add previous gathered entry (if not empty) and push special character as seperate entry
+            for (let j = 0; j < this.special_chars.length; j++) {
+                let s = '';
+                for (let k = 0; k < this.special_chars[j].length; k++) s += `\\${this.special_chars[j][k]}`;
+                let match = new RegExp(s, 'g').exec(command.slice(i, command.length));
+                if (!match || match.index != 0) continue;
+                if (c_arg != '') {
+                    result.push(c_arg);
+                    c_arg = '';
+                }
+                i += (match[0].length - 1);
+                result.push(match[0]);
+                continue conversion;
+            }
+            c_arg += command[i];
+            if (i + 1 >= command.length) result.push(c_arg);
+        }
+        return result
     }
 
     private commandNotFound(command: string) {

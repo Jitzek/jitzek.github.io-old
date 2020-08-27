@@ -65,7 +65,7 @@ class Cat extends Command {
   }
 
   print(output: any) {
-    this.terminal.ui.innerHTML += `${this.terminal.tline_start} ${output} ${this.terminal.tline_end}`;
+    this.terminal.ui.innerHTML += `${this.terminal.tline_start}${output}${this.terminal.tline_end}`;
   }
 }
 
@@ -169,14 +169,12 @@ class Help extends Command {
 
   print(output: any): void {
     if (output instanceof Array) {
-      this.terminal.ui.innerHTML += this.terminal.tline_start;
-      output.forEach(element => {
-        this.terminal.ui.innerHTML += `<span>${element}</span><br>`;
-      });
-      this.terminal.ui.innerHTML += this.terminal.tline_end;
+      let n_output = '';
+      output.forEach(element => { n_output += `${element}<br>`; });
+      this.terminal.ui.innerHTML += `${this.terminal.tline_start}${n_output}${this.terminal.tline_end}`;
       return;
     }
-    this.terminal.ui.innerHTML += `${this.terminal.tline_start} ${output} ${this.terminal.tline_end}`;
+    this.terminal.ui.innerHTML += `${this.terminal.tline_start}${output}${this.terminal.tline_end}`;
   }
 
 }
@@ -234,7 +232,7 @@ class Sudo extends Command {
   }
 
   async execute(args: string[], user: Object, print = true): Promise<any> {
-    if (removeWhiteSpaceEntries(args).length < 1) {
+    if (args.length < 1) {
       // Display help
       if (print) this.print('sudo: help placeholder text');
       return;

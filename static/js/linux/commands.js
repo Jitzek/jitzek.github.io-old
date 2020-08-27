@@ -112,7 +112,7 @@ var Cat = /** @class */ (function (_super) {
         return output;
     };
     Cat.prototype.print = function (output) {
-        this.terminal.ui.innerHTML += this.terminal.tline_start + " " + output + " " + this.terminal.tline_end;
+        this.terminal.ui.innerHTML += "" + this.terminal.tline_start + output + this.terminal.tline_end;
     };
     return Cat;
 }(Command));
@@ -224,16 +224,13 @@ var Help = /** @class */ (function (_super) {
         });
     };
     Help.prototype.print = function (output) {
-        var _this = this;
         if (output instanceof Array) {
-            this.terminal.ui.innerHTML += this.terminal.tline_start;
-            output.forEach(function (element) {
-                _this.terminal.ui.innerHTML += "<span>" + element + "</span><br>";
-            });
-            this.terminal.ui.innerHTML += this.terminal.tline_end;
+            var n_output_1 = '';
+            output.forEach(function (element) { n_output_1 += element + "<br>"; });
+            this.terminal.ui.innerHTML += "" + this.terminal.tline_start + n_output_1 + this.terminal.tline_end;
             return;
         }
-        this.terminal.ui.innerHTML += this.terminal.tline_start + " " + output + " " + this.terminal.tline_end;
+        this.terminal.ui.innerHTML += "" + this.terminal.tline_start + output + this.terminal.tline_end;
     };
     return Help;
 }(Command));
@@ -293,7 +290,7 @@ var Sudo = /** @class */ (function (_super) {
         return __awaiter(this, void 0, void 0, function () {
             var command, result;
             return __generator(this, function (_a) {
-                if (removeWhiteSpaceEntries(args).length < 1) {
+                if (args.length < 1) {
                     // Display help
                     if (print)
                         this.print('sudo: help placeholder text');

@@ -9,8 +9,8 @@ class Terminal {
   ui: HTMLElement = document.getElementById("terminal");
   ui_input: any = document.getElementById("terminal-input");
 
-  tline_start = `<p id="terminal-line" style="color: ${COLOR_OUTPUT};">`
-  tline_end = "</p>";
+  tline_start = `<pre id="terminal-line" style="color: ${COLOR_OUTPUT};">`
+  tline_end = "</pre>";
   
 
   async handleUserInput() {
@@ -25,7 +25,7 @@ class Terminal {
       this.ui_input.value = "";
 
       // Do something with input //
-      await this._console.execute(input.split(" "));
+      await this._console.execute(input);
       //
     } catch (error) {
       this.print(error.message);

@@ -44,8 +44,8 @@ var Terminal = /** @class */ (function () {
         this._console = new Console(this);
         this.ui = document.getElementById("terminal");
         this.ui_input = document.getElementById("terminal-input");
-        this.tline_start = "<p id=\"terminal-line\" style=\"color: " + COLOR_OUTPUT + ";\">";
-        this.tline_end = "</p>";
+        this.tline_start = "<pre id=\"terminal-line\" style=\"color: " + COLOR_OUTPUT + ";\">";
+        this.tline_end = "</pre>";
     }
     Terminal.prototype.handleUserInput = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -62,7 +62,7 @@ var Terminal = /** @class */ (function () {
                         this.ui.innerHTML += "<p id=\"terminal-line\" style=\"color: " + COLOR_INPUT + ";\">\n            <strong style=\"color: #09EB00;\"> > </strong>\n            " + input + "\n          </p>";
                         this.ui_input.value = "";
                         // Do something with input //
-                        return [4 /*yield*/, this._console.execute(input.split(" "))];
+                        return [4 /*yield*/, this._console.execute(input)];
                     case 2:
                         // Do something with input //
                         _a.sent();
