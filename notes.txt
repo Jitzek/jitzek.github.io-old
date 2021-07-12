@@ -1,0 +1,3 @@
+# adapter-static
+install with `npm i -D @sveltejs/adapter-static@next`
+import into `svelte.config.js` and instantiate inside config.kit
