@@ -1,0 +1,339 @@
+body {
+  background-image: url(../src/simplistic-mountain-1.jpg);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+  height: 100%;
+  font-family: "Quicksand", sans-serif;
+  font-size: 18px;
+}
+
+.home {
+  color: white !important;
+}
+
+/*
+ * Heading
+*/
+.heading {
+  color: white;
+  opacity: 0.9;
+  height: 80vh;
+}
+
+.heading-title {
+  text-shadow: 0 0 20px #b66f97;
+  font-weight: bolder;
+  font-size: 40px;
+}
+
+.heading-subtitle {
+  text-shadow: 0 0 20px #000;
+  font-weight: bold;
+}
+
+.head-to-body-divider {
+  padding-bottom: 520px;
+}
+
+/*
+ *** About Me ***
+*/
+.body {
+  color: white;
+  opacity: 0.85;
+}
+
+.about-box {
+  display: flex;
+}
+
+.tab-title {
+  font-weight: bold;
+}
+
+.tab-content {
+  font-weight: normal;
+}
+
+.about-btn-container {
+  display: flex;
+}
+
+.about-btn {
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.6);
+  position: center;
+  margin-top: 10px;
+  margin-right: 10px;
+  padding: 5px;
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.15)
+  );
+  border: rgba(255, 255, 255, 0.1) solid 1px;
+}
+.about-btn:hover {
+  color: white;
+  text-decoration: none;
+  text-shadow: 0 0 3px rgba(255, 255, 255, 0.4);
+  animation: about-btn-hover 0.25s forwards;
+}
+
+.about-btn-active {
+  color: white;
+  position: center;
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.25)
+  );
+}
+.about-btn-active:hover {
+  color: inherit;
+  text-shadow: inherit;
+  animation: inherit;
+}
+
+.custom-icon {
+  height: 30px;
+  width: auto;
+}
+
+/*
+ * About Me - Experience
+*/
+.pr-tab {
+  display: none;
+}
+
+.pr-btn {
+  animation: pr-btn-init 0.5s forwards;
+  background-color: rgba(255, 255, 255, 0) !important;
+}
+
+.pr-btn-active {
+  animation: pr-btn-active 0.5s forwards;
+  border: solid rgba(0, 0, 0, 0) !important;
+}
+
+#csharp {
+  background: url("../src/icons/programming_languages/csharp_logo.png")
+    no-repeat center;
+  border: solid rgba(140, 72, 143, 0.5) 2px;
+}
+#csharp:hover {
+  background-color: rgba(140, 72, 143, 0.5) !important;
+}
+
+#cplusplus {
+  background: url("../src/icons/programming_languages/cplusplus_logo.png")
+    no-repeat center;
+  border: solid rgba(93, 139, 195, 0.5) 2px;
+}
+#cplusplus:hover {
+  background-color: rgba(93, 139, 195, 0.5) !important;
+}
+
+#java {
+  background: url("../src/icons/programming_languages/java_logo.png") no-repeat
+    center;
+  border: solid rgba(78, 118, 155, 0.5) 2px;
+}
+#java:hover {
+  background-color: rgba(78, 118, 155, 0.5) !important;
+}
+
+#python {
+  background: url("../src/icons/programming_languages/python_logo.png")
+    no-repeat center;
+  border: solid rgba(52, 109, 162, 0.5) 2px;
+}
+#python:hover {
+  background-color: rgba(52, 109, 162, 0.5) !important;
+}
+
+#php {
+  background: url("../src/icons/programming_languages/php_logo.png") no-repeat
+    center;
+  border: solid rgba(225, 225, 234, 0.5) 2px;
+}
+#php:hover {
+  background-color: rgba(225, 225, 234, 0.5) !important;
+}
+
+#javascript {
+  background: url("../src/icons/programming_languages/javascript_logo.png")
+    no-repeat center;
+  border: solid rgba(224, 189, 63, 0.5) 2px;
+}
+#javascript:hover {
+  background-color: rgba(224, 189, 63, 0.5) !important;
+}
+
+.pr-div {
+  padding: 20px;
+  animation: pr-div-init 0.75s forwards;
+}
+
+.csharp-div {
+  border: solid rgba(140, 72, 143, 1) 2px;
+  background-image: linear-gradient(
+    to right,
+    rgba(140, 72, 143, 0.15) 0%,
+    rgba(140, 72, 143, 0) 15%
+  );
+}
+
+.cplusplus-div {
+  border: solid rgba(93, 139, 195, 1.0)  2px;
+  background-image: linear-gradient(
+    to right,
+    rgba(93, 139, 195, 0.15) 0%,
+    rgba(93, 139, 195, 0.0)  15%
+  );
+}
+
+.java-div {
+  border: solid rgba(78, 118, 155, 1.0)  2px;
+  background-image: linear-gradient(
+    to right,
+    rgba(78, 118, 155, 0.15) 0%,
+    rgba(78, 118, 155, 0.0)  15%
+  );
+}
+
+.python-div {
+  border: solid rgba(52, 109, 162, 1.0)  2px;
+  background-image: linear-gradient(
+    to right,
+    rgba(52, 109, 162, 0.15) 0%,
+    rgba(52, 109, 162, 0.0)  15%
+  );
+}
+
+.php-div {
+  border: solid rgba(225, 225, 234, 1.0)  2px;
+  background-image: linear-gradient(
+    to right,
+    rgba(225, 225, 234, 0.15) 0%,
+    rgba(225, 225, 234, 0.0)  15%
+  );
+}
+
+.javascript-div {
+  border: solid rgba(224, 189, 63, 1.0)  2px;
+  background-image: linear-gradient(
+    to right,
+    rgba(224, 189, 63, 0.15) 0%,
+    rgba(224, 189, 63, 0.0)  15%
+  );
+}
+
+.project-anchor {
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+.project-anchor:hover {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 1.0);
+  text-shadow: 0 0 14px rgba(255, 255, 255, 0.4);
+}
+
+/*
+ * Animations
+*/
+@keyframes about-btn-hover {
+  from {
+    background-color: rgba(255, 255, 255, 0);
+  }
+  to {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
+@keyframes pr-btn-init {
+  from {
+    padding: 50px;
+  }
+  to {
+    padding: 30px;
+  }
+}
+@keyframes pr-btn-active {
+  from {
+    padding: 30px;
+  }
+  to {
+    padding: 50px;
+  }
+}
+@keyframes pr-div-init {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/*
+ * Responsiveness
+*/
+@media only screen and (max-width: 800px) {
+  .about-box {
+    display: contents;
+  }
+}
+@media only screen and (min-width: 801px) {
+  .about-btn-box {
+    margin-left: 30px;
+  }
+}
+@media only screen and (max-width: 400px) {
+  .about-btn-container {
+    text-align: center;
+  }
+  .about-title-box {
+    text-align: center;
+  }
+}
+@media only screen and (max-width: 750px) {
+  .pr-col {
+    width: 10% !important;
+    padding-left: 0px;
+    margin-right: 36px;
+  }
+  .pr-btn {
+    animation: none;
+    background-color: rgba(255, 255, 255, 0) !important;
+    padding: 30px !important;
+    background-size: 50px !important;
+  }
+  .pr-btn-active {
+    animation: none;
+    border: solid rgba(0, 0, 0, 0) !important;
+    padding: 29px !important;
+    background-color: rgba(255, 255, 255, 0.25) !important;
+  }
+}
+@media (min-width: 750px) and (max-width: 990px) {
+  .pr-col {
+    width: 10% !important;
+    padding-left: 0px;
+    margin-right: 30px;
+  }
+  .pr-btn {
+    animation: none;
+    background-color: rgba(255, 255, 255, 0) !important;
+    padding: 41px !important;
+    background-size: 70px !important;
+  }
+  .pr-btn-active {
+    animation: none;
+    border: solid rgba(0, 0, 0, 0) !important;
+    padding: 40px !important;
+    background-color: rgba(255, 255, 255, 0.25) !important;
+  }
+}

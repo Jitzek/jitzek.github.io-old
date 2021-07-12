@@ -1,0 +1,107 @@
+body {
+  background: rgb(27, 44, 59);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+  height: 100%;
+  font-family: "Quicksand", sans-serif;
+  font-size: 18px;
+}
+
+h1 {
+  color: white;
+}
+
+p {
+  color: white;
+}
+
+.container {
+  background: linear-gradient(90deg, rgba(39, 62, 84, 1) 0%, #50535fd0 100%);
+  background-color: rgba(39, 62, 84, 1);
+}
+
+.body {
+  background-color: rgba(39, 62, 84, 1);
+}
+
+.project-info {
+
+}
+.project-info table {
+  color: white;
+  list-style: none;
+}
+.project-info .col-subject {
+  width: 15vw;
+}
+.project-info .col-value span {
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.55);
+}
+
+.media {
+  border: 0.05em solid black;
+}
+
+.column {
+  float: left;
+  width: 25%;
+  padding: 5px;
+}
+
+.row::after {
+  clear: both;
+  display: table;
+}
+
+input[type="checkbox"] {
+  display: none;
+}
+
+.media-container {
+}
+
+.media-container .media {
+  position: relative;
+  transition: transform 0.25s ease;
+  cursor: zoom-in;
+  transform: scale(0.7);
+}
+
+input[type="checkbox"]:checked ~ label > .media {
+  position: absolute;
+  /*top: 50%;*/
+  left: 50%;
+  z-index: 1;
+  transform: scale(1) translate(-50%, -50%);
+  margin: 0 auto;
+  cursor: zoom-out;
+}
+
+.isala-description {
+  transition: all 0.5s;
+}
+
+.isala-desc-expander {
+  float: right;
+  margin-left: 1em;
+  background-color: white;
+  margin-bottom: 2em;
+  padding: 1.0em;
+  transition: all 0.25s;
+  -webkit-mask: url(../../src/projects/global/arrow.svg) no-repeat center;
+  mask: url(../../src/projects/global/arrow.svg) no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  transform: rotate(0deg);
+}
+
+/*
+ * Responsiveness
+*/
+@media only screen and (max-width: 800px) {
+  .column {
+    width: 50%;
+  }
+}

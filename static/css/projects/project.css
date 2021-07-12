@@ -1,0 +1,39 @@
+.gh-repo {
+  font-size: 1em;
+}
+
+.pr-href-link {
+  color: rgba(0, 174, 255);
+  transition: text-shadow 0.25s;
+}
+.pr-href-link:hover {
+  color: rgb(0, 184, 255);
+  text-decoration: none;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+}
+
+.pr-description {
+  transition: all 0.5s;
+}
+
+.pr-desc-expander {
+  float: right;
+  background-color: white;
+  margin-bottom: 2em;
+  padding: 1.0em;
+  transition: all 0.25s;
+  -webkit-mask: url(../../src/projects/global/arrow.svg) no-repeat center;
+  mask: url(../../src/projects/global/arrow.svg) no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  transform: rotate(0deg);
+}
+
+/*
+ * Responsiveness
+*/
+@media only screen and (max-width: 800px) {
+  .gh-repo {
+    font-size: 0.7em;
+  }
+}

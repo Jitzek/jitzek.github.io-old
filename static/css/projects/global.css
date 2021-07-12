@@ -1,0 +1,47 @@
+.href-link {
+  color: white;
+}
+.href-link:hover {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+}
+
+.gh-logo {
+  display: inline;
+  background-color: white;
+  padding: 0.6em;
+  -webkit-mask: url(../src/icons/github.svg) no-repeat center;
+  mask: url(../src/icons/github.svg) no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+}
+
+.pr-img {
+  width: 1.5em;
+  height: auto;
+  margin-right: 10px;
+}
+
+.pr-tag {
+  display: inline;
+  font-size: 0.8em;
+  padding: 0.2em 0.4em 0.2em 0.4em;
+  border-radius: 0.65em;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.425);
+}
+.tag-lang {
+  color: white !important;
+  background-color: rgba(0, 98, 255, 0.9);
+}
+.tag-service {
+  color: white !important;
+  background-color: rgba(49, 163, 163, 0.9);
+}
+.tag-dp {
+  color: white !important;
+  background-color: rgba(144, 24, 70, 0.9);
+}
+.tag-other {
+  color: white!important;
+  background-color: rgba(140, 0, 255, 0.9);
+}
