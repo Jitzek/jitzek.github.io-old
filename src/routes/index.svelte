@@ -1,9 +1,11 @@
 <script lang="ts">
+    import { desktop, mobile } from '$stores/DeviceTypeStore';
+    import Desktop from '$components/desktop/Desktop.svelte';
 
 </script>
 
-<h1>Hello World</h1>
-
-<nav />
-
-<slot />
+{#if $desktop}
+    <Desktop />
+{:else if $mobile}
+    <!---->
+{/if}
