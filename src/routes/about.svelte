@@ -1,13 +1,10 @@
-<div>
-    <h1>About</h1>
-</div>
-<h1>Test</h1>
+<script lang="ts">
+    import { desktop, mobile } from '$stores/DeviceTypeStore';
 
-<style lang="scss">
-    div {
-        color: black;
-        h1 {
-            color: blue;
-        }
-    }
-</style>
+    desktop.subscribe(value => {
+        console.log(`Desktop: ${value}`);
+    });
+    mobile.subscribe(value => {
+        console.log(`Mobile: ${value}`);
+    });
+</script>
