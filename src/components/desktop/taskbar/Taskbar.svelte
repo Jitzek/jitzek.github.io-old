@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Launcher from '$components/desktop/taskbar/Launcher.svelte';
-	import MenuButton from './MenuButton.svelte';
+	import MenuButton from '$components/desktop/taskbar/MenuButton.svelte';
+	import Menu from '$components/desktop/taskbar/Menu.svelte';
 
 	// export let menuButton: string = "";
 	export let backgroundColor = '#3E454A';
@@ -194,20 +195,28 @@
 		launchers;
 		gridTemplateColumns = `repeat(${launchers.length}, ${columnSize})`;
 	}
+
+	let showMenu: boolean = false;
+	function toggleMenu()  {
+		showMenu = !showMenu;
+
+		// TODO: Change color
+	} 
 </script>
 
 <svelte:window on:mouseup={stopResize} on:mousemove={resize} />
 
 <div class="taskbar" style="background-color: {backgroundColor}; height: {height}rem">
+	<Menu offset="{rowHeight}rem" bind:show={showMenu} />
 	<div on:mousedown={startResize.bind(this)} class="border" />
-	<div class="taskbar-content">
-		<div class="menu-container">
-			<MenuButton src="/static/images/icons/xfce4-whiskermenu.svg" />
+	<div class="taskbar-content" style="height: {height}rem;">
+		<div class="menu-button-container">
+			<MenuButton src="/static/images/icons/xfce4-whiskermenu.svg" on:click={toggleMenu} />
 		</div>
 		<div class="launcher-container">
 			<div
 				class="launchers"
-				style="height: {height}rem; grid-template-columns: {gridTemplateColumns};"
+				style="grid-template-columns: {gridTemplateColumns};"
 			>
 				{#each launchers as { icon, alt, row, ghost }}
 					<Launcher icon="{icon}" alt="{alt}" row="{row}" ghost="{ghost}" height="{`${rowHeight}rem`}" />
@@ -219,7 +228,7 @@
 
 <style lang="scss">
 	.taskbar {
-		overflow: hidden;
+		// overflow: hidden;
 		position: fixed;
 		bottom: 0;
 		width: 100%;
@@ -258,10 +267,8 @@
 			box-align: center;
 			align-items: center;
 
-			.menu-container {
-			}
-
-			.launcher-container {
+			.menu-button-container {
+				position: relative;
 			}
 
 			.launchers {

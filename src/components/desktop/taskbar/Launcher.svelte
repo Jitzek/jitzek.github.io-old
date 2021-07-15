@@ -11,10 +11,22 @@
 {#if ghost}
 	<div style="grid-row: {row}; height: {height}"><div style="padding-top: 100%;" /></div>
 {:else}
-	<div class="launcher" style="grid-row: {row}; height: {height}">
+	<button class="launcher" style="grid-row: {row}; height: {height}">
 		<img src={icon} {alt} width="100%" height="auto" />
-	</div>
+	</button>
 {/if}
 
 <style lang="scss">
+	.launcher {
+		background-color: rgba(0, 0, 0, 0);
+		transition: background-color 0.2s;
+		outline: none;
+		border: none;
+		
+		cursor: pointer;
+	}
+
+	.launcher:hover {
+		background-color: rgba(0, 0, 0, 0.2);
+	}
 </style>
