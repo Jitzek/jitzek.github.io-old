@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Launcher from '$components/desktop/taskbar/Launcher.svelte';
+	import MenuButton from './MenuButton.svelte';
 
 	// export let menuButton: string = "";
 	export let backgroundColor = '#3E454A';
 	export let rows: number = 1;
-	export let maxRows: number = 3;
+	export let maxRows: number = 10;
 	// Total height in REM
 	export let height: number = 3.5;
 	// Row height in REM
@@ -14,10 +15,10 @@
 	$: {
 		/**
 		 * On Height Change
-		 * 
+		 *
 		 * Prevent height from being reduced below the initial row height.
 		 * Determine amount of rows for this height.
-		*/
+		 */
 		height;
 		if (height < rowHeight) height = rowHeight;
 		rows = height / rowHeight;
@@ -26,10 +27,10 @@
 	$: {
 		/**
 		 * On Rows Change
-		 * 
+		 *
 		 * Make sure the height matches the amount of rows.
 		 * Prevent rows from exceeding max set amount of rows.
-		*/
+		 */
 		rows;
 		if (height / rowHeight != rows) height = rows * rowHeight;
 		if (rows > maxRows) {
@@ -94,7 +95,7 @@
 
 	/**
 	 * Initial value
-	 * 
+	 *
 	 * used for debugging (to be removed)
 	 */
 	let launchers: Array<{ icon: string; alt: string; row: number; ghost: boolean }> = [];
@@ -128,14 +129,44 @@
 			alt: 'terminal launcher5',
 			row: 1,
 			ghost: false
+		},
+		{
+			icon: '/static/images/icons/utilities-terminal.svg',
+			alt: 'terminal launcher1',
+			row: 1,
+			ghost: false
+		},
+		{
+			icon: '/static/images/icons/utilities-terminal.svg',
+			alt: 'terminal launcher2',
+			row: 1,
+			ghost: false
+		},
+		{
+			icon: '/static/images/icons/utilities-terminal.svg',
+			alt: 'terminal launcher3',
+			row: 1,
+			ghost: false
+		},
+		{
+			icon: '/static/images/icons/utilities-terminal.svg',
+			alt: 'terminal launcher4',
+			row: 1,
+			ghost: false
+		},
+		{
+			icon: '/static/images/icons/utilities-terminal.svg',
+			alt: 'terminal launcher5',
+			row: 1,
+			ghost: false
 		}
 		// { icon: "", alt: "", row: 1, ghost: true },
 	);
-	
+
 	const columnSize: string = `${rowHeight}rem`;
 	$: {
 		rows;
-		
+
 		// Filter out ghost launchers
 		launchers = launchers.filter((launcher) => !launcher.ghost);
 		if (rows > launchers.length) {
@@ -152,6 +183,7 @@
 			launcher.row = c_row++;
 		});
 		launchers = launchers;
+		
 		// Calculate the amount of columns a row needs
 		// gridTemplateColumns = `repeat(${Math.round(launchers.length/rows)}, ${columnSize})`;
 	}
@@ -168,15 +200,21 @@
 
 <div class="taskbar" style="background-color: {backgroundColor}; height: {height}rem">
 	<div on:mousedown={startResize.bind(this)} class="border" />
-	<div
-		class="launcher-container"
-		style="height: {height}rem; grid-template-columns: {gridTemplateColumns};"
-	>
-		{#each launchers as { icon, alt, row, ghost }}
-			<Launcher {icon} {alt} {row} {ghost} />
-		{/each}
+	<div class="taskbar-content">
+		<div class="menu-container">
+			<MenuButton src="/static/images/icons/xfce4-whiskermenu.svg" />
+		</div>
+		<div class="launcher-container">
+			<div
+				class="launchers"
+				style="height: {height}rem; grid-template-columns: {gridTemplateColumns};"
+			>
+				{#each launchers as { icon, alt, row, ghost }}
+					<Launcher icon="{icon}" alt="{alt}" row="{row}" ghost="{ghost}" height="{`${rowHeight}rem`}" />
+				{/each}
+			</div>
+		</div>
 	</div>
-	<!---->
 </div>
 
 <style lang="scss">
@@ -185,6 +223,7 @@
 		position: fixed;
 		bottom: 0;
 		width: 100%;
+		transition: height 0.25s;
 
 		.border {
 			width: 100%;
@@ -197,9 +236,38 @@
 			position: absolute;
 		}
 
-		.launcher-container {
-			width: 100%;
-			display: inline-grid;
+		.taskbar-content {
+			display: -webkit-box;
+			display: -moz-box;
+			display: -ms-flexbox;
+			display: -webkit-flex;
+			display: flex;
+
+			-webkit-box-orient: horizontal;
+			-moz-box-orient: horizontal;
+			box-orient: horizontal;
+			flex-direction: c;
+
+			-webkit-box-pack: start;
+			-moz-box-pack: start;
+			box-pack: start;
+			justify-content: start;
+
+			-webkit-box-align: center;
+			-moz-box-align: center;
+			box-align: center;
+			align-items: center;
+
+			.menu-container {
+			}
+
+			.launcher-container {
+			}
+
+			.launchers {
+				width: 100%;
+				display: inline-grid;
+			}
 		}
 	}
 </style>
