@@ -152,8 +152,11 @@
 			launcher.row = c_row++;
 		});
 		launchers = launchers;
+<<<<<<< HEAD
 
 		// Calculate the amount of columns a row needs
+=======
+>>>>>>> desktop-ui
 		// gridTemplateColumns = `repeat(${Math.round(launchers.length/rows)}, ${columnSize})`;
 	}
 
