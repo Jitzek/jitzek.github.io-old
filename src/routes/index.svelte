@@ -7,5 +7,5 @@
 {#if $desktop}
     <Desktop />
 {:else if $mobile}
-    <!---->
+    <Desktop />
 {/if}
