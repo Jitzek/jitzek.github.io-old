@@ -269,6 +269,7 @@
 
 			.menu-button-container {
 				position: relative;
+				height: 100%;
 			}
 
 			.launchers {

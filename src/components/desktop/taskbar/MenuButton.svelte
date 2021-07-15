@@ -4,15 +4,17 @@
 	export let font: string = "'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif";
 </script>
 
-<button class="menuButton" on:click>
-	<figure>
-		<img {src} alt="Navigation Menu" width="80%" height="auto" />
-	</figure>
-	<p style="font-family: {font}">{title}</p>
+<button class="menu-button" on:click>
+	<div class="menu-button-content">
+		<figure>
+			<img {src} alt="Navigation Menu" width="auto" height="auto" />
+		</figure>
+		<span style="font-family: {font}">{title}</span>
+	</div>
 </button>
 
 <style lang="scss">
-	.menuButton {
+	.menu-button {
 		background-color: rgba(0, 0, 0, 0);
 		transition: background-color 0.2s;
 		outline: none;
@@ -21,19 +23,29 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		figure {
-			margin: 0;
-			width: 100%;
-			height: 100%;
-		}
 
-		p {
-			color: #e6e7e8;
-			margin-right: 8px;
+		height: 100%;
+
+		.menu-button-content {
+			display: flex;
+			text-align: center;
+			justify-content: center;
+			align-items: center;
+			figure {
+				display: inline;
+				margin: 0;
+				width: 100%;
+				height: 100%;
+			}
+
+			span {
+				color: #e6e7e8;
+				margin-right: 8px;
+			}
 		}
 	}
 
-	.menuButton:hover {
+	.menu-button:hover {
 		background-color: rgba(0, 0, 0, 0.2);
 		cursor: pointer;
 	}
