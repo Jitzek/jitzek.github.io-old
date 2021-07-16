@@ -13,7 +13,10 @@ const config = {
 			resolve: {
 				alias: {
 					$components: path.resolve('src', 'components'),
-					$stores: path.resolve('src', 'stores')
+					$stores: path.resolve('src', 'stores'),
+					$desktop: path.resolve('src', 'components', 'desktop'),
+					$mobile: path.resolve('src', 'components', 'mobile'),
+					$shared: path.resolve('src', 'components', 'shared'),
 				}
 			}
 		},

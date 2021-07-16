@@ -2,36 +2,24 @@
 	import { onMount } from 'svelte';
 	import Launcher from '$components/desktop/taskbar/Launcher.svelte';
 	import MenuButton from '$components/desktop/taskbar/MenuButton.svelte';
-	import Menu from '$components/desktop/taskbar/Menu.svelte';
+	import Menu from '$components/desktop/taskbar/menu/Menu.svelte';
 
 	// export let menuButton: string = "";
-	export let backgroundColor = '#3E454A';
 	export let rows: number = 1;
-	export let maxRows: number = 10;
+	export let maxRows: number = 3;
 	// Total height in REM
 	export let height: number = 3.5;
 	// Row height in REM
 	export let rowHeight: number = 3.5;
+	export let backgroundColor: string = "#3e454a";
 
 	$: {
-		/**
-		 * On Height Change
-		 *
-		 * Prevent height from being reduced below the initial row height.
-		 * Determine amount of rows for this height.
-		 */
 		height;
 		if (height < rowHeight) height = rowHeight;
 		rows = height / rowHeight;
 	}
 
 	$: {
-		/**
-		 * On Rows Change
-		 *
-		 * Make sure the height matches the amount of rows.
-		 * Prevent rows from exceeding max set amount of rows.
-		 */
 		rows;
 		if (height / rowHeight != rows) height = rows * rowHeight;
 		if (rows > maxRows) {
@@ -94,69 +82,45 @@
 		return;
 	}
 
+	class LauncherObject {
+		icon: string;
+		alt: string;
+		row: number;
+		ghost: boolean;
+	}
 	/**
 	 * Initial value
 	 *
 	 * used for debugging (to be removed)
 	 */
-	let launchers: Array<{ icon: string; alt: string; row: number; ghost: boolean }> = [];
+	let launchers: Array<LauncherObject> = [];
 	launchers.push(
 		{
-			icon: '/static/images/icons/utilities-terminal.svg',
+			icon: '/images/icons/utilities-terminal.svg',
 			alt: 'terminal launcher1',
 			row: 1,
 			ghost: false
 		},
 		{
-			icon: '/static/images/icons/utilities-terminal.svg',
+			icon: '/images/icons/utilities-terminal.svg',
 			alt: 'terminal launcher2',
 			row: 1,
 			ghost: false
 		},
 		{
-			icon: '/static/images/icons/utilities-terminal.svg',
+			icon: '/images/icons/utilities-terminal.svg',
 			alt: 'terminal launcher3',
 			row: 1,
 			ghost: false
 		},
 		{
-			icon: '/static/images/icons/utilities-terminal.svg',
+			icon: '/images/icons/utilities-terminal.svg',
 			alt: 'terminal launcher4',
 			row: 1,
 			ghost: false
 		},
 		{
-			icon: '/static/images/icons/utilities-terminal.svg',
-			alt: 'terminal launcher5',
-			row: 1,
-			ghost: false
-		},
-		{
-			icon: '/static/images/icons/utilities-terminal.svg',
-			alt: 'terminal launcher1',
-			row: 1,
-			ghost: false
-		},
-		{
-			icon: '/static/images/icons/utilities-terminal.svg',
-			alt: 'terminal launcher2',
-			row: 1,
-			ghost: false
-		},
-		{
-			icon: '/static/images/icons/utilities-terminal.svg',
-			alt: 'terminal launcher3',
-			row: 1,
-			ghost: false
-		},
-		{
-			icon: '/static/images/icons/utilities-terminal.svg',
-			alt: 'terminal launcher4',
-			row: 1,
-			ghost: false
-		},
-		{
-			icon: '/static/images/icons/utilities-terminal.svg',
+			icon: '/images/icons/utilities-terminal.svg',
 			alt: 'terminal launcher5',
 			row: 1,
 			ghost: false
@@ -184,7 +148,7 @@
 			launcher.row = c_row++;
 		});
 		launchers = launchers;
-		
+
 		// Calculate the amount of columns a row needs
 		// gridTemplateColumns = `repeat(${Math.round(launchers.length/rows)}, ${columnSize})`;
 	}
@@ -197,29 +161,23 @@
 	}
 
 	let showMenu: boolean = false;
-	function toggleMenu()  {
+	function toggleMenu() {
 		showMenu = !showMenu;
-
-		// TODO: Change color
-	} 
+	}
 </script>
 
 <svelte:window on:mouseup={stopResize} on:mousemove={resize} />
-
-<div class="taskbar" style="background-color: {backgroundColor}; height: {height}rem">
-	<Menu offset="{rowHeight}rem" bind:show={showMenu} />
+<div class="taskbar" style="height: {height}rem; background-color: {backgroundColor};">
+	<Menu offset="{height}rem" bind:show={showMenu} />
 	<div on:mousedown={startResize.bind(this)} class="border" />
 	<div class="taskbar-content" style="height: {height}rem;">
 		<div class="menu-button-container">
-			<MenuButton src="/static/images/icons/xfce4-whiskermenu.svg" on:click={toggleMenu} />
+			<MenuButton src="/images/icons/xfce4-whiskermenu.svg" on:click={toggleMenu} bind:activated={showMenu} />
 		</div>
 		<div class="launcher-container">
-			<div
-				class="launchers"
-				style="grid-template-columns: {gridTemplateColumns};"
-			>
+			<div class="launchers" style="grid-template-columns: {gridTemplateColumns};">
 				{#each launchers as { icon, alt, row, ghost }}
-					<Launcher icon="{icon}" alt="{alt}" row="{row}" ghost="{ghost}" height="{`${rowHeight}rem`}" />
+					<Launcher {icon} {alt} {row} {ghost} height={`${rowHeight}rem`} />
 				{/each}
 			</div>
 		</div>
@@ -232,6 +190,7 @@
 		position: fixed;
 		bottom: 0;
 		width: 100%;
+
 		transition: height 0.25s;
 
 		.border {

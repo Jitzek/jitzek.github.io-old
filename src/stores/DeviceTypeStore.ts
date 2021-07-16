@@ -16,7 +16,7 @@ export const mobile: Readable<boolean> = derived(
  */
 export const setup: (
     args: { desktopQuery: string, listen: boolean }
-) => any = ({ desktopQuery, listen }) => {
+) => void = ({ desktopQuery, listen }) => {
     // Make sure "window" is defined
     try {
         if (listen) {

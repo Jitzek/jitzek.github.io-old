@@ -1,15 +1,13 @@
 <script lang="ts">
 	export let src: string;
 	export let title: string = 'Navigation';
-	export let font: string = "'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif";
+	export let activated: boolean = false;
 </script>
 
-<button class="menu-button" on:click>
+<button class:activated class="menu-button" on:click>
 	<div class="menu-button-content">
-		<figure>
-			<img {src} alt="Navigation Menu" width="auto" height="auto" />
-		</figure>
-		<span style="font-family: {font}">{title}</span>
+		<img {src} alt="Navigation Menu" width="auto" height="auto" />
+		<p>{title}</p>
 	</div>
 </button>
 
@@ -26,26 +24,39 @@
 
 		height: 100%;
 
+		color: inherit;
+		font-family: inherit;
+		font-size: inherit;
+
 		.menu-button-content {
 			display: flex;
 			text-align: center;
 			justify-content: center;
 			align-items: center;
-			figure {
+
+			max-height: 100%;
+			img {
 				display: inline;
 				margin: 0;
-				width: 100%;
-				height: 100%;
+				width: 3.25rem;
+				height: auto;
+				margin-right: 8px;
 			}
 
-			span {
-				color: #e6e7e8;
+			p {
+				/**
+				 TODO:
+				 Set globally
+				*/
+				// font-size: 1rem;
+				// color: #e6e7e8;
+				// font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 				margin-right: 8px;
 			}
 		}
 	}
 
-	.menu-button:hover {
+	.menu-button:hover, .menu-button.activated {
 		background-color: rgba(0, 0, 0, 0.2);
 		cursor: pointer;
 	}

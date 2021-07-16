@@ -1,17 +1,9 @@
 <script lang="ts">
-import { onMount } from "svelte";
-
-
-	export let src: string = '/static/images/custom-design-01-1280x720.png';
-
-	onMount(() => {
-		// Disable image dragging
-		// This could have potential unwanted side effects
-		document.body.ondragstart = () => { return false; }
-	});
+	import { onMount } from 'svelte';
+	export let src: string = '/static/images/wallpapers/custom-design-01-1280x720.png';
 </script>
 
-<img {src} alt="wallpaper" unselectable="{true}" draggable="{false}" />
+<img src="{src}" alt="wallpaper" unselectable={true} draggable={false} />
 
 <style lang="scss">
 	img {

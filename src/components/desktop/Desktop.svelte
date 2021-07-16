@@ -1,13 +1,12 @@
 <script lang="ts">
     import Wallpaper from "$components/shared/Wallpaper.svelte";
     import Taskbar from "$components/desktop/taskbar/Taskbar.svelte";
-import Menu from "./taskbar/Menu.svelte";
 
-    let wallpaper: string = "/static/images/wallpapers/custom-design-01-1280x720.png";
+    let wallpaper: string = "/images/wallpapers/custom-design-01-1280x720.png";
 </script>
 
 <Wallpaper src="{wallpaper}" />
-<Taskbar />
+<Taskbar backgroundColor="rgba(0,0,0,0.2)" />
 
 <style lang="scss">
     /*
