@@ -1,0 +1,84 @@
+<script lang="ts">
+    import type { Theme } from '$components/shared/Theme';
+
+    import { theme as theme_store } from '$stores/ThemeStore';
+    let theme: Theme;
+    theme_store.subscribe((new_theme) => theme = new_theme);
+
+	export let tooltip: string = 'test';
+</script>
+
+<div class="tooltip {theme}" data-tooltip={tooltip}>
+	<slot />
+</div>
+
+<style>
+    .theme-dark[data-tooltip]:before {
+		background-color: #333333E6;
+		background-color: rgba(51, 51, 51, 0.9);
+		background-color: hsla(0, 0%, 20%, 0.9);
+		color: #fff;
+    }
+
+	/*This would all go into the global.css file*/
+	[data-tooltip] {
+		position: relative;
+		z-index: 2;
+		display: block;
+	}
+
+	[data-tooltip]:before,
+	[data-tooltip]:after {
+		visibility: hidden;
+		opacity: 0;
+		pointer-events: none;
+		transition: 0.2s ease-out;
+		transform: translate(-50%, 5px);
+	}
+
+	[data-tooltip]:before {
+		position: absolute;
+		bottom: 100%;
+		left: 50%;
+		margin-bottom: 5px;
+		padding: 7px;
+		width: 100%;
+		min-width: 2.5rem;
+		max-width: 5rem;
+		-webkit-border-radius: 3px;
+		-moz-border-radius: 3px;
+		border-radius: 3px;
+
+		content: attr(data-tooltip);
+		text-align: center;
+		font-size: 14px;
+		line-height: 1.2;
+		transition: 0.2s ease-out;
+	}
+
+	[data-tooltip]:after {
+		position: absolute;
+		bottom: 100%;
+		left: 50%;
+		width: 0;
+		border-top: 5px solid #000;
+		border-top: 5px solid hsla(0, 0%, 20%, 0.9);
+		border-right: 5px solid transparent;
+		border-left: 5px solid transparent;
+		content: ' ';
+		font-size: 0;
+		line-height: 0;
+	}
+
+	[data-tooltip]:hover:before,
+	[data-tooltip]:hover:after {
+		visibility: visible;
+		opacity: 1;
+		transform: translate(-50%, 0);
+	}
+	[data-tooltip='false']:hover:before,
+	[data-tooltip='false']:hover:after {
+		visibility: hidden;
+		opacity: 0;
+	}
+</style>

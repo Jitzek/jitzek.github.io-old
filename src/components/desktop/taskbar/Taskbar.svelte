@@ -4,6 +4,8 @@
 	import MenuButton from '$components/desktop/taskbar/MenuButton.svelte';
 	import Menu from '$components/desktop/taskbar/menu/Menu.svelte';
 
+	import { convertRemToPixels } from '$shared/conversions';
+
 	// export let menuButton: string = "";
 	export let rows: number = 1;
 	export let maxRows: number = 3;
@@ -26,14 +28,6 @@
 			rows = maxRows;
 			height = rows * rowHeight;
 		}
-	}
-
-	/**
-	 * @param rem Rem to be converted to Pixels
-	 * @returns The amount of Pixels equivalent to the amount of given Rem.
-	 */
-	function convertRemToPixels(rem: number) {
-		return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
 	}
 
 	let heightInPx = 0;
@@ -168,7 +162,7 @@
 
 <svelte:window on:mouseup={stopResize} on:mousemove={resize} />
 <div class="taskbar" style="height: {height}rem; background-color: {backgroundColor};">
-	<Menu offset="{height}rem" bind:show={showMenu} />
+	<Menu offset="{height}" bind:show={showMenu} />
 	<div on:mousedown={startResize.bind(this)} class="border" />
 	<div class="taskbar-content" style="height: {height}rem;">
 		<div class="menu-button-container">

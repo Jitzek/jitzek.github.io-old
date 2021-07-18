@@ -1,6 +1,6 @@
 <script lang="ts">
-	import CategoryButton from '$desktop/taskbar/menu/categories/CategoryButton.svelte';
-	import { fly, fade } from 'svelte/transition';
+	import MenuLauncherButton from '$components/desktop/taskbar/menu/categories/MenuLauncherButton.svelte';
+	import { fly, fade, blur, crossfade, draw, scale, slide } from 'svelte/transition';
 
 	class CategoryContentObject {
 		constructor(public id: number, public name: string, public icon: string, public alt: string) {}
@@ -53,7 +53,7 @@
 	);
 
 	function toggleCategory(id: number) {
-		categories.forEach((category: CategoryObject) => (category.activated = category.id === id));
+		categories.forEach((category: CategoryObject) => (category.activated = category.id === id && !category.activated));
 		categories = categories;
 	}
 </script>
@@ -61,16 +61,23 @@
 <div class="categories-container">
 	<div class="category-buttons-container">
 		{#each categories as { id, name, icon, alt, activated }}
-			<CategoryButton icon="{icon}" name="{name}" alt="{alt}" activated="{activated}"  on:click={() => toggleCategory(id)} />
+			<MenuLauncherButton {icon} {name} {alt} {activated} on:click={() => toggleCategory(id)} />
 		{/each}
 	</div>
 	{#each categories as { content, activated }}
 		{#if activated}
-			<div class="category-content-container">
+			<div in:slide={{ duration: 500 }} class="category-content-container">
 				{#each content as { name, icon, alt }}
-					<div>
-						{name}
-					</div>
+					<MenuLauncherButton {icon} {name} {alt} />
+					<MenuLauncherButton {icon} {name} {alt} />
+					<MenuLauncherButton {icon} {name} {alt} />
+					<MenuLauncherButton {icon} {name} {alt} />
+					<MenuLauncherButton {icon} {name} {alt} />
+					<MenuLauncherButton {icon} {name} {alt} />
+					<MenuLauncherButton {icon} {name} {alt} />
+					<MenuLauncherButton {icon} {name} {alt} />
+					<MenuLauncherButton {icon} {name} {alt} />
+
 				{/each}
 			</div>
 		{/if}
@@ -80,13 +87,19 @@
 <style lang="scss">
 	.categories-container {
 		display: flex;
+		height: 20rem;
 
 		.category-buttons-container {
+			overflow-y: auto;
+			overflow-x: hidden;
 			padding-right: 0.5rem;
+			width: 100%;
 		}
 
 		.category-content-container {
-			transition: opacity 0.5s;
+			overflow-y: auto;
+			overflow-x: hidden;
+			width: 100%;
 		}
 	}
 </style>
