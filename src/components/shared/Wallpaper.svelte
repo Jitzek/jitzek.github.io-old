@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	export let src: string = '/static/images/wallpapers/custom-design-01-1280x720.png';
 </script>
 
@@ -12,6 +11,7 @@
 		height: 100%;
 		object-fit: cover;
 		position: fixed;
+		z-index: -1;
 
 		// pointer-events: none;
 	}

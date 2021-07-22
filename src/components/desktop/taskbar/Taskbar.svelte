@@ -5,6 +5,7 @@
 	import Menu from '$components/desktop/taskbar/menu/Menu.svelte';
 
 	import { convertRemToPixels } from '$shared/conversions';
+	import WhiskerMenu from '$components/shared/svg/whisker-menu.svelte';
 
 	// export let menuButton: string = "";
 	export let rows: number = 1;
@@ -13,7 +14,6 @@
 	export let height: number = 3.5;
 	// Row height in REM
 	export let rowHeight: number = 3.5;
-	export let backgroundColor: string = "#3e454a";
 
 	$: {
 		height;
@@ -69,14 +69,15 @@
 
 		// Determine whether enough pixels have been moved to add/remove a row
 		if (heightInPx > convertRemToPixels(height + rowHeight)) {
-			height += rowHeight;
+			height += height + rowHeight <= (rowHeight * maxRows) ? rowHeight : 0;
 		} else if (heightInPx < convertRemToPixels(height - rowHeight)) {
-			height -= rowHeight;
+			height -= height - rowHeight >= rowHeight ? rowHeight : 0;
 		}
 		return;
 	}
 
 	class LauncherObject {
+		name: string;
 		icon: string;
 		alt: string;
 		row: number;
@@ -90,30 +91,35 @@
 	let launchers: Array<LauncherObject> = [];
 	launchers.push(
 		{
+			name: 'Terminal 1',
 			icon: '/images/icons/utilities-terminal.svg',
 			alt: 'terminal launcher1',
 			row: 1,
 			ghost: false
 		},
 		{
+			name: 'Terminal 2',
 			icon: '/images/icons/utilities-terminal.svg',
 			alt: 'terminal launcher2',
 			row: 1,
 			ghost: false
 		},
 		{
+			name: 'Terminal 3',
 			icon: '/images/icons/utilities-terminal.svg',
 			alt: 'terminal launcher3',
 			row: 1,
 			ghost: false
 		},
 		{
+			name: 'Terminal 4',
 			icon: '/images/icons/utilities-terminal.svg',
 			alt: 'terminal launcher4',
 			row: 1,
 			ghost: false
 		},
 		{
+			name: 'Terminal 5',
 			icon: '/images/icons/utilities-terminal.svg',
 			alt: 'terminal launcher5',
 			row: 1,
@@ -131,7 +137,7 @@
 		if (rows > launchers.length) {
 			// Add ghost launchers to fill up whitespace
 			for (let i = 0; i < rows - launchers.length; i++) {
-				launchers.push({ icon: '', alt: '', row: 1, ghost: true });
+				launchers.push({ name: null, icon: '', alt: '', row: 1, ghost: true });
 			}
 		}
 
@@ -161,17 +167,20 @@
 </script>
 
 <svelte:window on:mouseup={stopResize} on:mousemove={resize} />
-<div class="taskbar" style="height: {height}rem; background-color: {backgroundColor};">
-	<Menu offset="{height}" bind:show={showMenu} />
+<div class="taskbar" style="height: {height}rem;">
+	<Menu offset={height} bind:show={showMenu} />
 	<div on:mousedown={startResize.bind(this)} class="border" />
 	<div class="taskbar-content" style="height: {height}rem;">
 		<div class="menu-button-container">
-			<MenuButton src="/images/icons/xfce4-whiskermenu.svg" on:click={toggleMenu} bind:activated={showMenu} />
+			<MenuButton on:click={toggleMenu} bind:activated={showMenu}>
+				<!-- <img {src} alt="Navigation Menu" width="auto" height="auto" /> -->
+				<WhiskerMenu />
+			</MenuButton>
 		</div>
 		<div class="launcher-container">
 			<div class="launchers" style="grid-template-columns: {gridTemplateColumns};">
-				{#each launchers as { icon, alt, row, ghost }}
-					<Launcher {icon} {alt} {row} {ghost} height={`${rowHeight}rem`} />
+				{#each launchers as { name, icon, alt, row, ghost }}
+					<Launcher {name} {icon} {alt} {row} {ghost} height={`${rowHeight}rem`} />
 				{/each}
 			</div>
 		</div>
@@ -185,6 +194,8 @@
 		bottom: 0;
 		width: 100%;
 
+		background-color: var(--background-color-secondary);
+
 		transition: height 0.25s;
 
 		.border {
@@ -196,6 +207,8 @@
 
 			// Prevent border pushing other elements
 			position: absolute;
+
+			z-index: 9;
 		}
 
 		.taskbar-content {
@@ -228,6 +241,8 @@
 			.launchers {
 				width: 100%;
 				display: inline-grid;
+				display: -ms-inline-grid;
+				display: -moz-inline-grid;
 			}
 		}
 	}

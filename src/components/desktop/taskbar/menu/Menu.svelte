@@ -1,14 +1,17 @@
 <script lang="ts">
 	import AboutMeButton from '$desktop/taskbar/menu/AboutMeButton.svelte';
-	import SwitchToMobileButton from '$desktop/taskbar/menu/SwitchToMobileButton.svelte';
+	import SwitchToMobileButton from '$components/desktop/taskbar/menu/global_options/SwitchToMobileButton.svelte';
+	import ChangeThemeSwitch from '$components/desktop/taskbar/menu/global_options/ChangeThemeSwitch.svelte';
 	import Categories from '$desktop/taskbar/menu/categories/Categories.svelte';
 	import { slide } from 'svelte/transition';
 
 	import { theme as theme_store } from '$stores/ThemeStore';
 	import { Theme } from '$components/shared/Theme';
-import Tooltip from '$components/desktop/Tooltip.svelte';
+	import Tooltip from '$components/desktop/Tooltip.svelte';
 	let theme: Theme = Theme.Dark;
-	theme_store.subscribe((new_theme: Theme) => (theme = new_theme));
+	theme_store.subscribe((new_theme: Theme) => {
+		theme = new_theme;
+	});
 
 	// Offset from taskbar in Rem
 	export let offset: number = 0;
@@ -19,51 +22,76 @@ import Tooltip from '$components/desktop/Tooltip.svelte';
 {#if show}
 	<div
 		class="menu-container {theme}"
-		style="bottom: {offset}rem;"
+		style="bottom: {offset}rem; --offset: {offset}rem;"
 		in:slide={{ duration: 500 }}
 		out:slide={{ duration: 500 }}
 	>
-		<div class="about-me-button-container">
-			<AboutMeButton icon="/images/icons/pfp-round.png" name="Jitze Jan Kerkstra" />
+		<div class="menu-container-top">
+			<div class="about-me-button-container">
+				<AboutMeButton icon="/images/icons/pfp-round.png" name="Jitze Jan Kerkstra" />
+			</div>
+			<div class="system-buttons-container">
+				<Tooltip tooltip="Toggle Mobile View" position="bottom" width="4.5rem">
+					<SwitchToMobileButton />
+				</Tooltip>
+				<div style="padding-left: 0.75rem;" />
+				<Tooltip
+					tooltip="Toggle {theme == Theme.Dark ? 'Light' : 'Dark'} mode"
+					position="bottom"
+					width="4.25rem"
+				>
+					<ChangeThemeSwitch />
+				</Tooltip>
+			</div>
 		</div>
 		<Categories />
-
-		<div class="system-buttons-container">
-			<Tooltip tooltip="Mobile View">
-				<SwitchToMobileButton />
-			</Tooltip>
-		</div>
 	</div>
 {/if}
 
 <style lang="scss">
-	$--menu-min-width: 30rem;
-
-	.menu-container.theme-light {
-		background-color: rgba(0, 0, 0, 0.2);
-	}
-
-	.menu-container.theme-dark {
-		background-color: rgba(0, 0, 0, 0.2);
-	}
+	$--menu-min-width: 40rem;
 
 	.menu-container {
-		width: auto;
+		// background-color: rgba(0, 0, 0, 0.2);
+		background-color: var(--background-color-secondary);
+
 		min-width: $--menu-min-width;
+		width: fit-content;
 		transition: bottom 0.25s;
 		position: absolute;
 
-		.system-buttons-container {
-			width: 100%;
+		max-height: calc(100vh - var(--offset));
+
+		overflow-y: auto;
+
+		.menu-container-top {
 			display: flex;
-			align-items: center;
-			padding: 1rem;
+			padding-bottom: 1rem;
+			.about-me-button-container {
+				flex: 3;
+			}
+
+			.system-buttons-container {
+				display: flex;
+				align-items: center;
+				padding: 1rem;
+				flex: 1;
+			}
 		}
 	}
 
 	@media only screen and (max-width: $--menu-min-width) {
 		.menu-container {
 			min-width: 100%;
+		}
+	}
+
+	@media only screen and (max-width: 300px) {
+		.menu-container {
+			.menu-container-top {
+				// Make sure the button to switch to mobile is still visible
+				display: inline-block;
+			}
 		}
 	}
 </style>

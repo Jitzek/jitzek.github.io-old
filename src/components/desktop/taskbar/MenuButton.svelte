@@ -1,12 +1,13 @@
 <script lang="ts">
-	export let src: string;
-	export let title: string = 'Navigation';
+	export let title: string = 'Start Menu';
 	export let activated: boolean = false;
 </script>
 
 <button class:activated class="menu-button" on:click>
 	<div class="menu-button-content">
-		<img {src} alt="Navigation Menu" width="auto" height="auto" />
+		<div class="menu-button-icon">
+			<slot />
+		</div>
 		<p>{title}</p>
 	</div>
 </button>
@@ -23,6 +24,7 @@
 		align-items: center;
 
 		height: 100%;
+		width: 12rem;
 
 		color: inherit;
 		font-family: inherit;
@@ -35,12 +37,14 @@
 			align-items: center;
 
 			max-height: 100%;
-			img {
+			.menu-button-icon {
 				display: inline;
 				margin: 0;
-				width: 3.25rem;
+				width: 3rem;
 				height: auto;
 				margin-right: 8px;
+
+				transition: width 0.25s;
 			}
 
 			p {
@@ -57,7 +61,11 @@
 	}
 
 	.menu-button:hover, .menu-button.activated {
-		background-color: rgba(0, 0, 0, 0.2);
+		background-color: var(--background-color-secondary-hover);
 		cursor: pointer;
+
+		.menu-button-icon {
+			width: 3.25rem;
+		}
 	}
 </style>

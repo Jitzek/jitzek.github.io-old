@@ -3,7 +3,13 @@
 	import { fly, fade, blur, crossfade, draw, scale, slide } from 'svelte/transition';
 
 	class CategoryContentObject {
-		constructor(public id: number, public name: string, public icon: string, public alt: string) {}
+		constructor(
+			public id: number,
+			public name: string,
+			public description: string,
+			public icon: string,
+			public alt: string
+		) {}
 	}
 
 	class CategoryObject {
@@ -29,6 +35,7 @@
 				new CategoryContentObject(
 					0,
 					'Content 11111',
+					'Description 1',
 					'/images/icons/utilities-terminal.svg',
 					'Content 1'
 				)
@@ -44,6 +51,7 @@
 				new CategoryContentObject(
 					1,
 					'Content 2',
+					'Description 2 af af afaefaef',
 					'/images/icons/utilities-terminal.svg',
 					'Content 2'
 				)
@@ -53,7 +61,9 @@
 	);
 
 	function toggleCategory(id: number) {
-		categories.forEach((category: CategoryObject) => (category.activated = category.id === id && !category.activated));
+		categories.forEach(
+			(category: CategoryObject) => (category.activated = category.id === id && !category.activated)
+		);
 		categories = categories;
 	}
 </script>
@@ -64,42 +74,41 @@
 			<MenuLauncherButton {icon} {name} {alt} {activated} on:click={() => toggleCategory(id)} />
 		{/each}
 	</div>
-	{#each categories as { content, activated }}
-		{#if activated}
-			<div in:slide={{ duration: 500 }} class="category-content-container">
-				{#each content as { name, icon, alt }}
-					<MenuLauncherButton {icon} {name} {alt} />
-					<MenuLauncherButton {icon} {name} {alt} />
-					<MenuLauncherButton {icon} {name} {alt} />
-					<MenuLauncherButton {icon} {name} {alt} />
-					<MenuLauncherButton {icon} {name} {alt} />
-					<MenuLauncherButton {icon} {name} {alt} />
-					<MenuLauncherButton {icon} {name} {alt} />
-					<MenuLauncherButton {icon} {name} {alt} />
-					<MenuLauncherButton {icon} {name} {alt} />
-
-				{/each}
-			</div>
-		{/if}
-	{/each}
+	<div class="category-content-container">
+		{#each categories as { content, activated }}
+			{#if activated}
+				<div in:slide={{ duration: 500 }} out:slide={{ duration: 250 }}>
+					{#each content as { name, description, icon, alt }}
+						<MenuLauncherButton icon={icon} name={name} description={description} alt={alt} />
+						<MenuLauncherButton icon={icon} name={name} description={description} alt={alt} />
+						<MenuLauncherButton icon={icon} name={name} description={description} alt={alt} />
+						<MenuLauncherButton icon={icon} name={name} description={description} alt={alt} />
+					{/each}
+				</div>
+			{/if}
+		{/each}
+	</div>
 </div>
 
 <style lang="scss">
 	.categories-container {
 		display: flex;
 		height: 20rem;
+		width: 100%;
 
 		.category-buttons-container {
 			overflow-y: auto;
 			overflow-x: hidden;
 			padding-right: 0.5rem;
 			width: 100%;
+			flex: 1;
 		}
 
 		.category-content-container {
 			overflow-y: auto;
 			overflow-x: hidden;
 			width: 100%;
+			flex: 2;
 		}
 	}
 </style>

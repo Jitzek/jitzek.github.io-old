@@ -1,26 +1,42 @@
 <script lang="ts">
-    import type { Theme } from '$components/shared/Theme';
+	import type { Theme } from '$components/shared/Theme';
 
-    import { theme as theme_store } from '$stores/ThemeStore';
-    let theme: Theme;
-    theme_store.subscribe((new_theme) => theme = new_theme);
+	import { theme as theme_store } from '$stores/ThemeStore';
+	let theme: Theme;
+	theme_store.subscribe((new_theme) => (theme = new_theme));
 
-	export let tooltip: string = 'test';
+	export let tooltip: string = '';
+	// top, bottom, left or right
+	export let position: string = 'top';
+	export let width: string = 'max-content';
+
+	let tooltipElement: HTMLDivElement;
 </script>
 
-<div class="tooltip {theme}" data-tooltip={tooltip}>
+<div
+	bind:this={tooltipElement}
+	class="tooltip {position}"
+	data-tooltip={tooltip}
+	style="--width: {width};"
+	on:mouseover={() => (tooltipElement.style.zIndex = '9')}
+	on:mouseleave={() => (tooltipElement.style.zIndex = 'initial')}
+>
 	<slot />
 </div>
 
 <style>
-    .theme-dark[data-tooltip]:before {
-		background-color: #333333E6;
-		background-color: rgba(51, 51, 51, 0.9);
-		background-color: hsla(0, 0%, 20%, 0.9);
-		color: #fff;
-    }
+	.tooltip[data-tooltip]:before{
+		background-color: var(--background-color);
+		color: var(--font-color);
 
-	/*This would all go into the global.css file*/
+		box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
+	}
+
+	.tooltip[data-tooltip]:after {
+		border-top: 5px solid var(--background-color);
+		border-bottom: 5px solid var(--background-color);
+	}
+
 	[data-tooltip] {
 		position: relative;
 		z-index: 2;
@@ -36,15 +52,35 @@
 		transform: translate(-50%, 5px);
 	}
 
-	[data-tooltip]:before {
-		position: absolute;
+	.tooltip.top[data-tooltip]:before {
 		bottom: 100%;
 		left: 50%;
 		margin-bottom: 5px;
+	}
+
+	.tooltip.bottom[data-tooltip]:before {
+		top: 100%;
+		left: 50%;
+		margin-top: 5px;
+	}
+
+	.tooltip.left[data-tooltip]:before {
+		top: 0;
+		right: 45%;
+	}
+
+	.tooltip.right[data-tooltip]:before {
+		top: 0;
+		left: 175%;
+	}
+
+	[data-tooltip]:before {
+		position: absolute;
+		/* bottom: 100%; */
+		/* left: 50%; */
+		/* margin-bottom: 5px; */
 		padding: 7px;
-		width: 100%;
-		min-width: 2.5rem;
-		max-width: 5rem;
+		width: var(--width);
 		-webkit-border-radius: 3px;
 		-moz-border-radius: 3px;
 		border-radius: 3px;
@@ -56,13 +92,43 @@
 		transition: 0.2s ease-out;
 	}
 
-	[data-tooltip]:after {
-		position: absolute;
+	.tooltip.top[data-tooltip]:after {
 		bottom: 100%;
 		left: 50%;
+		border-bottom: transparent;
+	}
+
+	.tooltip.bottom[data-tooltip]:after {
+		top: 100%;
+		left: 50%;
+		border-top: transparent;
+	}
+
+	.tooltip.left[data-tooltip]:after {
+		top: 50%;
+		right: 95%;
+		border-top: transparent;
+		transform: rotate(90deg);
+		-webkit-transform: rotate(90deg);
+		-moz-transform: rotate(90deg);
+	}
+
+	.tooltip.right[data-tooltip]:after {
+		top: 50%;
+		left: 95%;
+		border-bottom: transparent;
+		transform: rotate(90deg);
+		-webkit-transform: rotate(90deg);
+		-moz-transform: rotate(90deg);
+	}
+
+	[data-tooltip]:after {
+		position: absolute;
+		/* bottom: 100%; */
+		/* left: 50%; */
 		width: 0;
-		border-top: 5px solid #000;
-		border-top: 5px solid hsla(0, 0%, 20%, 0.9);
+		/* border-top: 5px solid #000; */
+		/* border-top: 5px solid hsla(0, 0%, 20%, 0.9); */
 		border-right: 5px solid transparent;
 		border-left: 5px solid transparent;
 		content: ' ';
