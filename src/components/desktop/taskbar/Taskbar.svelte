@@ -6,6 +6,7 @@
 
 	import { convertRemToPixels } from '$shared/conversions';
 	import WhiskerMenu from '$components/shared/svg/whisker-menu.svelte';
+import { changeCursor, Cursor } from '../cursors';
 
 	// export let menuButton: string = "";
 	export let rows: number = 1;
@@ -30,10 +31,15 @@
 		}
 	}
 
+	let taskbar: HTMLDivElement;
+
 	let heightInPx = 0;
 	onMount(() => {
 		// Set initial height in pixels
 		heightInPx = convertRemToPixels(height);
+
+		// Disable image dragging
+		taskbar.ondragstart = () => { return false; }
 	});
 
 	// Start of resize event (mouse down)
@@ -46,8 +52,8 @@
 		resizing = true;
 		start = event.pageY;
 		initial = heightInPx;
-
-		document.body.style.cursor = 'n-resize';
+		
+		changeCursor(Cursor.N_RESIZE);
 	}
 
 	function stopResize() {
@@ -56,7 +62,7 @@
 		initial = 0;
 		heightInPx = convertRemToPixels(height);
 
-		document.body.style.cursor = 'initial';
+		changeCursor(Cursor.DEFAULT);
 	}
 
 	function resize(event: MouseEvent) {
@@ -167,7 +173,7 @@
 </script>
 
 <svelte:window on:mouseup={stopResize} on:mousemove={resize} />
-<div class="taskbar" style="height: {height}rem;">
+<div bind:this="{taskbar}" class="taskbar" style="height: {height}rem;">
 	<Menu offset={height} bind:show={showMenu} />
 	<div on:mousedown={startResize.bind(this)} class="border" />
 	<div class="taskbar-content" style="height: {height}rem;">

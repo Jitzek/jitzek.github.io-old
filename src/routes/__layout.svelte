@@ -12,6 +12,8 @@
 	font_store.subscribe((new_font) => (font = new_font));
 	font_store.set(Font.Default);
 
+
+	let wrapper: HTMLDivElement;
 	onMount(() => {
 		// Function should be called within the onMount function since it requires window to be assigned
 		setupWindowQueries({ desktopQuery: 'screen and (min-width: 768px)', listen: true });
@@ -25,16 +27,10 @@
 		theme_store.subscribe((new_theme) => {
 			document.documentElement.setAttribute('data-theme', new_theme);
 		});
-
-		// Disable image dragging
-		// This could have potential unwanted side effects
-		document.body.ondragstart = () => {
-			return false;
-		};
 	});
 </script>
 
-<div style="font-family: {font}">
+<div bind:this="{wrapper}" style="font-family: {font}">
 	<slot />
 </div>
 
@@ -52,6 +48,9 @@
 		--heading-color: #818cab;
 
 		--accent-color: rgb(25%,65%,95%);
+
+		height: 100%;
+		width: 100%;
 	}
 
 	:global(html[data-theme='light']) {

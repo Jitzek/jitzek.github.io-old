@@ -5,7 +5,7 @@
 
 <div class="program">
 	<div class="image-container">
-		<img src={icon} alt={name} />
+		<img src={icon} alt={name} draggable="false" />
 	</div>
 	<p>{name}</p>
 </div>

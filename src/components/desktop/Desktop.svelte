@@ -4,25 +4,18 @@
 	import Program from '$components/desktop/Program.svelte';
 	import { convertRemToPixels } from '$components/shared/conversions';
 	import Grid from '$components/shared/grid/Grid.svelte';
-	import GridObject from '$components/shared/grid/GridObject.svelte';
 
 	let wallpaper: string = '/images/wallpapers/custom-design-01-1280x720.png';
 
 	let taskbarHeight: number;
+
+
 </script>
 
-<Wallpaper src={wallpaper} />
-<Grid heightOffset={taskbarHeight} columnWidth={4.5} columnHeight={5}>
-	<GridObject row={1} column={1}>
-		<Program icon="/images/icons/utilities-terminal.svg" name="terminal111" />
-	</GridObject>
-	<GridObject row={1} column={2}>
-		<Program icon="/images/icons/utilities-terminal.svg" name="terminal 2" />
-	</GridObject>
-	<GridObject row={2} column={1}>
-		<Program icon="/images/icons/utilities-terminal.svg" name="terminal 3" />
-	</GridObject>
-</Grid>
+<!-- <Wallpaper src={wallpaper} /> -->
+<div class="grid-container">
+	<Grid heightOffset={taskbarHeight} columnWidth={5} columnHeight={6} gap={1.5} padding={1} />
+</div>
 <Taskbar bind:height={taskbarHeight} />
 
 <style lang="scss">
@@ -37,13 +30,9 @@
 	}
     */
 
-	.desktop-grid {
-		padding: 1rem;
-
-		display: inline-grid;
-		display: -ms-inline-grid;
-		display: -moz-inline-grid;
-
-		gap: 2.5rem;
+	.grid-container {
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 </style>
