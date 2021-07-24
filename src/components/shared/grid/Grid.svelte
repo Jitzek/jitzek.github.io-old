@@ -2,7 +2,6 @@
 	import Program from '$components/desktop/Program.svelte';
 	import { convertRemToPixels } from '$shared/conversions';
 	import { clickOutside } from '$components/shared/events/mouseOutside';
-	import { changeCursor, Cursor } from '$components/desktop/cursors';
 
 	export let widthOffset: number = 0;
 	export let heightOffset: number = 0;
@@ -39,9 +38,6 @@
 		) {}
 
 		public collidesWith(x: number, y: number) {
-			let offsetX = convertRemToPixels(gap * 2);
-			let offsetY = convertRemToPixels(gap * 2);
-
 			// if (this.column == 1 || this.column == columnsPerRow) {
 			// 	offsetX += convertRemToPixels(widthOffset / 2);
 			// }
@@ -50,10 +46,10 @@
 			// }
 
 			return (
-				x > this.x - columnWidth / 2 - offsetX &&
-				x < this.x + columnWidth / 2 + offsetX &&
-				y > this.y - columnHeight / 2 - offsetY &&
-				y < this.y + columnHeight / 2 + offsetY
+				x > this.x - convertRemToPixels(columnWidth / 2) + convertRemToPixels(gap / 2) &&
+				x < this.x + convertRemToPixels(columnWidth / 2) + convertRemToPixels(gap / 2) &&
+				y > this.y - convertRemToPixels(columnHeight / 2) + convertRemToPixels(gap / 2) &&
+				y < this.y + convertRemToPixels(columnHeight / 2) + convertRemToPixels(gap / 2)
 			);
 		}
 	}
@@ -92,20 +88,32 @@
 				);
 			}
 		}
-		gridObjects.forEach((gridObject) => {
-			let preferredRow = gridObject.preferredRow;
-			let preferredColumn = gridObject.preferredColumn;
-			if (gridObject.preferredRow < 0 || gridObject.preferredRow > rows) {
-				preferredRow = rows;
-			}
-			if (gridObject.preferredColumn < 0 || gridObject.preferredColumn > columnsPerRow) {
-				preferredColumn = columnsPerRow;
-			}
 
-			/*
-				Rearrange GridObjects to fit within grid.
-				Automatically return GridObjects to their preferred position.
-			*/
+		/*
+			Rearrange GridObjects to fit within grid.
+			Automatically return GridObjects to their preferred position.
+		*/
+		if (gridPositions.length > 0) {
+			gridObjects.forEach((gridObject) => {
+				let preferredRow = gridObject.preferredRow;
+				let preferredColumn = gridObject.preferredColumn;
+				if (gridObject.preferredRow < 0 || gridObject.preferredRow > rows) {
+					preferredRow = rows;
+				}
+				if (gridObject.preferredColumn < 0 || gridObject.preferredColumn > columnsPerRow) {
+					preferredColumn = columnsPerRow;
+				}
+
+				let preferredGridPosition1 = gridPositions.reduce((prev, current) => {
+					return (current.object == null &&
+						Math.abs(current.row - preferredRow) < Math.abs(prev.row - preferredRow)) ||
+						Math.abs(current.column - preferredColumn) < Math.abs(prev.column - preferredColumn)
+						? current
+						: prev;
+				});
+				preferredGridPosition1.object = gridObject;
+
+				/*
 			let done: boolean = false;
 			for (preferredRow; preferredRow > 0; preferredRow--) {
 				if (done) break;
@@ -124,7 +132,9 @@
 				}
 				preferredColumn = columnsPerRow;
 			}
-		});
+			*/
+			});
+		}
 		gridPositions = gridPositions;
 	}
 
@@ -221,23 +231,30 @@
 		let offsetX = clientX - startX;
 		let offsetY = clientY - startY;
 
-		gridObjects.forEach((gridObject) => {
-			if (!gridObject.selected) return;
-			let or_gridPosition = gridPositions.find(
-				(position) => position.object != null && position.object.id == gridObject.id
-			);
-			let new_gridPosition = gridPositions.find((position) =>
-				position.collidesWith(or_gridPosition.x + offsetX, or_gridPosition.y + offsetY)
-			);
-			if (new_gridPosition) {
-				if (new_gridPosition && new_gridPosition.object == null) {
-					gridObject.preferredRow = new_gridPosition.row;
-					gridObject.preferredColumn = new_gridPosition.column;
-				} else {
-					// Do nothing for now
-				}
-			}
-		});
+		// Check if the gridObject being dragged is dropped on an occupied spot
+		if (false) {
+			// 
+		} else {
+			// Attempt to place gridObject on grid
+			gridObjects.forEach((gridObject) => {
+				if (!gridObject.selected) return;
+				let or_gridPosition = gridPositions.find(
+					(position) => position.object != null && position.object.id == gridObject.id
+				);
+				// Assign object to the closest empty spot
+				let new_x: number = or_gridPosition.x + offsetX;
+				let new_y: number = or_gridPosition.y + offsetY;
+				let new_gridPosition = gridPositions.reduce((prev, current) => {
+					return (current.object == null &&
+						Math.abs(current.x - new_x) < Math.abs(prev.x - new_x)) ||
+						Math.abs(current.y - new_y) < Math.abs(prev.y - new_y)
+						? current
+						: prev;
+				});
+				gridObject.preferredRow = new_gridPosition.row;
+				gridObject.preferredColumn = new_gridPosition.column;
+			});
+		}
 
 		gridObjects = gridObjects;
 	}
