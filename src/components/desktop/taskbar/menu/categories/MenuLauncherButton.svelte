@@ -11,8 +11,8 @@
 		<img src={icon} {alt} />
 		<div class="name-and-description">
 			<span class="name">{name}</span>
-			<br>
 			{#if description}
+				<br />
 				<span class="description">{description}</span>
 			{/if}
 		</div>
@@ -35,11 +35,13 @@
 		cursor: pointer;
 
 		width: 100%;
-		height: 3rem;
+		height: 2.5rem;
 
 		.menu-launcher-button-content {
 			display: flex;
+			height: 100%;
 			align-items: center;
+			overflow: hidden;
 
 			img {
 				display: inline;
@@ -67,7 +69,8 @@
 		background-color: var(--background-color-secondary-hover);
 	}
 
-	.menu-launcher-button:hover, .menu-launcher-button.activated {
+	.menu-launcher-button:hover,
+	.menu-launcher-button.activated {
 		img {
 			width: 2.75rem;
 		}

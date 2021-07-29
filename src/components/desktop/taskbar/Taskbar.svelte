@@ -3,10 +3,11 @@
 	import Launcher from '$components/desktop/taskbar/Launcher.svelte';
 	import MenuButton from '$components/desktop/taskbar/MenuButton.svelte';
 	import Menu from '$components/desktop/taskbar/menu/Menu.svelte';
+	import { clickOutside } from '$components/shared/events/mouseOutside';
 
 	import { convertRemToPixels } from '$shared/conversions';
 	import WhiskerMenu from '$components/shared/svg/whisker-menu.svelte';
-import { changeCursor, Cursor } from '../cursors';
+	import { changeCursor, Cursor } from '$desktop/cursors';
 
 	// export let menuButton: string = "";
 	export let rows: number = 1;
@@ -39,7 +40,9 @@ import { changeCursor, Cursor } from '../cursors';
 		heightInPx = convertRemToPixels(height);
 
 		// Disable image dragging
-		taskbar.ondragstart = () => { return false; }
+		taskbar.ondragstart = () => {
+			return false;
+		};
 	});
 
 	// Start of resize event (mouse down)
@@ -52,7 +55,7 @@ import { changeCursor, Cursor } from '../cursors';
 		resizing = true;
 		start = event.pageY;
 		initial = heightInPx;
-		
+
 		changeCursor(Cursor.N_RESIZE);
 	}
 
@@ -75,7 +78,7 @@ import { changeCursor, Cursor } from '../cursors';
 
 		// Determine whether enough pixels have been moved to add/remove a row
 		if (heightInPx > convertRemToPixels(height + rowHeight)) {
-			height += height + rowHeight <= (rowHeight * maxRows) ? rowHeight : 0;
+			height += height + rowHeight <= rowHeight * maxRows ? rowHeight : 0;
 		} else if (heightInPx < convertRemToPixels(height - rowHeight)) {
 			height -= height - rowHeight >= rowHeight ? rowHeight : 0;
 		}
@@ -173,9 +176,9 @@ import { changeCursor, Cursor } from '../cursors';
 </script>
 
 <svelte:window on:mouseup={stopResize} on:mousemove={resize} />
-<div bind:this="{taskbar}" class="taskbar" style="height: {height}rem;">
+<div bind:this={taskbar} class="taskbar" style="height: {height}rem;" use:clickOutside on:clickoutside={() => showMenu = false}>
 	<Menu offset={height} bind:show={showMenu} />
-	<div on:mousedown={startResize.bind(this)} class="border" />
+	<div on:mousedown={startResize} class="border" />
 	<div class="taskbar-content" style="height: {height}rem;">
 		<div class="menu-button-container">
 			<MenuButton on:click={toggleMenu} bind:activated={showMenu}>
@@ -186,7 +189,7 @@ import { changeCursor, Cursor } from '../cursors';
 		<div class="launcher-container">
 			<div class="launchers" style="grid-template-columns: {gridTemplateColumns};">
 				{#each launchers as { name, icon, alt, row, ghost }}
-					<Launcher {name} {icon} {alt} {row} {ghost} height={`${rowHeight}rem`} />
+					<Launcher {name} {icon} {alt} {row} {ghost} height={`${rowHeight}rem`} onClick={() => showMenu = false} />
 				{/each}
 			</div>
 		</div>
@@ -227,7 +230,7 @@ import { changeCursor, Cursor } from '../cursors';
 			-webkit-box-orient: horizontal;
 			-moz-box-orient: horizontal;
 			box-orient: horizontal;
-			flex-direction: c;
+			flex-direction: row;
 
 			-webkit-box-pack: start;
 			-moz-box-pack: start;

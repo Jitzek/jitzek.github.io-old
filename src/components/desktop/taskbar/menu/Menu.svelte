@@ -38,7 +38,7 @@
 				<Tooltip
 					tooltip="Toggle {theme == Theme.Dark ? 'Light' : 'Dark'} mode"
 					position="bottom"
-					width="4.25rem"
+					width="4.35rem"
 				>
 					<ChangeThemeSwitch />
 				</Tooltip>

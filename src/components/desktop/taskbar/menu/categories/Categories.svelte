@@ -79,10 +79,10 @@
 			{#if activated}
 				<div in:slide={{ duration: 500 }} out:slide={{ duration: 250 }}>
 					{#each content as { name, description, icon, alt }}
-						<MenuLauncherButton icon={icon} name={name} description={description} alt={alt} />
-						<MenuLauncherButton icon={icon} name={name} description={description} alt={alt} />
-						<MenuLauncherButton icon={icon} name={name} description={description} alt={alt} />
-						<MenuLauncherButton icon={icon} name={name} description={description} alt={alt} />
+						<MenuLauncherButton {icon} {name} {description} {alt} />
+						<MenuLauncherButton {icon} {name} {description} {alt} />
+						<MenuLauncherButton {icon} {name} {description} {alt} />
+						<MenuLauncherButton {icon} {name} {description} {alt} />
 					{/each}
 				</div>
 			{/if}

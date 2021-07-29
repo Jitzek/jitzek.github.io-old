@@ -19,6 +19,7 @@ export const setup: (
 ) => void = ({ desktopQuery, listen }) => {
     // Make sure "window" is defined
     try {
+        desktop.set(window.matchMedia(desktopQuery).matches);
         if (listen) {
             // Add an event listener
             // Fun fact: Getting the "matches" variable from the `MediaQueryListEvent` variable is called object de-structuring
@@ -27,7 +28,6 @@ export const setup: (
             });
             return;
         }
-        desktop.set(window.matchMedia(desktopQuery).matches);
     }
     catch (error) {
         console.error(`

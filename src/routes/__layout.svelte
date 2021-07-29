@@ -12,7 +12,6 @@
 	font_store.subscribe((new_font) => (font = new_font));
 	font_store.set(Font.Default);
 
-
 	let wrapper: HTMLDivElement;
 	onMount(() => {
 		// Function should be called within the onMount function since it requires window to be assigned
@@ -45,6 +44,9 @@
 		--background-color-secondary: hsl(0, 0%, 13%);
 		--background-color-secondary-hover: rgba(0, 0, 0, 0.35);
 
+		--background-color-application: hsl(0, 0%, 17%);
+		--border-color-application: hsl(0, 0%, 30%);
+
 		--heading-color: #818cab;
 
 		--accent-color: rgb(25%,65%,95%);
@@ -62,6 +64,9 @@
 
 		--background-color-secondary: hsl(200, 25%, 73%);
 		--background-color-secondary-hover: rgba(255, 255, 255, 0.35);
+
+		--background-color-application: hsl(200, 10%, 80%);
+		--border-color-application: hsl(200, 10%, 50%);
 
 		--heading-color: #333333;
 
@@ -95,5 +100,7 @@
 		-moz-user-select: none;
 		-webkit-user-select: none;
 		-ms-user-select: none;
+
+		font-weight: 500;
 	}
 </style>
