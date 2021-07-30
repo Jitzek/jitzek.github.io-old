@@ -49,7 +49,8 @@
 
 		--heading-color: #818cab;
 
-		--accent-color: rgb(25%,65%,95%);
+		--accent-neutral-color: rgb(25%,65%,95%);
+		--accent-alert-color: hsla(0, 55%, 55%, 1);
 
 		height: 100%;
 		width: 100%;
@@ -70,7 +71,8 @@
 
 		--heading-color: #333333;
 
-		--accent-color: rgb(0%,40%,100%);
+		--accent-neutral-color: rgb(0%,40%,100%);
+		--accent-alert-color: hsla(0, 85%, 65%, 1);
 	}
 
 	// :global(body.theme-dark) {
@@ -89,17 +91,6 @@
 
 		color: var(--font-color);
 		background-color: var(--background-color);
-
-		-moz-user-select: none;
-		-webkit-user-select: none;
-		user-select: none;
-
-		user-drag: none;
-		-webkit-user-drag: none;
-		user-select: none;
-		-moz-user-select: none;
-		-webkit-user-select: none;
-		-ms-user-select: none;
 
 		font-weight: 500;
 	}

@@ -65,7 +65,7 @@
 		initial = 0;
 		heightInPx = convertRemToPixels(height);
 
-		changeCursor(Cursor.DEFAULT);
+		changeCursor(Cursor.AUTO);
 	}
 
 	function resize(event: MouseEvent) {

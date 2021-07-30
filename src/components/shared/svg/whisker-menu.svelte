@@ -21,6 +21,6 @@
         transition: width 0.25s, height 0.25s;
         width: inherit;
         height: inherit;
-        fill: var(--accent-color);
+        fill: var(--accent-neutral-color);
     }
 </style>

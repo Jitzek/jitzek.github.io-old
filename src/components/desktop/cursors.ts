@@ -34,7 +34,9 @@ export enum Cursor {
     W_RESIZE = 'w-resize',
     WAIT = 'wait',
     ZOOM_IN = 'zoom-in',
-    ZOOM_OUT = 'zoom-out'
+    ZOOM_OUT = 'zoom-out',
+
+    INITIAL = 'initial'
 }
 
 export function changeCursor(cursor: Cursor) {

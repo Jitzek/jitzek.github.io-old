@@ -8,13 +8,15 @@
 	let wallpaper: string = '/images/wallpapers/custom-design-01-1280x720.png';
 
 	let taskbarHeight: number;
-</script>
 
+</script>
 <!-- <Wallpaper src={wallpaper} /> -->
 <div class="grid-container">
 	<Grid heightOffset={taskbarHeight} columnWidth={5} columnHeight={6} gap={1.5} padding={1} />
 </div>
-<Window heightOffset={convertRemToPixels(taskbarHeight)} height={500} width={600} x={500} fullscreen={false} />
+<Window heightOffset={convertRemToPixels(taskbarHeight)} height={500} width={600} x={50} y={50} fullscreen={false} />
+<!-- <Window heightOffset={convertRemToPixels(taskbarHeight)} height={500} width={600} x={250} y={200} fullscreen={false} /> -->
+
 <Taskbar bind:height={taskbarHeight} />
 
 <style lang="scss">

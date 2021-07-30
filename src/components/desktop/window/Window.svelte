@@ -1,9 +1,14 @@
 <script lang="ts">
 	import { Cursor, changeCursor } from '$desktop/cursors';
 	import { scale } from 'svelte/transition';
+	import WindowCloseButton from './control_buttons/WindowCloseButton.svelte';
+	import WindowMinimizeButton from './control_buttons/WindowMinimizeButton.svelte';
+	import WindowResizeButton from './control_buttons/WindowResizeButton.svelte';
 
 	export let fullscreen: boolean = false;
 	export let minimized: boolean = false;
+	export let z_index: number = 1;
+	export let onSelection: Function = () => {};
 
 	// Width of window in PX
 	// Defaults to max available
@@ -56,13 +61,20 @@
 		else if (y > maxY) y = maxY;
 		else if (y < 0) y = 0;
 	}
+	
+	let windowElement: HTMLDivElement;
 
 	let dragPrevX: number = 0;
 	let dragPrevY: number = 0;
-	function handleDragStart(x: number, y: number) {
+	function handleDragStart(_x: number, _y: number) {
 		isMovingWindow = true;
-		dragPrevX = x;
-		dragPrevY = y;
+		if (fullscreen) {
+			fullscreen = false;
+			x = _x - width / 2;
+			y = _y + height;
+		}
+		dragPrevX = _x;
+		dragPrevY = _y;
 	}
 	function onWindowDragStart(e: DragEvent) {
 		handleDragStart(e.clientX, e.clientY);
@@ -145,6 +157,9 @@
 		dragY = y;
 		dragHeight = height;
 		dragWidth = width;
+
+		// Prevent content from being selected while resizing the window
+		windowElement.style.userSelect = 'none';
 	}
 	function resizeWindow(e: MouseEvent) {
 		if (!resizing) return;
@@ -203,10 +218,12 @@
 	}
 	function stopWindowResize(e: MouseEvent) {
 		resizing = false;
-		changeCursor(Cursor.DEFAULT);
+		changeCursor(Cursor.AUTO);
 
 		if (height < minHeight) height = minHeight;
 		if (width < minWidth) width = minWidth;
+
+		windowElement.style.userSelect = 'initial';
 	}
 
 	function onWindowDoubleClick(e: MouseEvent) {
@@ -225,6 +242,7 @@
 
 {#if !minimized}
 	<div
+		bind:this={windowElement}
 		class="window"
 		style="
 			width: {fullscreen ? maxWidth : width + x <= maxWidth ? width : maxWidth - x}px;
@@ -233,9 +251,11 @@
 			transform: translate({fullscreen ? 0 : x}px, -{fullscreen ? 0 : y}px);
 			min-width: {minWidth}px;
 			min-height: {minHeight}px;
+			z-index: {z_index};
 			"
 		in:scale={{ duration: 250 }}
 		out:scale={{ duration: 250 }}
+		on:mousedown={onSelection()}
 	>
 		<!-- Draggable bar -->
 		<div
@@ -246,7 +266,22 @@
 			on:dragend={onWindowDragEnd}
 			on:touchend={onWindowTouchEnd}
 			on:dblclick={onWindowDoubleClick}
-		/>
+		>
+			<div class="control-buttons">
+				<WindowMinimizeButton
+					width={'2.5rem'}
+					height={'100%'}
+					on:click={() => (minimized = true)}
+				/>
+				<WindowResizeButton
+					isFullscreen={fullscreen}
+					width={'2.5rem'}
+					height={'100%'}
+					on:click={() => (fullscreen = !fullscreen)}
+				/>
+				<WindowCloseButton width={'2.5rem'} height={'100%'} />
+			</div>
+		</div>
 		<div class="window-content">
 			<h1>Window</h1>
 		</div>
@@ -290,6 +325,13 @@
 			height: 2rem;
 			width: 100%;
 			background-color: var(--border-color-application);
+
+			.control-buttons {
+				float: right;
+				height: 100%;
+				width: auto;
+				display: flex;
+			}
 		}
 
 		.window-content {

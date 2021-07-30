@@ -19,8 +19,8 @@
 
 	let desktop = $desktop_store;
 	let mobile = $mobile_store;
-	desktop_store.subscribe(value => desktop = value);
-	mobile_store.subscribe(value => mobile = value);
+	desktop_store.subscribe((value) => (desktop = value));
+	mobile_store.subscribe((value) => (mobile = value));
 
 	let screenWidth: number;
 	let screenHeight: number;
@@ -380,6 +380,10 @@
 
 		.grid-element {
 			overflow: hidden;
+
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			user-select: none;
 		}
 		.grid-element-overlay {
 			outline: 0 solid rgba(255, 255, 255, 0.5);
