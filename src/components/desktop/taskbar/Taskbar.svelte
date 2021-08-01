@@ -16,6 +16,7 @@
 	export let height: number = 3.5;
 	// Row height in REM
 	export let rowHeight: number = 3.5;
+	export let z_index: number = 9;
 
 	$: {
 		height;
@@ -176,7 +177,7 @@
 </script>
 
 <svelte:window on:mouseup={stopResize} on:mousemove={resize} />
-<div bind:this={taskbar} class="taskbar" style="height: {height}rem;" use:clickOutside on:clickoutside={() => showMenu = false}>
+<div bind:this={taskbar} class="taskbar" style="height: {height}rem; z-index: {z_index};" use:clickOutside on:clickoutside={() => showMenu = false}>
 	<Menu offset={height} bind:show={showMenu} />
 	<div on:mousedown={startResize} class="border" />
 	<div class="taskbar-content" style="height: {height}rem;">

@@ -1,28 +1,31 @@
 <script lang="ts">
 	import { Cursor, changeCursor } from '$desktop/cursors';
+	import { onMount } from 'svelte';
 	import { scale } from 'svelte/transition';
 	import WindowCloseButton from './control_buttons/WindowCloseButton.svelte';
 	import WindowMinimizeButton from './control_buttons/WindowMinimizeButton.svelte';
 	import WindowResizeButton from './control_buttons/WindowResizeButton.svelte';
 
-	export let fullscreen: boolean = false;
-	export let minimized: boolean = false;
+	export let initialFullscreen: boolean = false;
+	export let initialMinimized: boolean = false;
 	export let z_index: number = 1;
 	export let onSelection: Function = () => {};
+	export let onMinimize: Function = () => {};
+	export let onClose: Function = () => {};
 
-	// Width of window in PX
-	// Defaults to max available
-	export let width: number = null;
 	// Height of window in PX
 	// Default to max available
-	export let height: number = null;
+	export let initialHeight: number = null;
+	// Width of window in PX
+	// Defaults to max available
+	export let initialWidth: number = null;
 
 	// X position of window in PX
 	// Defaults to center
-	export let x: number = null;
+	export let initialX: number = null;
 	// Y position of window in PX
 	// Defaults to center
-	export let y: number = null;
+	export let initialY: number = null;
 
 	// Height offset in PX
 	export let heightOffset: number = 0;
@@ -33,6 +36,21 @@
 	export let minWidth: number = 250;
 	// Minimal width of window in PX
 	export let minHeight: number = 250;
+
+	let height: number = 0;
+	let width: number = 0;
+	let x: number = 0;
+	let y: number = 0;
+	let fullscreen: boolean = false;
+	let minimized: boolean = false;
+	onMount(() => {
+		height = initialHeight;
+		width = initialWidth;
+		x = initialX;
+		y = initialY;
+		fullscreen = initialFullscreen;
+		minimized = initialMinimized;
+	});
 
 	let maxHeight: number = null;
 	let maxWidth: number = null;
@@ -61,12 +79,12 @@
 		else if (y > maxY) y = maxY;
 		else if (y < 0) y = 0;
 	}
-	
+
 	let windowElement: HTMLDivElement;
 
 	let dragPrevX: number = 0;
 	let dragPrevY: number = 0;
-	function handleDragStart(_x: number, _y: number) {
+	function handleWindowMoveStart(_x: number, _y: number) {
 		isMovingWindow = true;
 		if (fullscreen) {
 			fullscreen = false;
@@ -76,16 +94,16 @@
 		dragPrevX = _x;
 		dragPrevY = _y;
 	}
-	function onWindowDragStart(e: DragEvent) {
-		handleDragStart(e.clientX, e.clientY);
+	function handleWindowDragStart(e: DragEvent) {
+		handleWindowMoveStart(e.clientX, e.clientY);
 	}
-	function onWindowTouchStart(e: TouchEvent) {
+	function handleWindowTouchStart(e: TouchEvent) {
 		e.preventDefault();
-		handleDragStart(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
+		handleWindowMoveStart(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
 	}
 
 	let isMovingWindow: boolean = false;
-	function handleDragMove(_x: number, _y: number) {
+	function handleWindowMove(_x: number, _y: number) {
 		if (!isMovingWindow) return;
 		let offsetX = _x - dragPrevX;
 		let offsetY = _y - dragPrevY;
@@ -95,21 +113,21 @@
 		x += offsetX;
 		y -= offsetY;
 	}
-	function onDragOver(e: DragEvent) {
+	function handleDragOver(e: DragEvent) {
 		e.preventDefault();
-		handleDragMove(e.clientX, e.clientY);
+		handleWindowMove(e.clientX, e.clientY);
 
 		e.dataTransfer.dropEffect = 'move';
 	}
-	function onTouchMove(e: TouchEvent) {
-		handleDragMove(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
+	function handleTouchMove(e: TouchEvent) {
+		handleWindowMove(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
 	}
-
-	function onWindowDragEnd(e: DragEvent) {
+	
+	function handleWindowDragEnd(e: DragEvent) {
 		e.preventDefault();
 		isMovingWindow = false;
 	}
-	function onWindowTouchEnd(e: TouchEvent) {
+	function handleWindowTouchEnd(e: TouchEvent) {
 		e.preventDefault();
 		isMovingWindow = false;
 	}
@@ -226,16 +244,29 @@
 		windowElement.style.userSelect = 'initial';
 	}
 
-	function onWindowDoubleClick(e: MouseEvent) {
+	function handleWindowDoubleClick(e: MouseEvent) {
 		fullscreen = !fullscreen;
+	}
+
+	function handleMinimize() {
+		minimized = true;
+		onMinimize();
+	}
+
+	function handleResize() {
+		fullscreen = !fullscreen;
+	}
+
+	function handleClose() {
+		onClose();
 	}
 </script>
 
 <svelte:window
 	bind:innerHeight
 	bind:innerWidth
-	on:dragover={onDragOver}
-	on:touchmove={onTouchMove}
+	on:dragover={handleDragOver}
+	on:touchmove={handleTouchMove}
 	on:mouseup={stopWindowResize}
 	on:mousemove={resizeWindow}
 />
@@ -261,25 +292,25 @@
 		<div
 			class="control-bar"
 			draggable="true"
-			on:dragstart={onWindowDragStart}
-			on:touchstart={onWindowTouchStart}
-			on:dragend={onWindowDragEnd}
-			on:touchend={onWindowTouchEnd}
-			on:dblclick={onWindowDoubleClick}
+			on:dragstart={handleWindowDragStart}
+			on:touchstart={handleWindowTouchStart}
+			on:dragend={handleWindowDragEnd}
+			on:touchend={handleWindowTouchEnd}
+			on:dblclick={handleWindowDoubleClick}
 		>
 			<div class="control-buttons">
 				<WindowMinimizeButton
 					width={'2.5rem'}
 					height={'100%'}
-					on:click={() => (minimized = true)}
+					on:click={() => handleMinimize()}
 				/>
 				<WindowResizeButton
 					isFullscreen={fullscreen}
 					width={'2.5rem'}
 					height={'100%'}
-					on:click={() => (fullscreen = !fullscreen)}
+					on:click={() => handleResize()}
 				/>
-				<WindowCloseButton width={'2.5rem'} height={'100%'} />
+				<WindowCloseButton width={'2.5rem'} height={'100%'} on:click={() => handleClose()} />
 			</div>
 		</div>
 		<div class="window-content">

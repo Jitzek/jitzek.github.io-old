@@ -6,6 +6,8 @@ export enum Font {
     Helvetica = "Helvetica, sans-serif",
     Tahoma = "Tahoma, sans-serif",
     Trebuchet_MS = "'Trebuchet MS', sans-serif",
+    Impact = "Impact, sans-serif",
+
     Times_New_Roman = "'Times New Roman', serif",
 
     Georgia = "Georgia, serif",
