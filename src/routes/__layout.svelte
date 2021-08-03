@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { setup as setupWindowQueries } from '$stores/DeviceTypeStore';
+	import { setup as setupWindowQueries } from '$stores/shared/DeviceTypeStore';
 	import { onMount } from 'svelte';
 
-	import { theme as theme_store } from '$stores/ThemeStore';
+	import { theme as theme_store } from '$stores/shared/ThemeStore';
 	import { Theme } from '$shared/Theme';
 	theme_store.set(Theme.Dark);
 
-	import { font as font_store } from '$stores/FontStore';
+	import { font as font_store } from '$stores/shared/FontStore';
 	import { Font } from '$shared/Font';
 	let font: Font;
 	font_store.subscribe((new_font) => (font = new_font));
@@ -51,9 +51,6 @@
 
 		--accent-neutral-color: rgb(25%,65%,95%);
 		--accent-alert-color: hsla(0, 55%, 55%, 1);
-
-		height: 100%;
-		width: 100%;
 	}
 
 	:global(html[data-theme='light']) {

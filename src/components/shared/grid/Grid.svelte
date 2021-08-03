@@ -2,7 +2,7 @@
 	import Program from '$components/desktop/Program.svelte';
 	import { convertRemToPixels } from '$shared/conversions';
 	import { clickOutside } from '$components/shared/events/mouseOutside';
-	import { desktop as desktop_store, mobile as mobile_store } from '$stores/DeviceTypeStore';
+	import { desktop as desktop_store, mobile as mobile_store } from '$stores/shared/DeviceTypeStore';
 
 	export let widthOffset: number = 0;
 	export let heightOffset: number = 0;

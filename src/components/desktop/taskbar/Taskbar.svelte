@@ -8,6 +8,9 @@
 	import { convertRemToPixels } from '$shared/conversions';
 	import WhiskerMenu from '$components/shared/svg/whisker-menu.svelte';
 	import { changeCursor, Cursor } from '$desktop/cursors';
+	import { programsStore } from '$stores/shared/ProgramsStore';
+	import { processesStore } from '$stores/shared/ProcessesStore';
+	import type { Program as ProgramObject } from '$shared/program/Program';
 
 	// export let menuButton: string = "";
 	export let rows: number = 1;
@@ -87,9 +90,7 @@
 	}
 
 	class LauncherObject {
-		name: string;
-		icon: string;
-		alt: string;
+		program: ProgramObject | null;
 		row: number;
 		ghost: boolean;
 	}
@@ -99,44 +100,17 @@
 	 * used for debugging (to be removed)
 	 */
 	let launchers: Array<LauncherObject> = [];
-	launchers.push(
-		{
-			name: 'Terminal 1',
-			icon: '/images/icons/utilities-terminal.svg',
-			alt: 'terminal launcher1',
-			row: 1,
-			ghost: false
-		},
-		{
-			name: 'Terminal 2',
-			icon: '/images/icons/utilities-terminal.svg',
-			alt: 'terminal launcher2',
-			row: 1,
-			ghost: false
-		},
-		{
-			name: 'Terminal 3',
-			icon: '/images/icons/utilities-terminal.svg',
-			alt: 'terminal launcher3',
-			row: 1,
-			ghost: false
-		},
-		{
-			name: 'Terminal 4',
-			icon: '/images/icons/utilities-terminal.svg',
-			alt: 'terminal launcher4',
-			row: 1,
-			ghost: false
-		},
-		{
-			name: 'Terminal 5',
-			icon: '/images/icons/utilities-terminal.svg',
-			alt: 'terminal launcher5',
-			row: 1,
-			ghost: false
-		}
-		// { icon: "", alt: "", row: 1, ghost: true },
-	);
+	programsStore.subscribe((programs) => {
+		launchers = [];
+		programs.forEach((program) =>
+			launchers.push({
+				program: program,
+				row: 1,
+				ghost: false
+			})
+		);
+		rows = rows;
+	});
 
 	const columnSize: string = `${rowHeight}rem`;
 	$: {
@@ -147,7 +121,7 @@
 		if (rows > launchers.length) {
 			// Add ghost launchers to fill up whitespace
 			for (let i = 0; i < rows - launchers.length; i++) {
-				launchers.push({ name: null, icon: '', alt: '', row: 1, ghost: true });
+				launchers.push({ program: null, row: 1, ghost: true });
 			}
 		}
 
@@ -174,10 +148,21 @@
 	function toggleMenu() {
 		showMenu = !showMenu;
 	}
+
+	function handleLauncherClick(program: ProgramObject) {
+		showMenu = false;
+		program.createProcess().bringToTop();
+	}
 </script>
 
 <svelte:window on:mouseup={stopResize} on:mousemove={resize} />
-<div bind:this={taskbar} class="taskbar" style="height: {height}rem; z-index: {z_index};" use:clickOutside on:clickoutside={() => showMenu = false}>
+<div
+	bind:this={taskbar}
+	class="taskbar"
+	style="height: {height}rem; z-index: {z_index};"
+	use:clickOutside
+	on:clickoutside={() => (showMenu = false)}
+>
 	<Menu offset={height} bind:show={showMenu} />
 	<div on:mousedown={startResize} class="border" />
 	<div class="taskbar-content" style="height: {height}rem;">
@@ -189,8 +174,19 @@
 		</div>
 		<div class="launcher-container">
 			<div class="launchers" style="grid-template-columns: {gridTemplateColumns};">
-				{#each launchers as { name, icon, alt, row, ghost }}
-					<Launcher {name} {icon} {alt} {row} {ghost} height={`${rowHeight}rem`} onClick={() => showMenu = false} />
+				{#each launchers as { program, row, ghost }}
+					{#if ghost || !program}
+						<div style="grid-row: {row}; height: {rowHeight}rem"><div style="padding-top: 100%;" /></div>
+					{:else}
+						<Launcher
+							name={program.name}
+							icon={program.icon}
+							alt={program.name}
+							row={row}
+							height={`${rowHeight}rem`}
+							onClick={() => handleLauncherClick(program)}
+						/>
+					{/if}
 				{/each}
 			</div>
 		</div>

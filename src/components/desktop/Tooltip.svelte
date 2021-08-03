@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Theme } from '$components/shared/Theme';
 
-	import { theme as theme_store } from '$stores/ThemeStore';
+	import { theme as theme_store } from '$stores/shared/ThemeStore';
 	let theme: Theme;
 	theme_store.subscribe((new_theme) => (theme = new_theme));
 

@@ -8,25 +8,18 @@
 	export let height: string;
 	export let onClick: Function = () => {};
 
-	// Workaround
-	export let ghost: boolean = false;
-
 	function onLauncherClick() {
 		onClick();
 	}
 </script>
 
-{#if ghost}
-	<div style="grid-row: {row}; height: {height}"><div style="padding-top: 100%;" /></div>
-{:else}
-	<div style="grid-row: {row};" on:click={onLauncherClick}>
-		<Tooltip tooltip={name} position="top">
-			<button class="launcher" style="height: {height}">
-				<img src={icon} {alt} width="100%" height="auto" />
-			</button>
-		</Tooltip>
-	</div>
-{/if}
+<div style="grid-row: {row};" on:click={onLauncherClick}>
+	<Tooltip tooltip={name} position="top">
+		<button class="launcher" style="height: {height}">
+			<img src={icon} {alt} width="100%" height="auto" />
+		</button>
+	</Tooltip>
+</div>
 
 <style lang="scss">
 	.launcher {
@@ -47,7 +40,7 @@
 		background-color: var(--background-color-secondary-hover);
 
 		img {
-			width: 100%;	
+			width: 100%;
 		}
 	}
 </style>

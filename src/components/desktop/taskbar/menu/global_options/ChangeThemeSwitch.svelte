@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { theme as theme_store } from '$stores/ThemeStore';
+	import { theme as theme_store } from '$stores/shared/ThemeStore';
 	import { Theme } from '$components/shared/Theme';
 	import { onMount } from 'svelte';
 	let theme: Theme = Theme.Dark;

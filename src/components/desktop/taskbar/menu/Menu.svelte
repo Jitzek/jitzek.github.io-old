@@ -5,7 +5,7 @@
 	import Categories from '$desktop/taskbar/menu/categories/Categories.svelte';
 	import { slide } from 'svelte/transition';
 
-	import { theme as theme_store } from '$stores/ThemeStore';
+	import { theme as theme_store } from '$stores/shared/ThemeStore';
 	import { Theme } from '$components/shared/Theme';
 	import Tooltip from '$components/desktop/Tooltip.svelte';
 	let theme: Theme = Theme.Dark;
