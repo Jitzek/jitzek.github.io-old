@@ -8,7 +8,7 @@
 	import { processesStore } from '$stores/shared/ProcessesStore';
 	import { Program as ProgramObject } from '$shared/program/Program';
 	import { Window as WindowObject } from '$shared/program/Window';
-	import { Process } from '$components/shared/program/Process';
+	import type { Process as ProcessObject } from '$components/shared/program/Process';
 
 	let wallpaper: string = '/images/wallpapers/custom-design-01-1280x720.png';
 
@@ -38,11 +38,11 @@
 	}
 
 	function getWindows(): Array<WindowObject> {
-		return $processesStore.flatMap(process => process.window);
+		return $processesStore.flatMap((process) => process.window).filter(window => window !== null);
 	}
 
-	function getProcessById(id: number): Process {
-		return $processesStore.find(process => process.id === id);
+	function getProcessById(id: number): ProcessObject {
+		return $processesStore.find((process) => process.id === id);
 	}
 
 	function closeWindow(id: number) {
@@ -56,8 +56,8 @@
 
 	function closeProcess(id: number) {
 		closeWindow(id);
-		processesStore.update(processes => {
-			return processes.filter(process => process.id !== id);
+		processesStore.update((processes) => {
+			return processes.filter((process) => process.id !== id);
 		});
 		updateWindows();
 	}
@@ -79,13 +79,7 @@
 		closeProcess(id);
 	}
 
-	let processes: Array<Process> = [];
-	programsStore.subscribe((programs) => {});
-
 	function addProgram(program: ProgramObject) {
-		// temp
-		// program.createProcess();
-		//
 		programsStore.update((programs) => {
 			programs.push(program);
 			return programs;
@@ -102,53 +96,28 @@
 		Keyed each block :
 		https://svelte.dev/tutorial/keyed-each-blocks
 	 -->
-	<!-- {#each windows as { id, height, width, x, y, fullscreen, minimized, z_index }, index (id)}
-		<Window
-			heightOffset={convertRemToPixels(taskbarHeight)}
-			initialHeight={height}
-			initialWidth={width}
-			initialX={x}
-			initialY={y}
-			initialFullscreen={fullscreen}
-			initialMinimized={minimized}
-			{z_index}
-			onSelection={() => handleWindowSelection(index)}
-			onMinimize={() => handleWindowMinimize(index)}
-			onClose={() => handleWindowClose(index, id)}
-		/>
-	{/each} -->
 	{#each $processesStore as { id, window } (id)}
-		<Window
-			heightOffset={convertRemToPixels(taskbarHeight)}
-			initialHeight={window.height}
-			initialWidth={window.width}
-			initialX={window.x}
-			initialY={window.y}
-			initialFullscreen={window.fullscreen}
-			initialMinimized={window.minimized}
-			z_index={window.z_index}
-			onSelection={() => handleWindowSelection(id)}
-			onMinimize={() => handleWindowMinimize(id)}
-			onClose={() => handleWindowClose(id)}
-		/>
+		{#if window !== null}
+			<Window
+				heightOffset={convertRemToPixels(taskbarHeight)}
+				initialHeight={window.height}
+				initialWidth={window.width}
+				initialX={window.x}
+				initialY={window.y}
+				initialFullscreen={window.fullscreen}
+				initialMinimized={window.minimized}
+				z_index={window.z_index}
+				onSelection={() => handleWindowSelection(id)}
+				onMinimize={() => handleWindowMinimize(id)}
+				onClose={() => handleWindowClose(id)}
+			/>
+		{/if}
 	{/each}
 </div>
-<!-- <Window heightOffset={convertRemToPixels(taskbarHeight)} height={500} width={600} x={250} y={200} fullscreen={false} /> -->
 
-<Taskbar bind:height={taskbarHeight} z_index={Process.maxZIndex + 1} />
+<Taskbar bind:height={taskbarHeight} z_index={WindowObject.maxZIndex + 1} />
 
 <style lang="scss">
-	/*
-    :global(html) {
-		background-color: #4d555b;
-		background: url('/static/images/custom-design-01-1920x1080.png') no-repeat center center fixed;
-		-webkit-background-size: cover;
-		-moz-background-size: cover;
-		-o-background-size: cover;
-		background-size: cover;
-	}
-    */
-
 	.grid-container {
 		display: flex;
 		align-items: center;

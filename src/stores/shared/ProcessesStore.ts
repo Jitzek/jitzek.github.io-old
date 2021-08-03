@@ -5,5 +5,6 @@ import { writable, Writable } from "svelte/store";
 export const processesStore: Writable<Array<Process>> = writable([]);
 
 processesStore.subscribe(processes => {
-    Window.maxZIndex = processes.map(process => process.window).filter(window => window !== null).length;
+    // Set the max Z Index to the amount of active windows
+    Window.maxZIndex = processes.filter(process => process.window !== null).length;
 });
