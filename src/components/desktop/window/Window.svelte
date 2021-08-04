@@ -6,8 +6,6 @@
 	import WindowMinimizeButton from './control_buttons/WindowMinimizeButton.svelte';
 	import WindowResizeButton from './control_buttons/WindowResizeButton.svelte';
 
-	export let initialFullscreen: boolean = false;
-	export let initialMinimized: boolean = false;
 	export let z_index: number = 1;
 	export let onSelection: Function = () => {};
 	export let onMinimize: Function = () => {};
@@ -15,17 +13,17 @@
 
 	// Height of window in PX
 	// Default to max available
-	export let initialHeight: number = null;
+	export let height: number | null = null;
 	// Width of window in PX
 	// Defaults to max available
-	export let initialWidth: number = null;
+	export let width: number | null = null;
 
 	// X position of window in PX
 	// Defaults to center
-	export let initialX: number = null;
+	export let x: number | null = null;
 	// Y position of window in PX
 	// Defaults to center
-	export let initialY: number = null;
+	export let y: number | null = null;
 
 	// Height offset in PX
 	export let heightOffset: number = 0;
@@ -36,21 +34,9 @@
 	export let minWidth: number = 250;
 	// Minimal width of window in PX
 	export let minHeight: number = 250;
-
-	let height: number = 0;
-	let width: number = 0;
-	let x: number = 0;
-	let y: number = 0;
-	let fullscreen: boolean = false;
-	let minimized: boolean = false;
-	onMount(() => {
-		height = initialHeight;
-		width = initialWidth;
-		x = initialX;
-		y = initialY;
-		fullscreen = initialFullscreen;
-		minimized = initialMinimized;
-	});
+	
+	export let fullscreen: boolean = false;
+	export let minimized: boolean = false;
 
 	let maxHeight: number = null;
 	let maxWidth: number = null;
@@ -60,6 +46,15 @@
 
 	let innerHeight: number;
 	let innerWidth: number;
+
+	$: {
+		width;
+		if (width < minWidth) width = minWidth;
+	}
+	$: {
+		height;
+		if (height < minHeight) height = minHeight;
+	}
 
 	$: {
 		[widthOffset, innerWidth, fullscreen];
@@ -89,7 +84,7 @@
 		if (fullscreen) {
 			fullscreen = false;
 			x = _x - width / 2;
-			y = _y + height;
+			y = maxY;
 		}
 		dragPrevX = _x;
 		dragPrevY = _y;
@@ -237,9 +232,6 @@
 	function stopWindowResize(e: MouseEvent) {
 		resizing = false;
 		changeCursor(Cursor.AUTO);
-
-		if (height < minHeight) height = minHeight;
-		if (width < minWidth) width = minWidth;
 
 		windowElement.style.userSelect = 'initial';
 	}

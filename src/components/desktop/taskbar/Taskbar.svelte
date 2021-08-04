@@ -3,7 +3,7 @@
 	import Launcher from '$components/desktop/taskbar/Launcher.svelte';
 	import MenuButton from '$components/desktop/taskbar/MenuButton.svelte';
 	import Menu from '$components/desktop/taskbar/menu/Menu.svelte';
-	import { clickOutside } from '$components/shared/events/mouseOutside';
+	import { mouseDownOutside } from '$components/shared/events/mouseOutside';
 
 	import { convertRemToPixels } from '$shared/conversions';
 	import WhiskerMenu from '$components/shared/svg/whisker-menu.svelte';
@@ -160,8 +160,8 @@
 	bind:this={taskbar}
 	class="taskbar"
 	style="height: {height}rem; z-index: {z_index};"
-	use:clickOutside
-	on:clickoutside={() => (showMenu = false)}
+	use:mouseDownOutside
+	on:mousedownoutside={() => (showMenu = false)}
 >
 	<Menu offset={height} bind:show={showMenu} />
 	<div on:mousedown={startResize} class="border" />

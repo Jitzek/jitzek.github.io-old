@@ -4,11 +4,13 @@
 	import Grid from '$components/shared/grid/Grid.svelte';
 	import Window from '$desktop/window/Window.svelte';
 	import { convertRemToPixels } from '$components/shared/conversions';
-	import { programsStore } from '$stores/shared/ProgramsStore';
-	import { processesStore } from '$stores/shared/ProcessesStore';
+	import { programsStore, addProgram, removeProgram, getProgramById } from '$stores/shared/ProgramsStore';
+	import { processesStore, removeProcessById, maxWindowZIndex, maxWindowZIndexStore } from '$stores/shared/ProcessesStore';
 	import { Program as ProgramObject } from '$shared/program/Program';
 	import { Window as WindowObject } from '$shared/program/Window';
 	import type { Process as ProcessObject } from '$components/shared/program/Process';
+	import { Category as CategoryObject } from '$components/shared/program/Category';
+	import { categoriesStore, getCategoryByName } from '$stores/shared/CategoriesStore';
 
 	let wallpaper: string = '/images/wallpapers/custom-design-01-1280x720.png';
 
@@ -16,20 +18,38 @@
 
 	addProgram(
 		new ProgramObject(
-			'Terminal 1',
+			'Z Terminal 1',
 			'This is a terminal',
-			ProgramObject.Category.CATEGORY1,
+			getCategoryByName(CategoryObject.Name.CATEGORY_1),
 			'/images/icons/utilities-terminal.svg',
-			new WindowObject(WindowObject.ContentType.URL, 'Test 1', 400, 200, 0, 0)
+			new WindowObject(WindowObject.ContentType.URL, 'Test 1', 400, 200)
+		)
+	);
+	addProgram(
+		new ProgramObject(
+			'A Terminal 1',
+			'This is a terminal',
+			getCategoryByName(CategoryObject.Name.CATEGORY_1),
+			'/images/icons/utilities-terminal.svg',
+			new WindowObject(WindowObject.ContentType.URL, 'Test 1', 400, 200)
+		)
+	);
+	addProgram(
+		new ProgramObject(
+			'G Terminal 1',
+			'This is a terminal',
+			getCategoryByName(CategoryObject.Name.CATEGORY_1),
+			'/images/icons/utilities-terminal.svg',
+			new WindowObject(WindowObject.ContentType.URL, 'Test 1', 400, 200)
 		)
 	);
 	addProgram(
 		new ProgramObject(
 			'Terminal 2',
 			'This is also a terminal',
-			ProgramObject.Category.CATEGORY1,
+			getCategoryByName(CategoryObject.Name.CATEGORY_2),
 			'/images/icons/utilities-terminal.svg',
-			new WindowObject(WindowObject.ContentType.URL, 'Test 2', 500, 500, 0, 0)
+			new WindowObject(WindowObject.ContentType.URL, 'Test 2', 500, 500)
 		)
 	);
 
@@ -38,32 +58,16 @@
 	}
 
 	function getWindows(): Array<WindowObject> {
-		return $processesStore.flatMap((process) => process.window).filter(window => window !== null);
+		return $processesStore.flatMap((process) => process.window).filter((window) => window !== null);
 	}
 
 	function getProcessById(id: number): ProcessObject {
 		return $processesStore.find((process) => process.id === id);
 	}
 
-	function closeWindow(id: number) {
-		let z_indexOfRemovedWindow = getProcessById(id).window.z_index;
-		getWindows().forEach((window) => {
-			if (window.z_index > z_indexOfRemovedWindow) {
-				window.z_index -= 1;
-			}
-		});
-	}
-
-	function closeProcess(id: number) {
-		closeWindow(id);
-		processesStore.update((processes) => {
-			return processes.filter((process) => process.id !== id);
-		});
-		updateWindows();
-	}
-
-	function handleWindowSelection(id: number) {
-		let selectedWindow = getProcessById(id).window;
+	function handleWindowSelection(processId: number) {
+		let process = getProcessById(processId);
+		let selectedWindow = process.window;
 		if (!selectedWindow) return;
 		getWindows().forEach((window) => {
 			if (window.z_index > selectedWindow.z_index) {
@@ -71,19 +75,17 @@
 			}
 		});
 
-		selectedWindow.z_index = WindowObject.maxZIndex;
+		console.log(maxWindowZIndex);
+		selectedWindow.z_index = maxWindowZIndex;
+	    // Save current x, y, width and height to program
+		// TODO: ONLY change x, y, width and height if this proves to be troublesome
+		getProgramById(process.getProgramId()).window = process.window;
+
 		updateWindows();
 	}
-	function handleWindowMinimize(index: number) {}
+	function handleWindowMinimize(id: number) {}
 	function handleWindowClose(id: number) {
-		closeProcess(id);
-	}
-
-	function addProgram(program: ProgramObject) {
-		programsStore.update((programs) => {
-			programs.push(program);
-			return programs;
-		});
+		removeProcessById(id);
 	}
 </script>
 
@@ -100,13 +102,13 @@
 		{#if window !== null}
 			<Window
 				heightOffset={convertRemToPixels(taskbarHeight)}
-				initialHeight={window.height}
-				initialWidth={window.width}
-				initialX={window.x}
-				initialY={window.y}
-				initialFullscreen={window.fullscreen}
-				initialMinimized={window.minimized}
-				z_index={window.z_index}
+				bind:height={window.height}
+				bind:width={window.width}
+				bind:x={window.x}
+				bind:y={window.y}
+				bind:fullscreen={window.fullscreen}
+				bind:minimized={window.minimized}
+				bind:z_index={window.z_index}
 				onSelection={() => handleWindowSelection(id)}
 				onMinimize={() => handleWindowMinimize(id)}
 				onClose={() => handleWindowClose(id)}
@@ -115,7 +117,7 @@
 	{/each}
 </div>
 
-<Taskbar bind:height={taskbarHeight} z_index={WindowObject.maxZIndex + 1} />
+<Taskbar bind:height={taskbarHeight} z_index={$maxWindowZIndexStore + 1} />
 
 <style lang="scss">
 	.grid-container {

@@ -1,90 +1,79 @@
 <script lang="ts">
 	import MenuLauncherButton from '$components/desktop/taskbar/menu/categories/MenuLauncherButton.svelte';
-	import { fly, fade, blur, crossfade, draw, scale, slide } from 'svelte/transition';
+	import { slide } from 'svelte/transition';
+	import { categoriesStore } from '$stores/shared/CategoriesStore';
+	import { programsStore } from '$stores/shared/ProgramsStore';
+	import type { Program as ProgramObject } from '$components/shared/program/Program';
+	import type { Category as CategoryObject } from '$components/shared/program/Category';
 
-	class CategoryContentObject {
-		constructor(
-			public id: number,
-			public name: string,
-			public description: string,
-			public icon: string,
-			public alt: string
-		) {}
+	export let onLauncherClick: Function = () => {};
+
+	class CategoryWrapper {
+		constructor(public category: CategoryObject, public activated: boolean) {}
 	}
 
-	class CategoryObject {
-		constructor(
-			public id: number,
-			public name: string,
-			public icon: string,
-			public alt: string,
-			public content: Array<CategoryContentObject>,
-			public activated: boolean
-		) {}
-	}
-
-	let categories: Array<CategoryObject> = [];
-
-	categories.push(
-		new CategoryObject(
-			0,
-			'Category 1',
-			'/images/icons/utilities-terminal.svg',
-			'Category 1',
-			new Array<CategoryContentObject>(
-				new CategoryContentObject(
-					0,
-					'Content 11111',
-					'Description 1',
-					'/images/icons/utilities-terminal.svg',
-					'Content 1'
-				)
-			),
-			false
-		),
-		new CategoryObject(
-			1,
-			'Category 2',
-			'/images/icons/utilities-terminal.svg',
-			'Category 2',
-			new Array<CategoryContentObject>(
-				new CategoryContentObject(
-					1,
-					'Content 2',
-					'Description 2 af af afaefaef',
-					'/images/icons/utilities-terminal.svg',
-					'Content 2'
-				)
-			),
-			false
-		)
-	);
+	let categoryWrappers: Array<CategoryWrapper> = [];
+	categoriesStore.subscribe((categories) => {
+		let existingCategories = categoryWrappers.flatMap(
+			(categoryWrapper) => categoryWrapper.category
+		);
+		// Add all new categories
+		categories
+			.filter((category) => existingCategories.indexOf(category) === -1)
+			.forEach((category) => {
+				categoryWrappers.push(new CategoryWrapper(category, false));
+			});
+		// Filter out removed categories
+		categoryWrappers = categoryWrappers.filter((categoryWrapper) =>
+			categories.find((category) => category.id === categoryWrapper.category.id)
+		);
+	});
 
 	function toggleCategory(id: number) {
-		categories.forEach(
-			(category: CategoryObject) => (category.activated = category.id === id && !category.activated)
+		categoryWrappers.forEach(
+			(categoryWrapper: CategoryWrapper) =>
+				(categoryWrapper.activated =
+					categoryWrapper.category.id === id && !categoryWrapper.activated)
 		);
-		categories = categories;
+		categoryWrappers = categoryWrappers;
+	}
+
+	function handleLauncherClick(program: ProgramObject) {
+		program.createProcess().bringToTop();
+		onLauncherClick();
 	}
 </script>
 
 <div class="categories-container">
 	<div class="category-buttons-container">
-		{#each categories as { id, name, icon, alt, activated }}
-			<MenuLauncherButton {icon} {name} {alt} {activated} on:click={() => toggleCategory(id)} />
+		{#each categoryWrappers.sort((a, b) =>
+			a.category.name.localeCompare(b.category.name)
+		) as { category, activated } (category.id)}
+			<MenuLauncherButton
+				icon={category.icon}
+				name={category.name}
+				alt={category.name}
+				{activated}
+				on:click={() => toggleCategory(category.id)}
+			/>
 		{/each}
 	</div>
 	<div class="category-content-container">
-		{#each categories as { content, activated }}
+		{#each categoryWrappers as { category, activated }}
 			{#if activated}
-				<div in:slide={{ duration: 500 }} out:slide={{ duration: 250 }}>
-					{#each content as { name, description, icon, alt }}
-						<MenuLauncherButton {icon} {name} {description} {alt} />
-						<MenuLauncherButton {icon} {name} {description} {alt} />
-						<MenuLauncherButton {icon} {name} {description} {alt} />
-						<MenuLauncherButton {icon} {name} {description} {alt} />
-					{/each}
-				</div>
+				{#each $programsStore.sort((a, b) => a.name.localeCompare(b.name)) as program (program.id)}
+					{#if program.category.id === category.id}
+						<div in:slide={{ duration: 500 }} out:slide={{ duration: 250 }}>
+							<MenuLauncherButton
+								icon={program.icon}
+								name={program.name}
+								description={program.description}
+								alt={program.name}
+								on:click={() => handleLauncherClick(program)}
+							/>
+						</div>
+					{/if}
+				{/each}
 			{/if}
 		{/each}
 	</div>

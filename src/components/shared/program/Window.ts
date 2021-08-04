@@ -7,8 +7,10 @@ export class Window {
         public content: string,
         public width: number,
         public height: number,
-        public x: number,
-        public y: number,
+        // Keep null for automatic center
+        public x: number | null = null,
+        // Keep null for automatic center
+        public y: number | null = null,
         public fullscreen: boolean = false,
         public minimized: boolean = false
     ) {

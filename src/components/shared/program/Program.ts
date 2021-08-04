@@ -1,6 +1,7 @@
 import { Process } from "./Process";
 import type { Window } from "./Window";
-import { processesStore } from "$stores/shared/ProcessesStore";
+import { processesStore, addProcess } from "$stores/shared/ProcessesStore";
+import type { Category } from "./Category";
 
 let c_program_id = 0;
 export class Program {
@@ -17,7 +18,7 @@ export class Program {
     constructor(
         public name: string,
         public description: string,
-        public category: Program.Category,
+        public category: Category,
         public icon: string,
         public window: Window | null = null
     ) {
@@ -26,23 +27,7 @@ export class Program {
 
     public createProcess(): Process {
         let newProcess = new Process(JSON.parse(JSON.stringify(this)) as Program);
-        processesStore.update(processes => {
-            return [...processes, newProcess];
-        });
+        addProcess(newProcess);
         return newProcess;
-    }
-
-    public removeProcess(processId: number): void {
-        processesStore.update(processes => {
-            return processes.filter(process => process.id !== processId);
-        });
-    }
-}
-
-export namespace Program {
-    export enum Category {
-        NONE,
-        CATEGORY1 = "Category 1",
-        CATEGORY2 = "Category 2"
     }
 }

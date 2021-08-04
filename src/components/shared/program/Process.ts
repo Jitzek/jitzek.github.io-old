@@ -1,5 +1,6 @@
+import { maxWindowZIndex } from "$stores/shared/ProcessesStore";
 import type { Program } from "./Program";
-import { Window } from "./Window";
+import type { Window } from "./Window";
 
 let c_process_id: number = 0;
 export class Process {
@@ -26,7 +27,6 @@ export class Process {
 
     public bringToTop(): void {
         if (!this.hasWindow()) return;
-        console.log(Window.maxZIndex);
-        this.window.z_index = Window.maxZIndex;
+        this.window.z_index = maxWindowZIndex;
     }
 }

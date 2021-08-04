@@ -44,7 +44,7 @@
 				</Tooltip>
 			</div>
 		</div>
-		<Categories />
+		<Categories onLauncherClick={() => show = false} />
 	</div>
 {/if}
 
