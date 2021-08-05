@@ -1,13 +1,16 @@
 <script lang="ts">
-	import AboutMeButton from '$desktop/taskbar/menu/AboutMeButton.svelte';
-	import SwitchToMobileButton from '$components/desktop/taskbar/menu/global_options/SwitchToMobileButton.svelte';
-	import ChangeThemeSwitch from '$components/desktop/taskbar/menu/global_options/ChangeThemeSwitch.svelte';
-	import Categories from '$desktop/taskbar/menu/categories/Categories.svelte';
 	import { slide } from 'svelte/transition';
 
-	import { theme as theme_store } from '$stores/shared/ThemeStore';
-	import { Theme } from '$components/shared/Theme';
+	import AboutMeButton from '$components/desktop/taskbar/menu/AboutMeButton.svelte';
+	import SwitchToMobileButton from '$components/desktop/taskbar/menu/global_options/SwitchToMobileButton.svelte';
+	import ChangeThemeSwitch from '$components/desktop/taskbar/menu/global_options/ChangeThemeSwitch.svelte';
+	import Categories from '$components/desktop/taskbar/menu/categories/Categories.svelte';
 	import Tooltip from '$components/desktop/Tooltip.svelte';
+
+	import { Theme } from '$objects/shared/Theme';
+
+	import { theme as theme_store } from '$stores/shared/ThemeStore';
+
 	let theme: Theme = Theme.Dark;
 	theme_store.subscribe((new_theme: Theme) => {
 		theme = new_theme;

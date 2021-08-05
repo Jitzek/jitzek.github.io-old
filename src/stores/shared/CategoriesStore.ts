@@ -1,4 +1,5 @@
-import { Category } from "$components/shared/program/Category";
+import { Category } from "$objects/shared/program/Category";
+
 import { writable, Writable } from "svelte/store";
 
 let _categoriesStore: Array<Category> = [];

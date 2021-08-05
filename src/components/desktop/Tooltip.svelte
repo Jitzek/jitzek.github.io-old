@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Theme } from '$components/shared/Theme';
+	import type { Theme } from '$objects/shared/Theme';
 
 	import { theme as theme_store } from '$stores/shared/ThemeStore';
 	let theme: Theme;

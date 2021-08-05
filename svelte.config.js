@@ -14,9 +14,7 @@ const config = {
 				alias: {
 					$components: path.resolve('src', 'components'),
 					$stores: path.resolve('src', 'stores'),
-					$desktop: path.resolve('src', 'components', 'desktop'),
-					$mobile: path.resolve('src', 'components', 'mobile'),
-					$shared: path.resolve('src', 'components', 'shared'),
+					$objects: path.resolve('src', 'objects')
 				}
 			}
 		},

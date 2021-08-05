@@ -1,7 +1,9 @@
 <script lang="ts">
 	import Program from '$components/desktop/Program.svelte';
-	import { convertRemToPixels } from '$shared/conversions';
 	import { clickOutside } from '$components/shared/events/mouseOutside';
+
+	import { convertRemToPixels } from '$objects/shared/conversions';
+
 	import { desktop as desktop_store, mobile as mobile_store } from '$stores/shared/DeviceTypeStore';
 
 	export let widthOffset: number = 0;

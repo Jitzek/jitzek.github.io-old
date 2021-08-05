@@ -2,14 +2,16 @@
 	import Wallpaper from '$components/shared/Wallpaper.svelte';
 	import Taskbar from '$components/desktop/taskbar/Taskbar.svelte';
 	import Grid from '$components/shared/grid/Grid.svelte';
-	import Window from '$desktop/window/Window.svelte';
-	import { convertRemToPixels } from '$components/shared/conversions';
+	import Window from '$components/desktop/window/Window.svelte';
+
+	import { convertRemToPixels } from '$objects/shared/conversions';
+	import { Program as ProgramObject } from '$objects/shared/program/Program';
+	import { Window as WindowObject } from '$objects/shared/program/Window';
+	import type { Process as ProcessObject } from '$objects/shared/program/Process';
+	import { Category as CategoryObject } from '$objects/shared/program/Category';
+	
 	import { programsStore, addProgram, removeProgram, getProgramById } from '$stores/shared/ProgramsStore';
 	import { processesStore, removeProcessById, maxWindowZIndex, maxWindowZIndexStore } from '$stores/shared/ProcessesStore';
-	import { Program as ProgramObject } from '$shared/program/Program';
-	import { Window as WindowObject } from '$shared/program/Window';
-	import type { Process as ProcessObject } from '$components/shared/program/Process';
-	import { Category as CategoryObject } from '$components/shared/program/Category';
 	import { categoriesStore, getCategoryByName } from '$stores/shared/CategoriesStore';
 
 	let wallpaper: string = '/images/wallpapers/custom-design-01-1280x720.png';
@@ -88,6 +90,10 @@
 		removeProcessById(id);
 	}
 </script>
+
+<svelte:head>
+	<title>Jitze Jan Kerkstra</title>
+</svelte:head>
 
 <!-- <Wallpaper src={wallpaper} /> -->
 <div class="grid-container">

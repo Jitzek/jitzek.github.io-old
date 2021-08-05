@@ -1,7 +1,7 @@
 <script lang="ts">
+	import { Theme } from '$objects/shared/Theme';
+	
 	import { theme as theme_store } from '$stores/shared/ThemeStore';
-	import { Theme } from '$components/shared/Theme';
-	import { onMount } from 'svelte';
 	let theme: Theme = Theme.Dark;
 	theme_store.subscribe((new_theme) => {
 		theme = new_theme;

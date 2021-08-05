@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { Cursor, changeCursor } from '$desktop/cursors';
-	import { onMount } from 'svelte';
 	import { scale } from 'svelte/transition';
-	import WindowCloseButton from './control_buttons/WindowCloseButton.svelte';
-	import WindowMinimizeButton from './control_buttons/WindowMinimizeButton.svelte';
-	import WindowResizeButton from './control_buttons/WindowResizeButton.svelte';
+
+	import WindowCloseButton from '$components/desktop/window/control_buttons/WindowCloseButton.svelte';
+	import WindowMinimizeButton from '$components/desktop/window/control_buttons/WindowMinimizeButton.svelte';
+	import WindowResizeButton from '$components/desktop/window/control_buttons/WindowResizeButton.svelte';
+
+	import { Cursor, changeCursor } from '$objects/desktop/cursors';
 
 	export let z_index: number = 1;
 	export let onSelection: Function = () => {};

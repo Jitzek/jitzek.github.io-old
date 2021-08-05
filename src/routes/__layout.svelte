@@ -3,11 +3,11 @@
 	import { onMount } from 'svelte';
 
 	import { theme as theme_store } from '$stores/shared/ThemeStore';
-	import { Theme } from '$shared/Theme';
+	import { Theme } from '$objects/shared/Theme';
 	theme_store.set(Theme.Dark);
 
 	import { font as font_store } from '$stores/shared/FontStore';
-	import { Font } from '$shared/Font';
+	import { Font } from '$objects/shared/Font';
 	let font: Font;
 	font_store.subscribe((new_font) => (font = new_font));
 	font_store.set(Font.Default);

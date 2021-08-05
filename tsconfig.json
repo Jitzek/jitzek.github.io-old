@@ -37,14 +37,8 @@
 			"$stores/*": [
 				"src/stores/*"
 			],
-			"$desktop/*": [
-				"src/components/desktop/*"
-			],
-			"$mobile/*": [
-				"src/components/mobile/*"
-			],
-			"$shared/*": [
-				"src/components/shared/*"
+			"$objects/*": [
+				"src/objects/*"
 			]
 		}
 	},

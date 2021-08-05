@@ -1,18 +1,19 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+
 	import Launcher from '$components/desktop/taskbar/Launcher.svelte';
 	import MenuButton from '$components/desktop/taskbar/MenuButton.svelte';
 	import Menu from '$components/desktop/taskbar/menu/Menu.svelte';
 	import { mouseDownOutside } from '$components/shared/events/mouseOutside';
-
-	import { convertRemToPixels } from '$shared/conversions';
 	import WhiskerMenu from '$components/shared/svg/whisker-menu.svelte';
-	import { changeCursor, Cursor } from '$desktop/cursors';
+
+	import { changeCursor, Cursor } from '$objects/desktop/cursors';
+	import type { Program as ProgramObject } from '$objects/shared/program/Program';
+	import { convertRemToPixels } from '$objects/shared/conversions';
+
 	import { programsStore } from '$stores/shared/ProgramsStore';
 	import { processesStore } from '$stores/shared/ProcessesStore';
-	import type { Program as ProgramObject } from '$shared/program/Program';
 
-	// export let menuButton: string = "";
 	export let rows: number = 1;
 	export let maxRows: number = 3;
 	// Total height in REM

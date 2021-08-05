@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Tooltip from '$desktop/Tooltip.svelte';
+	import Tooltip from '$components/desktop/Tooltip.svelte';
 
 	export let name: string;
 	export let icon: string;

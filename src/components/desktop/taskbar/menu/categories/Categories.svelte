@@ -1,10 +1,13 @@
 <script lang="ts">
-	import MenuLauncherButton from '$components/desktop/taskbar/menu/categories/MenuLauncherButton.svelte';
 	import { slide } from 'svelte/transition';
+
+	import MenuLauncherButton from '$components/desktop/taskbar/menu/categories/MenuLauncherButton.svelte';
+
+	import type { Program as ProgramObject } from '$objects/shared/program/Program';
+	import type { Category as CategoryObject } from '$objects/shared/program/Category';
+
 	import { categoriesStore } from '$stores/shared/CategoriesStore';
 	import { programsStore } from '$stores/shared/ProgramsStore';
-	import type { Program as ProgramObject } from '$components/shared/program/Program';
-	import type { Category as CategoryObject } from '$components/shared/program/Category';
 
 	export let onLauncherClick: Function = () => {};
 
