@@ -9,7 +9,9 @@ export class Category {
 
 export namespace Category {
     export enum Name {
+        ALL = "All",
         CATEGORY_1 = "A Category 1",
         CATEGORY_2 = "B Category 2",
+        FAVOURITES = "Favourites",
     }
 }

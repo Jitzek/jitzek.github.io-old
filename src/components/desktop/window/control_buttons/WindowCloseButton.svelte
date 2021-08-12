@@ -3,7 +3,7 @@
 	export let height: string = '100%';
 </script>
 
-<button class="window-close-button" style="width: {width}; height: {height};" on:click>
+<button class="window-close-button" style="width: {width}; height: {height};" on:click on:dragstart={(e) => e.preventDefault()}>
 	<svg
 		height="100%"
 		viewBox="0 0 365.696 365.696"

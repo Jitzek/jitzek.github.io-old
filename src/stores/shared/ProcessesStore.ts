@@ -1,5 +1,4 @@
-import type { Process } from "$components/shared/program/Process";
-import { Window } from "$components/shared/program/Window";
+import type { Process } from "$objects/shared/program/Process";
 import { writable, Writable } from "svelte/store";
 
 export let maxWindowZIndex = 1;

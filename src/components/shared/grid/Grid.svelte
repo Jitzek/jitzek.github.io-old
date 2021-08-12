@@ -366,7 +366,7 @@
 					on:mousedown={(e) => onGridElementMouseDown(e, object)}
 					on:dblclick={(e) => onGridElementDoubleClick(e, object)}
 				>
-					<Program icon="/images/icons/utilities-terminal.svg" name="terminal {object.id}" />
+					<Program icon="/images/program-icons/utilities-terminal.svg" name="terminal {object.id}" />
 				</div>
 			</div>
 		{/if}

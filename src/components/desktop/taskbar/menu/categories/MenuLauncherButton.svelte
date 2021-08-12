@@ -8,7 +8,7 @@
 
 <button class:activated class="menu-launcher-button" on:click>
 	<div class="menu-launcher-button-content">
-		<img src={icon} {alt} />
+		<img src={icon} alt={alt} />
 		<div class="name-and-description">
 			<span class="name">{name}</span>
 			{#if description}
@@ -35,7 +35,7 @@
 		cursor: pointer;
 
 		width: 100%;
-		height: 2.5rem;
+		height: 3.25rem;
 
 		.menu-launcher-button-content {
 			display: flex;

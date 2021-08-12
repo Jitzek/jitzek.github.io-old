@@ -3,9 +3,13 @@ import { Category } from "$objects/shared/program/Category";
 import { writable, Writable } from "svelte/store";
 
 let _categoriesStore: Array<Category> = [];
+export const categoryAll: Category = new Category(Category.Name.ALL, "/images/category-icons/utilities-terminal.svg");
+export const categoryFavourites: Category = new Category(Category.Name.FAVOURITES, "/images/category-icons/star.svg");
 export const categoriesStore: Writable<Array<Category>> = writable([
-    new Category(Category.Name.CATEGORY_2, "/images/icons/utilities-terminal.svg"),
-    new Category(Category.Name.CATEGORY_1, "/images/icons/utilities-terminal.svg"),
+    categoryAll,
+    categoryFavourites,
+    new Category(Category.Name.CATEGORY_2, "/images/category-icons/utilities-terminal.svg"),
+    new Category(Category.Name.CATEGORY_1, "/images/category-icons/utilities-terminal.svg"),
 ]);
 categoriesStore.subscribe(categories => _categoriesStore = categories);
 

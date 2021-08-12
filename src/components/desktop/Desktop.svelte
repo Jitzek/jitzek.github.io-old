@@ -5,55 +5,15 @@
 	import Window from '$components/desktop/window/Window.svelte';
 
 	import { convertRemToPixels } from '$objects/shared/conversions';
-	import { Program as ProgramObject } from '$objects/shared/program/Program';
-	import { Window as WindowObject } from '$objects/shared/program/Window';
+	import type { Window as WindowObject } from '$objects/shared/program/Window';
 	import type { Process as ProcessObject } from '$objects/shared/program/Process';
-	import { Category as CategoryObject } from '$objects/shared/program/Category';
 	
-	import { programsStore, addProgram, removeProgram, getProgramById } from '$stores/shared/ProgramsStore';
+	import { getProgramById } from '$stores/shared/ProgramsStore';
 	import { processesStore, removeProcessById, maxWindowZIndex, maxWindowZIndexStore } from '$stores/shared/ProcessesStore';
-	import { categoriesStore, getCategoryByName } from '$stores/shared/CategoriesStore';
 
 	let wallpaper: string = '/images/wallpapers/custom-design-01-1280x720.png';
 
 	let taskbarHeight: number;
-
-	addProgram(
-		new ProgramObject(
-			'Z Terminal 1',
-			'This is a terminal',
-			getCategoryByName(CategoryObject.Name.CATEGORY_1),
-			'/images/icons/utilities-terminal.svg',
-			new WindowObject(WindowObject.ContentType.URL, 'Test 1', 400, 200)
-		)
-	);
-	addProgram(
-		new ProgramObject(
-			'A Terminal 1',
-			'This is a terminal',
-			getCategoryByName(CategoryObject.Name.CATEGORY_1),
-			'/images/icons/utilities-terminal.svg',
-			new WindowObject(WindowObject.ContentType.URL, 'Test 1', 400, 200)
-		)
-	);
-	addProgram(
-		new ProgramObject(
-			'G Terminal 1',
-			'This is a terminal',
-			getCategoryByName(CategoryObject.Name.CATEGORY_1),
-			'/images/icons/utilities-terminal.svg',
-			new WindowObject(WindowObject.ContentType.URL, 'Test 1', 400, 200)
-		)
-	);
-	addProgram(
-		new ProgramObject(
-			'Terminal 2',
-			'This is also a terminal',
-			getCategoryByName(CategoryObject.Name.CATEGORY_2),
-			'/images/icons/utilities-terminal.svg',
-			new WindowObject(WindowObject.ContentType.URL, 'Test 2', 500, 500)
-		)
-	);
 
 	function updateWindows(): void {
 		$processesStore = $processesStore;
@@ -69,6 +29,7 @@
 
 	function handleWindowSelection(processId: number) {
 		let process = getProcessById(processId);
+		if (!process) return;
 		let selectedWindow = process.window;
 		if (!selectedWindow) return;
 		getWindows().forEach((window) => {
@@ -76,12 +37,17 @@
 				window.z_index -= 1;
 			}
 		});
+		console.log(getWindows());
 
-		console.log(maxWindowZIndex);
 		selectedWindow.z_index = maxWindowZIndex;
 	    // Save current x, y, width and height to program
 		// TODO: ONLY change x, y, width and height if this proves to be troublesome
-		getProgramById(process.getProgramId()).window = process.window;
+		let window = getProgramById(process.getProgramId()).window;
+		window.x = process.window.x;
+		window.y = process.window.y;
+		window.width = process.window.width;
+		window.height = process.window.height;
+		window.fullscreen = process.window.fullscreen;
 
 		updateWindows();
 	}
@@ -104,10 +70,9 @@
 		Keyed each block :
 		https://svelte.dev/tutorial/keyed-each-blocks
 	 -->
-	{#each $processesStore as { id, window } (id)}
+	{#each $processesStore as { id, name, icon, window } (id)}
 		{#if window !== null}
 			<Window
-				heightOffset={convertRemToPixels(taskbarHeight)}
 				bind:height={window.height}
 				bind:width={window.width}
 				bind:x={window.x}
@@ -115,10 +80,15 @@
 				bind:fullscreen={window.fullscreen}
 				bind:minimized={window.minimized}
 				bind:z_index={window.z_index}
+				title={name}
+				icon={icon}
+				heightOffset={convertRemToPixels(taskbarHeight)}
 				onSelection={() => handleWindowSelection(id)}
 				onMinimize={() => handleWindowMinimize(id)}
 				onClose={() => handleWindowClose(id)}
-			/>
+			>
+	 			<svelte:component this={window.component} {...window.componentAttributes} slot="content" onSelection={() => handleWindowSelection(id)} />
+			</Window>
 		{/if}
 	{/each}
 </div>

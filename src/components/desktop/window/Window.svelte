@@ -7,16 +7,14 @@
 
 	import { Cursor, changeCursor } from '$objects/desktop/cursors';
 
-	export let z_index: number = 1;
-	export let onSelection: Function = () => {};
-	export let onMinimize: Function = () => {};
-	export let onClose: Function = () => {};
+	export let title: string = '';
+	export let icon: string = '';
 
 	// Height of window in PX
-	// Default to max available
+	// Default to min
 	export let height: number | null = null;
 	// Width of window in PX
-	// Defaults to max available
+	// Defaults to min
 	export let width: number | null = null;
 
 	// X position of window in PX
@@ -35,9 +33,15 @@
 	export let minWidth: number = 250;
 	// Minimal width of window in PX
 	export let minHeight: number = 250;
-	
+
 	export let fullscreen: boolean = false;
 	export let minimized: boolean = false;
+
+	export let z_index: number = 1;
+
+	export let onSelection: Function = () => {};
+	export let onMinimize: Function = () => {};
+	export let onClose: Function = () => {};
 
 	let maxHeight: number = null;
 	let maxWidth: number = null;
@@ -51,32 +55,34 @@
 	$: {
 		width;
 		if (width < minWidth) width = minWidth;
+		else if (maxWidth && width > maxWidth) width = maxWidth;
 	}
 	$: {
 		height;
 		if (height < minHeight) height = minHeight;
+		else if (maxHeight && height > maxHeight) height = maxHeight;
 	}
 
+	$: maxWidth = innerWidth - widthOffset;
+	$: maxHeight = innerHeight - heightOffset;
 	$: {
-		[widthOffset, innerWidth, fullscreen];
-		maxWidth = innerWidth - widthOffset;
 		maxX = Math.abs(maxWidth - width);
-		if (width == null && maxWidth != null) width = maxWidth;
 		if (x == null && maxX) x = maxX / 2;
-		else if (x > maxX) x = maxX;
+		else if (x >= maxX) x = maxX;
 		else if (x < 0) x = 0;
 	}
 	$: {
-		[heightOffset, innerHeight, fullscreen];
-		maxHeight = innerHeight - heightOffset;
 		maxY = Math.abs(maxHeight - height);
-		if (height == null && maxHeight != null) height = maxHeight;
 		if (y == null && maxY) y = maxY / 2;
-		else if (y > maxY) y = maxY;
+		else if (y >= maxY) y = maxY;
 		else if (y < 0) y = 0;
 	}
 
+	$: if (width == null && maxWidth != null) width = maxWidth;
+	$: if (height == null && maxHeight != null) height = maxHeight;
+
 	let windowElement: HTMLDivElement;
+	let windowContentElement: HTMLElement;
 
 	let dragPrevX: number = 0;
 	let dragPrevY: number = 0;
@@ -92,10 +98,12 @@
 	}
 	function handleWindowDragStart(e: DragEvent) {
 		handleWindowMoveStart(e.clientX, e.clientY);
+		onSelection();
 	}
 	function handleWindowTouchStart(e: TouchEvent) {
 		e.preventDefault();
 		handleWindowMoveStart(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
+		onSelection();
 	}
 
 	let isMovingWindow: boolean = false;
@@ -118,7 +126,7 @@
 	function handleTouchMove(e: TouchEvent) {
 		handleWindowMove(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
 	}
-	
+
 	function handleWindowDragEnd(e: DragEvent) {
 		e.preventDefault();
 		isMovingWindow = false;
@@ -141,7 +149,7 @@
 	let direction: Direction;
 	let prevResizeX: number = 0;
 	let prevResizeY: number = 0;
-	let resizing: boolean = false;
+	let isResizingWindow: boolean = false;
 	let dragHeight: number = height;
 	let dragWidth: number = width;
 	let dragX: number = x;
@@ -149,7 +157,7 @@
 	function handleWindowResizeStart(x: number, y: number) {
 		prevResizeX = x;
 		prevResizeY = y;
-		resizing = true;
+		isResizingWindow = true;
 	}
 
 	let cursorForDirection: Map<Direction, Cursor> = new Map([
@@ -173,10 +181,10 @@
 		dragWidth = width;
 
 		// Prevent content from being selected while resizing the window
-		windowElement.style.userSelect = 'none';
+		windowContentElement.style.userSelect = 'none';
 	}
 	function resizeWindow(e: MouseEvent) {
-		if (!resizing) return;
+		if (!isResizingWindow) return;
 		let offsetX: number = e.clientX - prevResizeX;
 		let offsetY: number = e.clientY - prevResizeY;
 		if (
@@ -231,10 +239,10 @@
 		prevResizeY = e.clientY;
 	}
 	function stopWindowResize(e: MouseEvent) {
-		resizing = false;
+		isResizingWindow = false;
 		changeCursor(Cursor.AUTO);
 
-		windowElement.style.userSelect = 'initial';
+		windowContentElement.style.userSelect = 'initial';
 	}
 
 	function handleWindowDoubleClick(e: MouseEvent) {
@@ -291,12 +299,12 @@
 			on:touchend={handleWindowTouchEnd}
 			on:dblclick={handleWindowDoubleClick}
 		>
+			<div class="window-info" on:dragstart={(e) => e.preventDefault()}>
+				<img class="window-icon" src={icon} alt={title} />
+				<p class="window-title">{title}</p>
+			</div>
 			<div class="control-buttons">
-				<WindowMinimizeButton
-					width={'2.5rem'}
-					height={'100%'}
-					on:click={() => handleMinimize()}
-				/>
+				<WindowMinimizeButton width={'2.5rem'} height={'100%'} on:click={() => handleMinimize()} />
 				<WindowResizeButton
 					isFullscreen={fullscreen}
 					width={'2.5rem'}
@@ -306,8 +314,8 @@
 				<WindowCloseButton width={'2.5rem'} height={'100%'} on:click={() => handleClose()} />
 			</div>
 		</div>
-		<div class="window-content">
-			<h1>Window</h1>
+		<div bind:this={windowContentElement} class="window-content">
+			<slot name="content" />
 		</div>
 
 		{#if !fullscreen}
@@ -337,6 +345,8 @@
 	$--border-offset: -2px;
 
 	.window {
+		$--control-bar-height: 2rem;
+
 		background-color: var(--background-color-application);
 		position: absolute;
 		margin-left: auto;
@@ -346,9 +356,26 @@
 		overflow: hidden;
 
 		.control-bar {
-			height: 2rem;
+			height: $--control-bar-height;
 			width: 100%;
 			background-color: var(--border-color-application);
+
+			.window-info {
+				float: left;
+				display: flex;
+				height: 100%;
+				align-items: center;
+				margin-left: 0.25rem;
+
+				.window-icon {
+					width: 1.5rem;
+					height: auto;
+				}
+
+				.window-title {
+					margin-left: 0.25rem;
+				}
+			}
 
 			.control-buttons {
 				float: right;
@@ -359,7 +386,9 @@
 		}
 
 		.window-content {
-			margin: 0.5rem;
+			width: 100%;
+			height: calc(100% - #{$--control-bar-height});
+			background-color: var(--background-color-application);
 		}
 
 		.border-top,

@@ -31,7 +31,7 @@
 	>
 		<div class="menu-container-top">
 			<div class="about-me-button-container">
-				<AboutMeButton icon="/images/icons/pfp-round.png" name="Jitze Jan Kerkstra" />
+				<AboutMeButton icon="/images/about/pfp-round.png" name="Jitze Jan Kerkstra" />
 			</div>
 			<div class="system-buttons-container">
 				<Tooltip tooltip="Toggle Mobile View" position="bottom" width="4.5rem">

@@ -5,7 +5,7 @@
 	export let isFullscreen: boolean;
 </script>
 
-<button class="window-resize-button" style="width: {width}; height: {height};" on:click>
+<button class="window-resize-button" style="width: {width}; height: {height};" on:click on:dragstart={(e) => e.preventDefault()}>
 	{#if isFullscreen}
 		<svg
 			version="1.1"

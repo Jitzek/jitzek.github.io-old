@@ -6,7 +6,7 @@
 	import type { Program as ProgramObject } from '$objects/shared/program/Program';
 	import type { Category as CategoryObject } from '$objects/shared/program/Category';
 
-	import { categoriesStore } from '$stores/shared/CategoriesStore';
+	import { categoriesStore, categoryAll, categoryFavourites } from '$stores/shared/CategoriesStore';
 	import { programsStore } from '$stores/shared/ProgramsStore';
 
 	export let onLauncherClick: Function = () => {};
@@ -50,13 +50,13 @@
 <div class="categories-container">
 	<div class="category-buttons-container">
 		{#each categoryWrappers.sort((a, b) =>
-			a.category.name.localeCompare(b.category.name)
+			a.category.id === categoryAll.id || categoryFavourites ? 0 : a.category.name.localeCompare(b.category.name)
 		) as { category, activated } (category.id)}
 			<MenuLauncherButton
 				icon={category.icon}
 				name={category.name}
 				alt={category.name}
-				{activated}
+				activated={activated}
 				on:click={() => toggleCategory(category.id)}
 			/>
 		{/each}
@@ -65,7 +65,7 @@
 		{#each categoryWrappers as { category, activated }}
 			{#if activated}
 				{#each $programsStore.sort((a, b) => a.name.localeCompare(b.name)) as program (program.id)}
-					{#if program.category.id === category.id}
+					{#if program.categories.find(_category => _category.id === category.id) || category.id === categoryAll.id}
 						<div in:slide={{ duration: 500 }} out:slide={{ duration: 250 }}>
 							<MenuLauncherButton
 								icon={program.icon}

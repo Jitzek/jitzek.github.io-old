@@ -3,7 +3,7 @@
 	export let height: string = '100%';
 </script>
 
-<button class="window-minimize-button" style="width: {width}; height: {height};" on:click>
+<button class="window-minimize-button" style="width: {width}; height: {height};" on:click on:dragstart={(e) => e.preventDefault()}>
 	<svg
 		version="1.1"
 		id="Layer_1"
