@@ -53,6 +53,17 @@
 	let innerWidth: number;
 
 	$: {
+		[isMovingWindow, isResizingWindow];
+		if (windowContentElement) {
+			// Prevent content from being selected while resizing or moving the window
+			windowContentElement.style.userSelect =
+				isMovingWindow || isResizingWindow ? 'none' : 'initial';
+			windowContentElement.style.pointerEvents =
+				isMovingWindow || isResizingWindow ? 'none' : 'initial';
+		}
+	}
+
+	$: {
 		width;
 		if (width < minWidth) width = minWidth;
 		else if (maxWidth && width > maxWidth) width = maxWidth;
@@ -96,6 +107,9 @@
 		dragPrevX = _x;
 		dragPrevY = _y;
 	}
+	function handleWindowMoveEnd(_x: number, _y: number) {
+		isMovingWindow = false;
+	}
 	function handleWindowDragStart(e: DragEvent) {
 		handleWindowMoveStart(e.clientX, e.clientY);
 		onSelection();
@@ -129,11 +143,11 @@
 
 	function handleWindowDragEnd(e: DragEvent) {
 		e.preventDefault();
-		isMovingWindow = false;
+		handleWindowMoveEnd(e.clientX, e.clientY);
 	}
 	function handleWindowTouchEnd(e: TouchEvent) {
 		e.preventDefault();
-		isMovingWindow = false;
+		handleWindowMoveEnd(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
 	}
 
 	enum Direction {
@@ -179,9 +193,6 @@
 		dragY = y;
 		dragHeight = height;
 		dragWidth = width;
-
-		// Prevent content from being selected while resizing the window
-		windowContentElement.style.userSelect = 'none';
 	}
 	function resizeWindow(e: MouseEvent) {
 		if (!isResizingWindow) return;
@@ -241,8 +252,6 @@
 	function stopWindowResize(e: MouseEvent) {
 		isResizingWindow = false;
 		changeCursor(Cursor.AUTO);
-
-		windowContentElement.style.userSelect = 'initial';
 	}
 
 	function handleWindowDoubleClick(e: MouseEvent) {
@@ -359,6 +368,12 @@
 			height: $--control-bar-height;
 			width: 100%;
 			background-color: var(--border-color-application);
+
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+			-o-user-select: none;
 
 			.window-info {
 				float: left;
