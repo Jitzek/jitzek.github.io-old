@@ -2,7 +2,7 @@
 </script>
 
 <button class="switch-to-mobile-button">
-	<img src="/images/menu/mobile.svg" alt="Mobile View" height="75%" width="auto"/>
+	<img src="/images/desktop/menu/mobile.svg" alt="Mobile View" height="75%" width="auto"/>
 </button>
 
 <style lang="scss">

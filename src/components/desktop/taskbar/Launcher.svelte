@@ -1,22 +1,23 @@
 <script lang="ts">
 	import Tooltip from '$components/desktop/Tooltip.svelte';
 
-	export let name: string;
-	export let icon: string;
-	export let alt: string = 'launcher';
+	import type { Program as ProgramObject } from '$objects/shared/program/Program';
+	import { hideMenu } from '$stores/desktop/MenuStore';
+
+	export let program: ProgramObject;
 	export let row: number;
 	export let height: string;
-	export let onClick: Function = () => {};
 
 	function onLauncherClick() {
-		onClick();
+		hideMenu();
+		program.createProcess().bringToTop();
 	}
 </script>
 
 <div style="grid-row: {row};" on:click={onLauncherClick}>
-	<Tooltip tooltip={name} position="top">
+	<Tooltip tooltip={program.name} position="top">
 		<button class="launcher" style="height: {height}">
-			<img src={icon} {alt} width="100%" height="auto" />
+			<img src={program.icon} alt={program.name} width="100%" height="auto" />
 		</button>
 	</Tooltip>
 </div>

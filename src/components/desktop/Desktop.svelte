@@ -7,9 +7,18 @@
 	import { convertRemToPixels } from '$objects/shared/conversions';
 	import type { Window as WindowObject } from '$objects/shared/program/Window';
 	import type { Process as ProcessObject } from '$objects/shared/program/Process';
-	
+
 	import { getProgramById } from '$stores/shared/ProgramsStore';
-	import { processesStore, removeProcessById, maxWindowZIndex, maxWindowZIndexStore } from '$stores/shared/ProcessesStore';
+	import {
+		processesStore,
+		removeProcessById,
+		maxWindowZIndex,
+		maxWindowZIndexStore
+	} from '$stores/shared/ProcessesStore';
+	import { contextMenuStore } from '$stores/desktop/ContextMenuStore';
+	import ContextMenu from './context_menu/ContextMenu.svelte';
+	import ContextMenuOption from './context_menu/ContextMenuOption.svelte';
+import { hideMenu } from '$stores/desktop/MenuStore';
 
 	let wallpaper: string = '/images/wallpapers/custom-design-01-1280x720.png';
 
@@ -28,6 +37,7 @@
 	}
 
 	function handleWindowSelection(processId: number) {
+		hideMenu();
 		let process = getProcessById(processId);
 		if (!process) return;
 		let selectedWindow = process.window;
@@ -37,11 +47,9 @@
 				window.z_index -= 1;
 			}
 		});
-		console.log(getWindows());
 
 		selectedWindow.z_index = maxWindowZIndex;
-	    // Save current x, y, width and height to program
-		// TODO: ONLY change x, y, width and height if this proves to be troublesome
+		// Save current x, y, width and height to program
 		let window = getProgramById(process.getProgramId()).window;
 		window.x = process.window.x;
 		window.y = process.window.y;
@@ -81,19 +89,34 @@
 				bind:minimized={window.minimized}
 				bind:z_index={window.z_index}
 				title={name}
-				icon={icon}
+				{icon}
 				heightOffset={convertRemToPixels(taskbarHeight)}
 				onSelection={() => handleWindowSelection(id)}
 				onMinimize={() => handleWindowMinimize(id)}
 				onClose={() => handleWindowClose(id)}
 			>
-	 			<svelte:component this={window.component} {...window.componentAttributes} slot="content" onSelection={() => handleWindowSelection(id)} />
+				<svelte:component
+					this={window.component}
+					{...window.componentAttributes}
+					slot="content"
+					onSelection={() => handleWindowSelection(id)}
+				/>
 			</Window>
 		{/if}
 	{/each}
 </div>
 
 <Taskbar bind:height={taskbarHeight} z_index={$maxWindowZIndexStore + 1} />
+
+{#if $contextMenuStore.show}
+	<ContextMenu x={$contextMenuStore.x} y={$contextMenuStore.y} z_index={$maxWindowZIndexStore + 2}>
+		<div slot="options">
+			{#each $contextMenuStore.options as option}
+				<ContextMenuOption name={option.name} icon={option.icon} onClick={option.onClick} />
+			{/each}
+		</div>
+	</ContextMenu>
+{/if}
 
 <style lang="scss">
 	.grid-container {

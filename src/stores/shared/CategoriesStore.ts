@@ -4,7 +4,7 @@ import { writable, Writable } from "svelte/store";
 
 let _categoriesStore: Array<Category> = [];
 export const categoryAll: Category = new Category(Category.Name.ALL, "/images/category-icons/utilities-terminal.svg");
-export const categoryFavourites: Category = new Category(Category.Name.FAVOURITES, "/images/category-icons/star.svg");
+export const categoryFavourites: Category = new Category(Category.Name.FAVOURITES, "/images/category-icons/star-2.svg");
 export const categoriesStore: Writable<Array<Category>> = writable([
     categoryAll,
     categoryFavourites,

@@ -109,15 +109,14 @@
 	}
 	function handleWindowMoveEnd(_x: number, _y: number) {
 		isMovingWindow = false;
+		onSelection();
 	}
 	function handleWindowDragStart(e: DragEvent) {
 		handleWindowMoveStart(e.clientX, e.clientY);
-		onSelection();
 	}
 	function handleWindowTouchStart(e: TouchEvent) {
 		e.preventDefault();
 		handleWindowMoveStart(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
-		onSelection();
 	}
 
 	let isMovingWindow: boolean = false;
@@ -250,8 +249,11 @@
 		prevResizeY = e.clientY;
 	}
 	function stopWindowResize(e: MouseEvent) {
-		isResizingWindow = false;
-		changeCursor(Cursor.AUTO);
+		if (isResizingWindow) {
+			isResizingWindow = false;
+			changeCursor(Cursor.AUTO);
+			onSelection();
+		}
 	}
 
 	function handleWindowDoubleClick(e: MouseEvent) {
@@ -269,6 +271,11 @@
 
 	function handleClose() {
 		onClose();
+	}
+
+	function handleWindowMouseDown(e: MouseEvent) {
+		// hideMenu();
+		onSelection();
 	}
 </script>
 
@@ -296,7 +303,7 @@
 			"
 		in:scale={{ duration: 250 }}
 		out:scale={{ duration: 250 }}
-		on:mousedown={onSelection()}
+		on:mousedown={handleWindowMouseDown}
 	>
 		<!-- Draggable bar -->
 		<div

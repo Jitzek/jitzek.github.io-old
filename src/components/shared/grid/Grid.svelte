@@ -1,10 +1,11 @@
 <script lang="ts">
-	import Program from '$components/desktop/Program.svelte';
+	import Shortcut from '$components/shared/grid/Shortcut.svelte';
 	import { clickOutside } from '$components/shared/events/mouseOutside';
 
 	import { convertRemToPixels } from '$objects/shared/conversions';
 
 	import { desktop as desktop_store, mobile as mobile_store } from '$stores/shared/DeviceTypeStore';
+import { hideMenu } from '$stores/desktop/MenuStore';
 
 	export let widthOffset: number = 0;
 	export let heightOffset: number = 0;
@@ -74,6 +75,7 @@
 		gridTemplateColumns = `repeat(${columnsPerRow}, ${columnWidth}rem)`;
 
 		gridPositions = [];
+		// Fill up grid with empty grid positions
 		for (let row = 1; row < rows + 1; row++) {
 			for (let column = 1; column < columnsPerRow + 1; column++) {
 				gridPositions.push(
@@ -91,6 +93,7 @@
 		}
 
 		/*
+			Assign GridObjects to GridPositions.
 			Rearrange GridObjects to fit within grid.
 			Automatically return GridObjects to their preferred position.
 		*/
@@ -105,15 +108,16 @@
 					preferredColumn = columnsPerRow;
 				}
 
-				let preferredGridPosition = gridPositions
-					.filter((position) => position.object == null)
-					.reduce((prev, current) => {
+				let emptyGridPositions = gridPositions.filter((position) => position.object == null);
+				if (emptyGridPositions.length > 0) {
+					let preferredGridPosition = emptyGridPositions.reduce((prev, current) => {
 						return Math.abs(current.row - preferredRow) < Math.abs(prev.row - preferredRow) ||
 							Math.abs(current.column - preferredColumn) < Math.abs(prev.column - preferredColumn)
 							? current
 							: prev;
 					});
-				preferredGridPosition.object = gridObject;
+					preferredGridPosition.object = gridObject;
+				}
 			});
 		}
 		gridPositions = gridPositions;
@@ -335,6 +339,7 @@
 	class="grid"
 	style="grid-template-columns: {gridTemplateColumns}; gap: {gap}rem; padding: {padding}rem;"
 	on:dragover={onDragOver}
+	on:mousedown={hideMenu}
 >
 	{#each gridPositions as { object, row, column }}
 		{#if object == null}
@@ -366,7 +371,10 @@
 					on:mousedown={(e) => onGridElementMouseDown(e, object)}
 					on:dblclick={(e) => onGridElementDoubleClick(e, object)}
 				>
-					<Program icon="/images/program-icons/utilities-terminal.svg" name="terminal {object.id}" />
+					<Shortcut
+						icon="/images/program-icons/utilities-terminal.svg"
+						name="terminal {object.id}"
+					/>
 				</div>
 			</div>
 		{/if}

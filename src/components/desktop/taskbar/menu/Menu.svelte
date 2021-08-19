@@ -10,6 +10,7 @@
 	import { Theme } from '$objects/shared/Theme';
 
 	import { theme as theme_store } from '$stores/shared/ThemeStore';
+	import { hideMenu, showMenuStore } from '$stores/desktop/MenuStore';
 
 	let theme: Theme = Theme.Dark;
 	theme_store.subscribe((new_theme: Theme) => {
@@ -18,11 +19,9 @@
 
 	// Offset from taskbar in Rem
 	export let offset: number = 0;
-
-	export let show: boolean = false;
 </script>
 
-{#if show}
+{#if $showMenuStore}
 	<div
 		class="menu-container {theme}"
 		style="bottom: {offset}rem; --offset: {offset}rem;"
@@ -47,7 +46,7 @@
 				</Tooltip>
 			</div>
 		</div>
-		<Categories onLauncherClick={() => show = false} />
+		<Categories />
 	</div>
 {/if}
 

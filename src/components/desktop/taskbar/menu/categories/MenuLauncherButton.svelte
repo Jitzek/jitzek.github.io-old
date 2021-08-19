@@ -1,19 +1,50 @@
 <script lang="ts">
-	export let name: string;
-	export let description: string = null;
-	export let icon: string;
-	export let alt: string = 'Launcher';
+	import type { Program as ProgramObject } from '$objects/shared/program/Program';
+
+	import { hideContextMenu, showContextMenu } from '$stores/desktop/ContextMenuStore';
+	import { hideMenu } from '$stores/desktop/MenuStore';
+	import { addProgramShortcut, containsProgramShortcut, removeProgramShortcut, taskbarStore } from '$stores/desktop/TaskbarStore';
+
+	export let program: ProgramObject;
 	export let activated: boolean = false;
+
+	function handleContextMenu(e: MouseEvent) {
+		e.preventDefault();
+		showContextMenu(e.clientX, e.clientY, [
+			{
+				name: containsProgramShortcut(program) ? 'Unpin from taskbar' : 'Pin to taskbar',
+				icon: containsProgramShortcut(program)
+					? '/images/desktop/unpin.svg'
+					: '/images/desktop/pin.svg',
+				onClick: () => {
+					hideContextMenu();
+					containsProgramShortcut(program) ? removeProgramShortcut(program) : addProgramShortcut(program);
+				}
+			},
+			{
+				name: 'Create Shortcut',
+				icon: null,
+				onClick: () => {
+					hideContextMenu();
+				}
+			}
+		]);
+	}
+
+	function handleClick() {
+		program.createProcess().bringToTop();
+		hideMenu();
+	}
 </script>
 
-<button class:activated class="menu-launcher-button" on:click>
+<button class:activated class="menu-launcher-button" on:click={handleClick} on:contextmenu={handleContextMenu}>
 	<div class="menu-launcher-button-content">
-		<img src={icon} alt={alt} />
+		<img src={program.icon} alt={program.name} />
 		<div class="name-and-description">
-			<span class="name">{name}</span>
-			{#if description}
+			<span class="name">{program.name}</span>
+			{#if program.description}
 				<br />
-				<span class="description">{description}</span>
+				<span class="description">{program.description}</span>
 			{/if}
 		</div>
 	</div>

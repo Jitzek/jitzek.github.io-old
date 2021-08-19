@@ -13,6 +13,8 @@
 
 	import { programsStore } from '$stores/shared/ProgramsStore';
 	import { processesStore } from '$stores/shared/ProcessesStore';
+import { taskbarStore } from '$stores/desktop/TaskbarStore';
+import { hideMenu, showMenuStore, toggleMenu } from '$stores/desktop/MenuStore';
 
 	export let rows: number = 1;
 	export let maxRows: number = 3;
@@ -95,17 +97,12 @@
 		row: number;
 		ghost: boolean;
 	}
-	/**
-	 * Initial value
-	 *
-	 * used for debugging (to be removed)
-	 */
 	let launchers: Array<LauncherObject> = [];
-	programsStore.subscribe((programs) => {
+	taskbarStore.subscribe((taskbarStore) => {
 		launchers = [];
-		programs.forEach((program) =>
+		taskbarStore.programShortcuts.forEach((programShortcut) =>
 			launchers.push({
-				program: program,
+				program: programShortcut.program,
 				row: 1,
 				ghost: false
 			})
@@ -144,16 +141,6 @@
 		launchers;
 		gridTemplateColumns = `repeat(${launchers.length}, ${columnSize})`;
 	}
-
-	let showMenu: boolean = false;
-	function toggleMenu() {
-		showMenu = !showMenu;
-	}
-
-	function handleLauncherClick(program: ProgramObject) {
-		showMenu = false;
-		program.createProcess().bringToTop();
-	}
 </script>
 
 <svelte:window on:mouseup={stopResize} on:mousemove={resize} />
@@ -161,14 +148,12 @@
 	bind:this={taskbar}
 	class="taskbar"
 	style="height: {height}rem; z-index: {z_index};"
-	use:mouseDownOutside
-	on:mousedownoutside={() => (showMenu = false)}
 >
-	<Menu offset={height} bind:show={showMenu} />
+	<Menu offset={height}/>
 	<div on:mousedown={startResize} class="border" />
 	<div class="taskbar-content" style="height: {height}rem;">
 		<div class="menu-button-container">
-			<MenuButton on:click={toggleMenu} bind:activated={showMenu}>
+			<MenuButton>
 				<!-- <img {src} alt="Navigation Menu" width="auto" height="auto" /> -->
 				<WhiskerMenu />
 			</MenuButton>
@@ -180,12 +165,9 @@
 						<div style="grid-row: {row}; height: {rowHeight}rem"><div style="padding-top: 100%;" /></div>
 					{:else}
 						<Launcher
-							name={program.name}
-							icon={program.icon}
-							alt={program.name}
+							program={program}
 							row={row}
 							height={`${rowHeight}rem`}
-							onClick={() => handleLauncherClick(program)}
 						/>
 					{/if}
 				{/each}

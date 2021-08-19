@@ -1,9 +1,17 @@
 <script lang="ts">
+	import { showMenuStore, toggleMenu } from "$stores/desktop/MenuStore";
+
 	export let title: string = 'Start Menu';
 	export let activated: boolean = false;
+
+	showMenuStore.subscribe(_showMenu => activated = _showMenu);
+
+	function handleClick() {
+		toggleMenu();
+	}
 </script>
 
-<button class:activated class="menu-button" on:click>
+<button class:activated class="menu-button" on:click={handleClick}>
 	<div class="menu-button-content">
 		<div class="menu-button-icon">
 			<slot />
