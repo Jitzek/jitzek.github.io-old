@@ -99,11 +99,6 @@
 	let dragPrevY: number = 0;
 	function handleWindowMoveStart(_x: number, _y: number) {
 		isMovingWindow = true;
-		if (fullscreen) {
-			fullscreen = false;
-			x = _x - width / 2;
-			y = maxY;
-		}
 		dragPrevX = _x;
 		dragPrevY = _y;
 	}
@@ -115,13 +110,18 @@
 		handleWindowMoveStart(e.clientX, e.clientY);
 	}
 	function handleWindowTouchStart(e: TouchEvent) {
-		e.preventDefault();
+		// e.preventDefault();
 		handleWindowMoveStart(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
 	}
 
 	let isMovingWindow: boolean = false;
 	function handleWindowMove(_x: number, _y: number) {
 		if (!isMovingWindow) return;
+		if (fullscreen) {
+			fullscreen = false;
+			x = _x - width / 2;
+			y = maxY;
+		}
 		let offsetX = _x - dragPrevX;
 		let offsetY = _y - dragPrevY;
 		dragPrevX = _x;
@@ -137,6 +137,7 @@
 		e.dataTransfer.dropEffect = 'move';
 	}
 	function handleTouchMove(e: TouchEvent) {
+		e.preventDefault();
 		handleWindowMove(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
 	}
 
@@ -145,8 +146,7 @@
 		handleWindowMoveEnd(e.clientX, e.clientY);
 	}
 	function handleWindowTouchEnd(e: TouchEvent) {
-		e.preventDefault();
-		handleWindowMoveEnd(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
+		return;
 	}
 
 	enum Direction {

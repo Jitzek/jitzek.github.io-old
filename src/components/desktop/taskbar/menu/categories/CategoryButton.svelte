@@ -1,10 +1,20 @@
 <script lang="ts">
+import { onMount } from "svelte";
+
+
 	export let name: string;
 	export let icon: string;
 	export let activated: boolean = false;
+
+	let categoryButtonElement: HTMLElement;
+
+	onMount(() => {
+		// Disable image dragging
+		categoryButtonElement.ondragstart = () => false;
+	});
 </script>
 
-<button class:activated class="menu-launcher-button" on:click>
+<button bind:this={categoryButtonElement} class:activated class="menu-launcher-button" on:click>
 	<div class="menu-launcher-button-content">
 		<img src={icon} alt={name} />
 		<div class="name-and-description">

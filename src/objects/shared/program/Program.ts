@@ -2,7 +2,9 @@ import { Process } from "./Process";
 import type { Window } from "./Window";
 import { processesStore, addProcess } from "$stores/shared/ProcessesStore";
 import type { Category } from "./Category";
-import { cloneDeep } from "lodash";
+// import { cloneDeep } from "lodash";
+import lodash from "lodash";
+const { cloneDeep } = lodash;
 
 let c_program_id = 0;
 export class Program {
@@ -26,10 +28,7 @@ export class Program {
     }
 
     public createProcess(): Process {
-        // let newProcess = new Process(JSON.parse(JSON.stringify(this)) as Program);
-        // let newProcess = new Process({...this});
         let newProcess = new Process(cloneDeep(this));
-        // let newProcess = new Process(Object.assign(Object.create(Object.getPrototypeOf(this)), this));
         addProcess(newProcess);
         return newProcess;
     }

@@ -3,7 +3,12 @@
 
 	import { hideContextMenu, showContextMenu } from '$stores/desktop/ContextMenuStore';
 	import { hideMenu } from '$stores/desktop/MenuStore';
-	import { addProgramShortcut, containsProgramShortcut, removeProgramShortcut, taskbarStore } from '$stores/desktop/TaskbarStore';
+	import {
+		addProgramShortcut,
+		containsProgramShortcut,
+		removeProgramShortcut,
+		taskbarStore
+	} from '$stores/desktop/TaskbarStore';
 
 	export let program: ProgramObject;
 	export let activated: boolean = false;
@@ -12,20 +17,24 @@
 		e.preventDefault();
 		showContextMenu(e.clientX, e.clientY, [
 			{
+				name: 'Launch',
+				icon: program.icon,
+				onClick: () => {
+					hideContextMenu();
+					program.createProcess().bringToTop();
+					hideMenu();
+				}
+			},
+			{
 				name: containsProgramShortcut(program) ? 'Unpin from taskbar' : 'Pin to taskbar',
 				icon: containsProgramShortcut(program)
 					? '/images/desktop/unpin.svg'
 					: '/images/desktop/pin.svg',
 				onClick: () => {
 					hideContextMenu();
-					containsProgramShortcut(program) ? removeProgramShortcut(program) : addProgramShortcut(program);
-				}
-			},
-			{
-				name: 'Create Shortcut',
-				icon: null,
-				onClick: () => {
-					hideContextMenu();
+					containsProgramShortcut(program)
+						? removeProgramShortcut(program)
+						: addProgramShortcut(program);
 				}
 			}
 		]);
@@ -35,9 +44,20 @@
 		program.createProcess().bringToTop();
 		hideMenu();
 	}
+
+	function handleDragStart(e: DragEvent) {
+		e.dataTransfer.setData("program_id", program.id.toString());
+	}
 </script>
 
-<button class:activated class="menu-launcher-button" on:click={handleClick} on:contextmenu={handleContextMenu}>
+<button
+	class:activated
+	class="menu-launcher-button"
+	on:click={handleClick}
+	on:contextmenu={handleContextMenu}
+	draggable={true}
+	on:dragstart={handleDragStart}
+>
 	<div class="menu-launcher-button-content">
 		<img src={program.icon} alt={program.name} />
 		<div class="name-and-description">

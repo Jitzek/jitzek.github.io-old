@@ -4,7 +4,6 @@
 	import MenuLauncherButton from '$components/desktop/taskbar/menu/categories/MenuLauncherButton.svelte';
 	import CategoryButton from '$components/desktop/taskbar/menu/categories/CategoryButton.svelte';
 
-	import type { Program as ProgramObject } from '$objects/shared/program/Program';
 	import type { Category as CategoryObject } from '$objects/shared/program/Category';
 
 	import { categoriesStore, categoryAll, categoryFavourites } from '$stores/shared/CategoriesStore';
@@ -44,7 +43,7 @@
 <div class="categories-container">
 	<div class="category-buttons-container">
 		{#each categoryWrappers.sort((a, b) =>
-			a.category.id === categoryAll.id || categoryFavourites ? 0 : a.category.name.localeCompare(b.category.name)
+			a.category.id === categoryAll.id || a.category.id === categoryFavourites.id ? 0 : a.category.name.localeCompare(b.category.name)
 		) as { category, activated } (category.id)}
 			<CategoryButton
 				icon={category.icon}

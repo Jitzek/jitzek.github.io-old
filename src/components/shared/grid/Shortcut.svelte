@@ -1,13 +1,39 @@
 <script lang="ts">
-	export let icon: string;
-	export let name: string;
+	import type { Program } from "$objects/shared/program/Program";
+	import { hideContextMenu, showContextMenu } from "$stores/desktop/ContextMenuStore";
+	import { removeGridItem } from "$stores/shared/GridStore";
+		
+	export let id: number;
+	export let program: Program;
+
+	function handleContextMenu(e: MouseEvent) {
+		e.preventDefault();
+		showContextMenu(e.clientX, e.clientY, [
+			{
+				name: 'Launch',
+				icon: program.icon,
+				onClick: () => {
+					hideContextMenu();
+					program.createProcess().bringToTop();
+				}
+			},
+			{
+				name: 'Remove Desktop Shortcut',
+				icon: null,
+				onClick: () => {
+					hideContextMenu();
+					removeGridItem(id);
+				}
+			}
+		]);
+	}
 </script>
 
-<div class="program">
+<div class="program" on:contextmenu={handleContextMenu}>
 	<div class="image-container">
-		<img src={icon} alt={name} draggable="false" />
+		<img src={program.icon} alt={program.name} draggable="false" />
 	</div>
-	<p>{name}</p>
+	<p>{program.name}</p>
 </div>
 
 <style lang="scss">

@@ -10,11 +10,13 @@ export const taskbarStore: Readable<Taskbar> = derived(
 );
 
 export function addProgramShortcut(program: Program): void {
+    if (taskbar.containsProgramShortcut(program)) return;
     taskbar.addProgramShortcut(program)
     _taskbarStore.set(taskbar);
 }
 
 export function removeProgramShortcut(program: Program): void {
+    if (!taskbar.containsProgramShortcut(program)) return;
     taskbar.removeProgramShortcut(program);
     _taskbarStore.set(taskbar);
 }

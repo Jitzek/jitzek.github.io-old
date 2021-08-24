@@ -11,10 +11,10 @@
 	import type { Program as ProgramObject } from '$objects/shared/program/Program';
 	import { convertRemToPixels } from '$objects/shared/conversions';
 
-	import { programsStore } from '$stores/shared/ProgramsStore';
+	import { getProgramById, programsStore } from '$stores/shared/ProgramsStore';
 	import { processesStore } from '$stores/shared/ProcessesStore';
-import { taskbarStore } from '$stores/desktop/TaskbarStore';
-import { hideMenu, showMenuStore, toggleMenu } from '$stores/desktop/MenuStore';
+	import { addProgramShortcut, taskbarStore } from '$stores/desktop/TaskbarStore';
+	import { hideMenu, showMenuStore, toggleMenu } from '$stores/desktop/MenuStore';
 
 	export let rows: number = 1;
 	export let maxRows: number = 3;
@@ -39,17 +39,14 @@ import { hideMenu, showMenuStore, toggleMenu } from '$stores/desktop/MenuStore';
 		}
 	}
 
-	let taskbar: HTMLDivElement;
+	let taskbarContentElement: HTMLDivElement;
 
 	let heightInPx = 0;
 	onMount(() => {
 		// Set initial height in pixels
 		heightInPx = convertRemToPixels(height);
-
-		// Disable image dragging
-		taskbar.ondragstart = () => {
-			return false;
-		};
+		
+		taskbarContentElement.ondragstart = () => false;
 	});
 
 	// Start of resize event (mouse down)
@@ -141,17 +138,29 @@ import { hideMenu, showMenuStore, toggleMenu } from '$stores/desktop/MenuStore';
 		launchers;
 		gridTemplateColumns = `repeat(${launchers.length}, ${columnSize})`;
 	}
+
+	function onDrop(e: DragEvent) {
+		if (e.dataTransfer.getData('program_id').trim() === '') return;
+		let programId: number = Number(e.dataTransfer.getData('program_id'));
+		if (isNaN(programId)) return;
+		addProgramShortcut(getProgramById(programId));
+	}
+	function allowDrop(e: DragEvent) {
+		e.preventDefault();
+	}
 </script>
 
 <svelte:window on:mouseup={stopResize} on:mousemove={resize} />
-<div
-	bind:this={taskbar}
-	class="taskbar"
-	style="height: {height}rem; z-index: {z_index};"
->
-	<Menu offset={height}/>
+<div class="taskbar" style="height: {height}rem; z-index: {z_index};">
+	<Menu offset={height} />
 	<div on:mousedown={startResize} class="border" />
-	<div class="taskbar-content" style="height: {height}rem;">
+	<div
+		bind:this={taskbarContentElement}
+		class="taskbar-content"
+		style="height: {height}rem;"
+		on:drop={onDrop}
+		on:dragover={allowDrop}
+	>
 		<div class="menu-button-container">
 			<MenuButton>
 				<!-- <img {src} alt="Navigation Menu" width="auto" height="auto" /> -->
@@ -162,13 +171,11 @@ import { hideMenu, showMenuStore, toggleMenu } from '$stores/desktop/MenuStore';
 			<div class="launchers" style="grid-template-columns: {gridTemplateColumns};">
 				{#each launchers as { program, row, ghost }}
 					{#if ghost || !program}
-						<div style="grid-row: {row}; height: {rowHeight}rem"><div style="padding-top: 100%;" /></div>
+						<div style="grid-row: {row}; height: {rowHeight}rem">
+							<div style="padding-top: 100%;" />
+						</div>
 					{:else}
-						<Launcher
-							program={program}
-							row={row}
-							height={`${rowHeight}rem`}
-						/>
+						<Launcher {program} {row} height={`${rowHeight}rem`} />
 					{/if}
 				{/each}
 			</div>

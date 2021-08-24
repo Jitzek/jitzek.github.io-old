@@ -18,7 +18,7 @@
 	import { contextMenuStore } from '$stores/desktop/ContextMenuStore';
 	import ContextMenu from './context_menu/ContextMenu.svelte';
 	import ContextMenuOption from './context_menu/ContextMenuOption.svelte';
-import { hideMenu } from '$stores/desktop/MenuStore';
+	import { hideMenu } from '$stores/desktop/MenuStore';
 
 	let wallpaper: string = '/images/wallpapers/custom-design-01-1280x720.png';
 

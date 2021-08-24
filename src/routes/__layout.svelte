@@ -17,12 +17,6 @@
 		// Function should be called within the onMount function since it requires window to be assigned
 		setupWindowQueries({ desktopQuery: 'screen and (min-width: 768px)', listen: true });
 
-		// theme_store.subscribe((new_theme) => {
-		// 	document.body.classList.remove(theme);
-		// 	theme = new_theme;
-		// 	document.body.classList.add(new_theme);
-		// });
-
 		theme_store.subscribe((new_theme) => {
 			document.documentElement.setAttribute('data-theme', new_theme);
 		});
@@ -71,16 +65,6 @@
 		--accent-neutral-color: rgb(0%,40%,100%);
 		--accent-alert-color: hsla(0, 85%, 65%, 1);
 	}
-
-	// :global(body.theme-dark) {
-	// 	color: #e6e7e8;
-	// 	background-color: #4d555b;
-	// }
-
-	// :global(body.theme-light) {
-	// 	color: #e6e7e8;
-	// 	background-color: #9dafbd;
-	// }
 
 	:global(html) :global(body) {
 		margin: 0;
