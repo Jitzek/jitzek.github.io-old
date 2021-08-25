@@ -1,14 +1,30 @@
 <script lang="ts">
-	import Shortcut from '$components/shared/grid/Shortcut.svelte';
-	import { clickOutside } from '$components/shared/events/mouseOutside';
-	import GridPosition from './GridPosition.svelte';
+	/** IMPORTS */
+	// "svelte"
+	//
 
+	// "components"
+	import GridPosition from '$components/shared/grid/GridPosition.svelte';
+	//
+
+	// "objects"
 	import { GridItem as GridItemObject } from '$objects/shared/grid/GridItem';
+	//
 
+	// "stores"
 	import { hideMenu } from '$stores/desktop/MenuStore';
 	import { getProgramById } from '$stores/shared/ProgramsStore';
-	import { addGridItem, gridStore, rearrangeGrid, setGridParameters } from '$stores/shared/GridStore';
+	import {
+		addGridItem,
+		gridStore,
+		rearrangeGrid,
+		setGridParameters
+	} from '$stores/shared/GridStore';
+	//
 
+	/** ENDOF IMPORTS*/
+
+	/** EXPORTS */
 	export let widthOffset: number = 0;
 	export let heightOffset: number = 0;
 
@@ -21,12 +37,20 @@
 	export let gap: number = 2.5;
 	// Padding of the grid in Rem
 	export let padding: number = 1;
+    /** ENDOF EXPORTS */
 
+	/** VARIABLE DECLARATION */
 	let screenWidth: number;
 	let screenHeight: number;
 
 	let gridItemBeingDragged: GridItemObject = null;
+	/** ENDOF VARIABLE DECLERATION */
 
+	/** STORE CALLBACKS */
+	//
+	/** ENDOF STORE CALLBACKS */
+
+	/** REACTIVE VARIABLES */
 	$: {
 		[screenWidth, screenHeight, gap, widthOffset, heightOffset, padding, columnWidth, columnHeight];
 		setGridParameters(gap, widthOffset, heightOffset, padding, columnWidth, columnHeight);
@@ -34,8 +58,14 @@
 			rearrangeGrid(screenWidth, screenHeight);
 		}
 	}
+	/** ENDOF REACTIVE VARIABLES */
 
-	function onGridDrop(e: DragEvent) {
+	/** HELPER FUNCTIONS */
+	//
+	/** ENDOF HELPER FUNCTIONS */
+
+	/** EVENT HANDLERS */
+	function handleGridDrop(e: DragEvent) {
 		if (gridItemBeingDragged != null) {
 			return;
 		}
@@ -62,21 +92,24 @@
 	function handleGridItemDragEnd(x: number, y: number, item: GridItemObject) {
 		gridItemBeingDragged = null;
 	}
+	/** ENDOF EVENT HANDLERS */
 </script>
 
-<svelte:window
-	bind:innerWidth={screenWidth}
-	bind:innerHeight={screenHeight}
-/>
+<svelte:window bind:innerWidth={screenWidth} bind:innerHeight={screenHeight} />
 
 <div
 	class="grid"
 	style="grid-template-columns: {$gridStore.gridTemplateColumns}; gap: {$gridStore.gap}rem; padding: {$gridStore.padding}rem;"
 	on:mousedown={hideMenu}
-	on:drop={onGridDrop}
+	on:drop={handleGridDrop}
 >
 	{#each $gridStore.gridPositions as gridPosition}
-		<GridPosition gridPosition={gridPosition} onDragStart={handleGridItemDragStart} onDragMove={handleGridItemDragMove} onDragEnd={handleGridItemDragEnd} />
+		<GridPosition
+			{gridPosition}
+			onDragStart={handleGridItemDragStart}
+			onDragMove={handleGridItemDragMove}
+			onDragEnd={handleGridItemDragEnd}
+		/>
 	{/each}
 </div>
 

@@ -4,17 +4,14 @@
 	import Launcher from '$components/desktop/taskbar/Launcher.svelte';
 	import MenuButton from '$components/desktop/taskbar/MenuButton.svelte';
 	import Menu from '$components/desktop/taskbar/menu/Menu.svelte';
-	import { mouseDownOutside } from '$components/shared/events/mouseOutside';
 	import WhiskerMenu from '$components/shared/svg/whisker-menu.svelte';
 
 	import { changeCursor, Cursor } from '$objects/desktop/cursors';
 	import type { Program as ProgramObject } from '$objects/shared/program/Program';
 	import { convertRemToPixels } from '$objects/shared/conversions';
 
-	import { getProgramById, programsStore } from '$stores/shared/ProgramsStore';
-	import { processesStore } from '$stores/shared/ProcessesStore';
+	import { getProgramById } from '$stores/shared/ProgramsStore';
 	import { addProgramShortcut, taskbarStore } from '$stores/desktop/TaskbarStore';
-	import { hideMenu, showMenuStore, toggleMenu } from '$stores/desktop/MenuStore';
 
 	export let rows: number = 1;
 	export let maxRows: number = 3;

@@ -1,13 +1,24 @@
 <script lang="ts">
-	import Wallpaper from '$components/shared/Wallpaper.svelte';
-	import Taskbar from '$components/desktop/taskbar/Taskbar.svelte';
+	/** IMPORTS */
+	// "svelte"
+	//
+
+	// "components"
+	import ContextMenu from '$components/desktop/context_menu/ContextMenu.svelte';
+	import ContextMenuOption from '$components/desktop/context_menu/ContextMenuOption.svelte';
 	import Grid from '$components/shared/grid/Grid.svelte';
+	import Taskbar from '$components/desktop/taskbar/Taskbar.svelte';
+	import Wallpaper from '$components/shared/Wallpaper.svelte';
 	import Window from '$components/desktop/window/Window.svelte';
+	//
 
+	// "objects"
 	import { convertRemToPixels } from '$objects/shared/conversions';
-	import type { Window as WindowObject } from '$objects/shared/program/Window';
 	import type { Process as ProcessObject } from '$objects/shared/program/Process';
+	import type { Window as WindowObject } from '$objects/shared/program/Window';
+	//
 
+	// "stores"
 	import { getProgramById } from '$stores/shared/ProgramsStore';
 	import {
 		processesStore,
@@ -16,14 +27,25 @@
 		maxWindowZIndexStore
 	} from '$stores/shared/ProcessesStore';
 	import { contextMenuStore } from '$stores/desktop/ContextMenuStore';
-	import ContextMenu from './context_menu/ContextMenu.svelte';
-	import ContextMenuOption from './context_menu/ContextMenuOption.svelte';
 	import { hideMenu } from '$stores/desktop/MenuStore';
+	//
 
+	/** ENDOF IMPORTS*/
+
+	/** VARIABLE DECLARATION */
 	let wallpaper: string = '/images/wallpapers/custom-design-01-1280x720.png';
-
 	let taskbarHeight: number;
+	/** ENDOF VARIABLE DECLERATION */
 
+	/** STORE CALLBACKS */
+	//
+	/** ENDOF STORE CALLBACKS */
+
+	/** REACTIVE VARIABLES */
+    //
+    /** ENDOF REACTIVE VARIABLES */
+
+	/** HELPER FUNCTIONS */
 	function updateWindows(): void {
 		$processesStore = $processesStore;
 	}
@@ -35,7 +57,9 @@
 	function getProcessById(id: number): ProcessObject {
 		return $processesStore.find((process) => process.id === id);
 	}
+	/** ENDOF HELPER FUNCTIONS */
 
+	/** EVENT HANDLERS */
 	function handleWindowSelection(processId: number) {
 		hideMenu();
 		let process = getProcessById(processId);
@@ -63,6 +87,7 @@
 	function handleWindowClose(id: number) {
 		removeProcessById(id);
 	}
+	/** ENDOF EVENT HANDLERS */
 </script>
 
 <svelte:head>
@@ -89,7 +114,7 @@
 				bind:minimized={window.minimized}
 				bind:z_index={window.z_index}
 				title={name}
-				{icon}
+				icon={icon}
 				heightOffset={convertRemToPixels(taskbarHeight)}
 				onSelection={() => handleWindowSelection(id)}
 				onMinimize={() => handleWindowMinimize(id)}

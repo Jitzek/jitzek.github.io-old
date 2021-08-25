@@ -16,7 +16,7 @@ export function clickOutside(node: any): { destroy(): void; } {
     }
 }
 
-export function mouseDownOutside(node: any) {
+export function mouseDownOutside(node: any): { destroy(): void; } {
     function handleMouseDown(e: MouseEvent) {
         if (node && !node.contains(e.target) && !e.defaultPrevented) {
             node.dispatchEvent(
@@ -34,7 +34,7 @@ export function mouseDownOutside(node: any) {
     }
 }
 
-export function mouseUpOutside(node: any) {
+export function mouseUpOutside(node: any): { destroy(): void; } {
     function handleMouseUp(e: MouseEvent) {
         if (node && !node.contains(e.target) && !e.defaultPrevented) {
             node.dispatchEvent(

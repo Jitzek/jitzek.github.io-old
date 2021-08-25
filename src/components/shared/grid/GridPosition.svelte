@@ -1,13 +1,31 @@
 <script lang="ts">
+	/** IMPORTS */
+	// "svelte"
+	//
+
+	// "components"
 	import Shortcut from '$components/shared/grid/Shortcut.svelte';
 	import { clickOutside } from '$components/shared/events/mouseOutside';
+	//
 
+	// "objects"
 	import type { GridItem as GridItemObject } from '$objects/shared/grid/GridItem';
 	import type { GridPosition as GridPositionObject } from '$objects/shared/grid/GridPosition';
+	//
 
+	// "stores"
 	import { desktop, mobile } from '$stores/shared/DeviceTypeStore';
-	import { deselectGridItem, gridStore, selectGridItem, setPreferredPositionOfGridItem } from '$stores/shared/GridStore';
+	import {
+		deselectGridItem,
+		gridStore,
+		selectGridItem,
+		setPreferredPositionOfGridItem
+	} from '$stores/shared/GridStore';
+	//
 
+	/** ENDOF IMPORTS*/
+
+	/** EXPORTS */
 	export let gridPosition: GridPositionObject;
 
 	export let onDragStart: (x: number, y: number, item: GridItemObject) => void = (
@@ -25,36 +43,88 @@
 		y: number,
 		item: GridItemObject
 	) => {};
+	/** ENDOF EXPORTS */
 
+	/** VARIABLE DECLARATION */
 	let isDragging: boolean = false;
 
 	let dragStartX: number;
 	let dragStartY: number;
+
+	let shiftDown: boolean = false;
+	let ctrlDown: boolean = false;
+
+	let touchStart: number;
+	let touchTimeForOpen: number = 500;
+	let touchMoving: boolean = false;
+	let touchCanceled: boolean = false;
+	/** ENDOF VARIABLE DECLERATION */
+
+	/** STORE CALLBACKS */
+	//
+	/** ENDOF STORE CALLBACKS */
+
+	/** REACTIVE VARIABLES */
+	//
+	/** ENDOF REACTIVE VARIABLES */
+
+	/** HELPER FUNCTIONS */
+	//
+	/** ENDOF HELPER FUNCTIONS */
+
+	/** EVENT HANDLERS */
+	function window_handleDragOver(e: DragEvent) {
+		e.preventDefault();
+		if (isDragging) {
+			let gridPosition: GridPositionObject | null = $gridStore.getGridPositionAtPosition(
+				e.clientX,
+				e.clientY
+			);
+			if (
+				gridPosition &&
+				gridPosition.item != null &&
+				gridPosition.item.id != gridPosition.item.id
+			) {
+				e.dataTransfer.dropEffect = 'link';
+			} else {
+				e.dataTransfer.dropEffect = 'move';
+			}
+		}
+		/*
+        	The dragend event will always show 0 for the clientX and clientY on Firefox.
+        	As a workaround we can keep track of the end position by taking the last clientX and clientY of the dragover event.
+    	*/
+		handleMove(e.clientX, e.clientY);
+	}
+	function window_handleKeyDown(e: KeyboardEvent) {
+		shiftDown = e.shiftKey;
+		ctrlDown = e.ctrlKey;
+	}
+	function window_handleKeyUp(e: KeyboardEvent) {
+		shiftDown = e.shiftKey;
+		ctrlDown = e.ctrlKey;
+	}
 
 	function handleMoveStart(x: number, y: number) {
 		dragStartX = x;
 		dragStartY = y;
 		isDragging = true;
 
-        onDragStart(x, y, gridPosition.item);
+		onDragStart(x, y, gridPosition.item);
 	}
 
-	/*
-        The dragend event will always show 0 for the clientX and clientY on Firefox.
-        As a workaround we can keep track of the end position by taking the last clientX and clientY of the dragover event.
-    */
 	let clientX: number;
 	let clientY: number;
 	function handleMove(x: number, y: number) {
-        if (!isDragging) return;
+		if (!isDragging) return;
 
 		clientX = x;
 		clientY = y;
-        onDragMove(x, y, gridPosition.item);
+		onDragMove(x, y, gridPosition.item);
 	}
 
 	function handleMoveEnd(x: number, y: number) {
-        let offsetX = x - dragStartX;
+		let offsetX = x - dragStartX;
 		let offsetY = y - dragStartY;
 
 		let position = $gridStore.getGridPositionAtPosition(clientX, clientY);
@@ -78,43 +148,9 @@
 					setPreferredPositionOfGridItem(gridItem, new_gridPosition.row, new_gridPosition.column);
 				});
 		}
-        onDragEnd(x, y, gridPosition.item);
-    }
-
-	function window_handleDragOver(e: DragEvent) {
-		e.preventDefault();
-		if (isDragging) {
-			let gridPosition: GridPositionObject | null = $gridStore.getGridPositionAtPosition(
-				e.clientX,
-				e.clientY
-			);
-			if (
-				gridPosition &&
-				gridPosition.item != null &&
-				gridPosition.item.id != gridPosition.item.id
-			) {
-				e.dataTransfer.dropEffect = 'link';
-			} else {
-				e.dataTransfer.dropEffect = 'move';
-			}
-		}
-		handleMove(e.clientX, e.clientY);
-	}
-	let shiftDown: boolean = false;
-	let ctrlDown: boolean = false;
-	function window_handleKeyDown(e: KeyboardEvent) {
-		shiftDown = e.shiftKey;
-		ctrlDown = e.ctrlKey;
-	}
-	function window_handleKeyUp(e: KeyboardEvent) {
-		shiftDown = e.shiftKey;
-		ctrlDown = e.ctrlKey;
+		onDragEnd(x, y, gridPosition.item);
 	}
 
-	let touchStart: number;
-	let touchTimeForOpen: number = 500;
-	let touchMoving: boolean = false;
-	let touchCanceled: boolean = false;
 	function handleTouchStart(e: TouchEvent) {
 		e.preventDefault();
 		touchMoving = false;
@@ -176,6 +212,7 @@
 	function handleDoubleClick(e: MouseEvent) {
 		gridPosition.item.program.createProcess().bringToTop();
 	}
+	/** ENDOF EVENT HANDLERS */
 </script>
 
 <svelte:window
