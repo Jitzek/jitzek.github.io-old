@@ -12,6 +12,7 @@
 
 	import { getProgramById } from '$stores/shared/ProgramsStore';
 	import { addProgramShortcut, taskbarStore } from '$stores/desktop/TaskbarStore';
+	import { isStringAPositiveNumber } from '$objects/shared/typechecks';
 
 	export let rows: number = 1;
 	export let maxRows: number = 3;
@@ -42,7 +43,7 @@
 	onMount(() => {
 		// Set initial height in pixels
 		heightInPx = convertRemToPixels(height);
-		
+
 		taskbarContentElement.ondragstart = () => false;
 	});
 
@@ -136,14 +137,16 @@
 		gridTemplateColumns = `repeat(${launchers.length}, ${columnSize})`;
 	}
 
-	function onDrop(e: DragEvent) {
-		if (e.dataTransfer.getData('program_id').trim() === '') return;
+	function handleTaskbarContentDrop(e: DragEvent) {
+		if (!isStringAPositiveNumber(e.dataTransfer.getData('program_id').trim())) return;
 		let programId: number = Number(e.dataTransfer.getData('program_id'));
 		if (isNaN(programId)) return;
 		addProgramShortcut(getProgramById(programId));
 	}
-	function allowDrop(e: DragEvent) {
+	function handleTaskbarContentDragOver(e: DragEvent) {
+		if (!isStringAPositiveNumber(e.dataTransfer.getData('program_id').trim())) return;
 		e.preventDefault();
+		e.dataTransfer.dropEffect = 'move';
 	}
 </script>
 
@@ -155,12 +158,11 @@
 		bind:this={taskbarContentElement}
 		class="taskbar-content"
 		style="height: {height}rem;"
-		on:drop={onDrop}
-		on:dragover={allowDrop}
+		on:drop={handleTaskbarContentDrop}
+		on:dragover={handleTaskbarContentDragOver}
 	>
 		<div class="menu-button-container">
 			<MenuButton>
-				<!-- <img {src} alt="Navigation Menu" width="auto" height="auto" /> -->
 				<WhiskerMenu />
 			</MenuButton>
 		</div>

@@ -1,12 +1,25 @@
 <script lang="ts">
+	/** IMPORTS */
+	// "svelte"
 	import { scale } from 'svelte/transition';
+	//
 
+	// "components"
 	import WindowCloseButton from '$components/desktop/window/control_buttons/WindowCloseButton.svelte';
 	import WindowMinimizeButton from '$components/desktop/window/control_buttons/WindowMinimizeButton.svelte';
 	import WindowResizeButton from '$components/desktop/window/control_buttons/WindowResizeButton.svelte';
+	//
 
+	// "objects"
 	import { Cursor, changeCursor } from '$objects/desktop/cursors';
+	//
 
+	// "stores"
+	//
+
+	/** ENDOF IMPORTS*/
+
+	/** EXPORTS */
 	export let title: string = '';
 	export let icon: string = '';
 
@@ -42,7 +55,9 @@
 	export let onSelection: Function = () => {};
 	export let onMinimize: Function = () => {};
 	export let onClose: Function = () => {};
+	/** ENDOF EXPORTS */
 
+	/** VARIABLE DECLARATION */
 	let maxHeight: number = null;
 	let maxWidth: number = null;
 
@@ -52,6 +67,51 @@
 	let innerHeight: number;
 	let innerWidth: number;
 
+	let windowElement: HTMLDivElement;
+	let windowContentElement: HTMLElement;
+
+	let dragPrevX: number = 0;
+	let dragPrevY: number = 0;
+
+	let isMovingWindow: boolean = false;
+
+	enum Direction {
+		TOP,
+		BOTTOM,
+		LEFT,
+		RIGHT,
+		TOPRIGHT,
+		TOPLEFT,
+		BOTTOMRIGHT,
+		BOTTOMLEFT
+	}
+	let direction: Direction;
+	let prevResizeX: number = 0;
+	let prevResizeY: number = 0;
+	let isResizingWindow: boolean = false;
+	let dragHeight: number = height;
+	let dragWidth: number = width;
+	let dragX: number = x;
+	let dragY: number = y;
+
+	let cursorForDirection: Map<Direction, Cursor> = new Map([
+		[Direction.TOP, Cursor.N_RESIZE],
+		[Direction.BOTTOM, Cursor.S_RESIZE],
+		[Direction.LEFT, Cursor.W_RESIZE],
+		[Direction.RIGHT, Cursor.E_RESIZE],
+
+		[Direction.TOPLEFT, Cursor.NW_RESIZE],
+		[Direction.TOPRIGHT, Cursor.NE_RESIZE],
+		[Direction.BOTTOMLEFT, Cursor.SW_RESIZE],
+		[Direction.BOTTOMRIGHT, Cursor.SE_RESIZE]
+	]);
+	/** ENDOF VARIABLE DECLERATION */
+
+	/** STORE CALLBACKS */
+	//
+	/** ENDOF STORE CALLBACKS */
+
+	/** REACTIVE VARIABLES */
 	$: {
 		[isMovingWindow, isResizingWindow];
 		if (windowContentElement) {
@@ -91,31 +151,21 @@
 
 	$: if (width == null && maxWidth != null) width = maxWidth;
 	$: if (height == null && maxHeight != null) height = maxHeight;
+	/** ENDOF REACTIVE VARIABLES */
 
-	let windowElement: HTMLDivElement;
-	let windowContentElement: HTMLElement;
-
-	let dragPrevX: number = 0;
-	let dragPrevY: number = 0;
-	function handleWindowMoveStart(_x: number, _y: number) {
+	/** HELPER FUNCTIONS */
+	function startWindowMove(_x: number, _y: number) {
 		isMovingWindow = true;
 		dragPrevX = _x;
 		dragPrevY = _y;
 	}
-	function handleWindowMoveEnd(_x: number, _y: number) {
+
+	function endWindowMove(_x: number, _y: number) {
 		isMovingWindow = false;
 		onSelection();
 	}
-	function handleWindowDragStart(e: DragEvent) {
-		handleWindowMoveStart(e.clientX, e.clientY);
-	}
-	function handleWindowTouchStart(e: TouchEvent) {
-		// e.preventDefault();
-		handleWindowMoveStart(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
-	}
 
-	let isMovingWindow: boolean = false;
-	function handleWindowMove(_x: number, _y: number) {
+	function moveWindow(_x: number, _y: number) {
 		if (!isMovingWindow) return;
 		if (fullscreen) {
 			fullscreen = false;
@@ -130,70 +180,26 @@
 		x += offsetX;
 		y -= offsetY;
 	}
-	function handleDragOver(e: DragEvent) {
-		e.preventDefault();
-		handleWindowMove(e.clientX, e.clientY);
 
-		e.dataTransfer.dropEffect = 'move';
-	}
-	function handleTouchMove(e: TouchEvent) {
-		e.preventDefault();
-		handleWindowMove(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
-	}
-
-	function handleWindowDragEnd(e: DragEvent) {
-		e.preventDefault();
-		handleWindowMoveEnd(e.clientX, e.clientY);
-	}
-	function handleWindowTouchEnd(e: TouchEvent) {
-		return;
-	}
-
-	enum Direction {
-		TOP,
-		BOTTOM,
-		LEFT,
-		RIGHT,
-		TOPRIGHT,
-		TOPLEFT,
-		BOTTOMRIGHT,
-		BOTTOMLEFT
-	}
-	let direction: Direction;
-	let prevResizeX: number = 0;
-	let prevResizeY: number = 0;
-	let isResizingWindow: boolean = false;
-	let dragHeight: number = height;
-	let dragWidth: number = width;
-	let dragX: number = x;
-	let dragY: number = y;
-	function handleWindowResizeStart(x: number, y: number) {
+	function startWindowResize(x: number, y: number) {
 		prevResizeX = x;
 		prevResizeY = y;
 		isResizingWindow = true;
 	}
+	/** ENDOF HELPER FUNCTIONS */
 
-	let cursorForDirection: Map<Direction, Cursor> = new Map([
-		[Direction.TOP, Cursor.N_RESIZE],
-		[Direction.BOTTOM, Cursor.S_RESIZE],
-		[Direction.LEFT, Cursor.W_RESIZE],
-		[Direction.RIGHT, Cursor.E_RESIZE],
-
-		[Direction.TOPLEFT, Cursor.NW_RESIZE],
-		[Direction.TOPRIGHT, Cursor.NE_RESIZE],
-		[Direction.BOTTOMLEFT, Cursor.SW_RESIZE],
-		[Direction.BOTTOMRIGHT, Cursor.SE_RESIZE]
-	]);
-	function startWindowResize(e: MouseEvent, _direction: Direction) {
-		direction = _direction;
-		handleWindowResizeStart(e.clientX, e.clientY);
-		changeCursor(cursorForDirection.get(direction));
-		dragX = x;
-		dragY = y;
-		dragHeight = height;
-		dragWidth = width;
+	/** EVENT HANDLERS */
+	function window_handleDragOver(e: DragEvent) {
+		if (!isMovingWindow) return;
+		e.preventDefault();
+		moveWindow(e.clientX, e.clientY);
+		e.dataTransfer.dropEffect = 'move';
 	}
-	function resizeWindow(e: MouseEvent) {
+	function window_handleTouchMove(e: TouchEvent) {
+		e.preventDefault();
+		moveWindow(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
+	}
+	function window_handleMouseMove(e: MouseEvent) {
 		if (!isResizingWindow) return;
 		let offsetX: number = e.clientX - prevResizeX;
 		let offsetY: number = e.clientY - prevResizeY;
@@ -248,7 +254,7 @@
 		prevResizeX = e.clientX;
 		prevResizeY = e.clientY;
 	}
-	function stopWindowResize(e: MouseEvent) {
+	function window_handleMouseUp(e: MouseEvent) {
 		if (isResizingWindow) {
 			isResizingWindow = false;
 			changeCursor(Cursor.AUTO);
@@ -256,36 +262,59 @@
 		}
 	}
 
+	function handleWindowDragStart(e: DragEvent) {
+		startWindowMove(e.clientX, e.clientY);
+	}
+	function handleWindowTouchStart(e: TouchEvent) {
+		// e.preventDefault();
+		startWindowMove(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
+	}
+	function handleWindowDragEnd(e: DragEvent) {
+		e.preventDefault();
+		endWindowMove(e.clientX, e.clientY);
+	}
+	function handleWindowTouchEnd(e: TouchEvent) {
+		return;
+	}
+
+	function handleWindowResizeStart(e: MouseEvent, _direction: Direction) {
+		direction = _direction;
+		startWindowResize(e.clientX, e.clientY);
+		changeCursor(cursorForDirection.get(direction));
+		dragX = x;
+		dragY = y;
+		dragHeight = height;
+		dragWidth = width;
+	}
+
 	function handleWindowDoubleClick(e: MouseEvent) {
 		fullscreen = !fullscreen;
 	}
 
-	function handleMinimize() {
+	function handleMinimizeButtonClick() {
 		minimized = true;
 		onMinimize();
 	}
-
-	function handleResize() {
+	function handleResizeButtonClick() {
 		fullscreen = !fullscreen;
 	}
-
-	function handleClose() {
+	function handleCloseButtonClick() {
 		onClose();
 	}
 
 	function handleWindowMouseDown(e: MouseEvent) {
-		// hideMenu();
 		onSelection();
 	}
+	/** ENDOF EVENT HANDLERS */
 </script>
 
 <svelte:window
 	bind:innerHeight
 	bind:innerWidth
-	on:dragover={handleDragOver}
-	on:touchmove={handleTouchMove}
-	on:mouseup={stopWindowResize}
-	on:mousemove={resizeWindow}
+	on:dragover={window_handleDragOver}
+	on:touchmove={window_handleTouchMove}
+	on:mouseup={window_handleMouseUp}
+	on:mousemove={window_handleMouseMove}
 />
 
 {#if !minimized}
@@ -320,14 +349,22 @@
 				<p class="window-title">{title}</p>
 			</div>
 			<div class="control-buttons">
-				<WindowMinimizeButton width={'2.5rem'} height={'100%'} on:click={() => handleMinimize()} />
+				<WindowMinimizeButton
+					width={'2.5rem'}
+					height={'100%'}
+					on:click={() => handleMinimizeButtonClick()}
+				/>
 				<WindowResizeButton
 					isFullscreen={fullscreen}
 					width={'2.5rem'}
 					height={'100%'}
-					on:click={() => handleResize()}
+					on:click={() => handleResizeButtonClick()}
 				/>
-				<WindowCloseButton width={'2.5rem'} height={'100%'} on:click={() => handleClose()} />
+				<WindowCloseButton
+					width={'2.5rem'}
+					height={'100%'}
+					on:click={() => handleCloseButtonClick()}
+				/>
 			</div>
 		</div>
 		<div bind:this={windowContentElement} class="window-content">
@@ -335,22 +372,28 @@
 		</div>
 
 		{#if !fullscreen}
-			<div on:mousedown={(e) => startWindowResize(e, Direction.TOP)} class="border-top" />
-			<div on:mousedown={(e) => startWindowResize(e, Direction.LEFT)} class="border-left" />
-			<div on:mousedown={(e) => startWindowResize(e, Direction.RIGHT)} class="border-right" />
-			<div on:mousedown={(e) => startWindowResize(e, Direction.BOTTOM)} class="border-bottom" />
-
-			<div on:mousedown={(e) => startWindowResize(e, Direction.TOPLEFT)} class="border-top-left" />
+			<div on:mousedown={(e) => handleWindowResizeStart(e, Direction.TOP)} class="border-top" />
+			<div on:mousedown={(e) => handleWindowResizeStart(e, Direction.LEFT)} class="border-left" />
+			<div on:mousedown={(e) => handleWindowResizeStart(e, Direction.RIGHT)} class="border-right" />
 			<div
-				on:mousedown={(e) => startWindowResize(e, Direction.TOPRIGHT)}
+				on:mousedown={(e) => handleWindowResizeStart(e, Direction.BOTTOM)}
+				class="border-bottom"
+			/>
+
+			<div
+				on:mousedown={(e) => handleWindowResizeStart(e, Direction.TOPLEFT)}
+				class="border-top-left"
+			/>
+			<div
+				on:mousedown={(e) => handleWindowResizeStart(e, Direction.TOPRIGHT)}
 				class="border-top-right"
 			/>
 			<div
-				on:mousedown={(e) => startWindowResize(e, Direction.BOTTOMLEFT)}
+				on:mousedown={(e) => handleWindowResizeStart(e, Direction.BOTTOMLEFT)}
 				class="border-bottom-left"
 			/>
 			<div
-				on:mousedown={(e) => startWindowResize(e, Direction.BOTTOMRIGHT)}
+				on:mousedown={(e) => handleWindowResizeStart(e, Direction.BOTTOMRIGHT)}
 				class="border-bottom-right"
 			/>
 		{/if}

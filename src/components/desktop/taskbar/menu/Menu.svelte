@@ -10,7 +10,7 @@
 	import { Theme } from '$objects/shared/Theme';
 
 	import { theme as theme_store } from '$stores/shared/ThemeStore';
-	import { hideMenu, showMenuStore } from '$stores/desktop/MenuStore';
+	import { showMenuStore } from '$stores/desktop/MenuStore';
 
 	let theme: Theme = Theme.Dark;
 	theme_store.subscribe((new_theme: Theme) => {
@@ -19,6 +19,12 @@
 
 	// Offset from taskbar in Rem
 	export let offset: number = 0;
+	
+	function handleMenuDragOver(e: DragEvent) {
+		e.preventDefault();
+		e.dataTransfer.dropEffect = 'none';
+	}
+
 </script>
 
 {#if $showMenuStore}
@@ -27,6 +33,7 @@
 		style="bottom: {offset}rem; --offset: {offset}rem;"
 		in:slide={{ duration: 500 }}
 		out:slide={{ duration: 500 }}
+		on:dragover={handleMenuDragOver}
 	>
 		<div class="menu-container-top">
 			<div class="about-me-button-container">

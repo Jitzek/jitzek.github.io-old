@@ -18,8 +18,7 @@
 	import {
 		deselectGridItem,
 		gridStore,
-		selectGridItem,
-		setPreferredPositionOfGridItem
+		selectGridItem
 	} from '$stores/shared/GridStore';
 	//
 
@@ -124,30 +123,6 @@
 	}
 
 	function handleMoveEnd(x: number, y: number) {
-		let offsetX = x - dragStartX;
-		let offsetY = y - dragStartY;
-
-		let position = $gridStore.getGridPositionAtPosition(clientX, clientY);
-		// Check if the GridItem being dragged is dropped on an occupied spot
-		if (position && position.item != null) {
-			if (position.item == gridPosition.item) return;
-			// Attempt to handle data transfer of dragged gridItems
-		} else {
-			// Attempt to place GridItem on grid
-			$gridStore.gridItems
-				.filter((gridItem) => gridItem.selected)
-				.forEach((gridItem) => {
-					let or_gridPosition = $gridStore.gridPositions.find(
-						(position) => position.item != null && position.item.id == gridItem.id
-					);
-					let new_gridPosition = $gridStore.getClosestGridPositionToPosition(
-						or_gridPosition.x + offsetX,
-						or_gridPosition.y + offsetY,
-						(position: GridPositionObject) => position.item == null || position.item == gridItem
-					);
-					setPreferredPositionOfGridItem(gridItem, new_gridPosition.row, new_gridPosition.column);
-				});
-		}
 		onDragEnd(x, y, gridPosition.item);
 	}
 

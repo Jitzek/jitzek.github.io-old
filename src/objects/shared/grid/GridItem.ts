@@ -1,4 +1,5 @@
 import type { Program } from "$objects/shared/program/Program";
+import type { GridPosition } from "./GridPosition";
 
 let c_id = 0;
 export class GridItem {
@@ -8,6 +9,7 @@ export class GridItem {
         public program: Program,
         public preferredRow: number,
         public preferredColumn: number,
-        public selected: boolean = false
+        public selected: boolean = false,
+        public position: GridPosition = null
     ) { }
 }

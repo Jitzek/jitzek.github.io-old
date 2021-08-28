@@ -6,6 +6,7 @@ export class Grid {
     public gridItems: Array<GridItem> = [];
     public gridPositions: Array<GridPosition> = [];
     public gridTemplateColumns: string = '';
+    public gridItemBeingDragged: GridItem | null = null;
 
     public gap: number;
     public widthOffset: number;
@@ -44,7 +45,7 @@ export class Grid {
                         row * convertRemToPixels(this.columnHeight + this.gap) -
                         convertRemToPixels(this.gap + this.columnHeight / 2),
                         this.columnWidth,
-                        this.columnWidth,
+                        this.columnHeight,
                         this.gap
                     )
                 );
@@ -61,13 +62,13 @@ export class Grid {
             Rearrange gridItems to fit within grid.
             Automatically return gridItems to their preferred position.
         */
-        this.gridItems.forEach((GridItem) => {
-            let preferredRow = GridItem.preferredRow;
-            let preferredColumn = GridItem.preferredColumn;
-            if (GridItem.preferredRow < 0 || GridItem.preferredRow > rows) {
+        this.gridItems.forEach((gridItem) => {
+            let preferredRow = gridItem.preferredRow;
+            let preferredColumn = gridItem.preferredColumn;
+            if (gridItem.preferredRow < 0 || gridItem.preferredRow > rows) {
                 preferredRow = rows;
             }
-            if (GridItem.preferredColumn < 0 || GridItem.preferredColumn > columnsPerRow) {
+            if (gridItem.preferredColumn < 0 || gridItem.preferredColumn > columnsPerRow) {
                 preferredColumn = columnsPerRow;
             }
 
@@ -79,7 +80,8 @@ export class Grid {
                         ? current
                         : prev;
                 });
-                preferredGridPosition.item = GridItem;
+                preferredGridPosition.item = gridItem;
+                gridItem.position = preferredGridPosition;
             }
         });
     }

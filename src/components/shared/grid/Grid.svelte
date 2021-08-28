@@ -9,6 +9,8 @@
 
 	// "objects"
 	import { GridItem as GridItemObject } from '$objects/shared/grid/GridItem';
+	import type { GridPosition as GridPositionObject } from '$objects/shared/grid/GridPosition';
+	import { isStringAPositiveNumber } from '$objects/shared/typechecks';
 	//
 
 	// "stores"
@@ -18,7 +20,8 @@
 		addGridItem,
 		gridStore,
 		rearrangeGrid,
-		setGridParameters
+		setGridParameters,
+		setPreferredPositionOfGridItem
 	} from '$stores/shared/GridStore';
 	//
 
@@ -37,7 +40,7 @@
 	export let gap: number = 2.5;
 	// Padding of the grid in Rem
 	export let padding: number = 1;
-    /** ENDOF EXPORTS */
+	/** ENDOF EXPORTS */
 
 	/** VARIABLE DECLARATION */
 	let screenWidth: number;
@@ -67,6 +70,31 @@
 	/** EVENT HANDLERS */
 	function handleGridDrop(e: DragEvent) {
 		if (gridItemBeingDragged != null) {
+			let offsetX = e.clientX - gridItemBeingDragged.position.x;
+			let offsetY = e.clientY - gridItemBeingDragged.position.y;
+
+			let position = $gridStore.getGridPositionAtPosition(e.clientX, e.clientY);
+			// Check if the GridItem being dragged is dropped on an occupied spot
+			if (position && position.item != null) {
+				if (position.item == gridItemBeingDragged) return;
+				// Attempt to handle data transfer of dragged gridItems
+			} else {
+				// Attempt to place GridItem on grid
+				$gridStore.gridItems
+					.filter((gridItem) => gridItem.selected)
+					.forEach((gridItem) => {
+						let or_gridPosition = $gridStore.gridPositions.find(
+							(position) => position.item != null && position.item.id == gridItem.id
+						);
+						let new_gridPosition = $gridStore.getClosestGridPositionToPosition(
+							or_gridPosition.x + offsetX,
+							or_gridPosition.y + offsetY,
+							(position: GridPositionObject) => position.item == null || position.item == gridItem
+						);
+						setPreferredPositionOfGridItem(gridItem, new_gridPosition.row, new_gridPosition.column);
+					});
+			}
+			gridItemBeingDragged = null;
 			return;
 		}
 
@@ -76,7 +104,8 @@
 			// Do nothing for now
 			return;
 		} else {
-			if (e.dataTransfer.getData('program_id').trim() === '') return;
+			console.log(isStringAPositiveNumber(e.dataTransfer.getData('program_id').trim()));
+			if (!isStringAPositiveNumber(e.dataTransfer.getData('program_id').trim())) return;
 			let programId: number = Number(e.dataTransfer.getData('program_id'));
 			if (isNaN(programId)) return;
 			addGridItem(new GridItemObject(getProgramById(programId), position.row, position.column));
@@ -90,7 +119,7 @@
 		return;
 	}
 	function handleGridItemDragEnd(x: number, y: number, item: GridItemObject) {
-		gridItemBeingDragged = null;
+		return;
 	}
 	/** ENDOF EVENT HANDLERS */
 </script>
