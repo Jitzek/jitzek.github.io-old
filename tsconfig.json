@@ -37,6 +37,9 @@
 			"$stores/*": [
 				"src/stores/*"
 			],
+			"$objects/*": [
+				"src/objects/*"
+			]
 		}
 	},
 	"include": [
