@@ -1,19 +1,53 @@
 <script lang="ts">
+	/** IMPORTS */
+	// "svelte"
+	//
+
+	// "components"
+	//
+
+	// "objects"
+	//
+
+	// "stores"
+	//
+
+	/** ENDOF IMPORTS*/
+
+    /** EXPORTS */
 	export let size: string = '1.25rem';
 
     export let onClick: Function = (e: MouseEvent) => {};
-    
+    /** ENDOF EXPORTS */
+
+	/** VARIABLE DECLARATION */
     let buttonElement: HTMLElement;
-    function handleClick(e: MouseEvent) {
+	/** ENDOF VARIABLE DECLERATION */
+
+    /** STORE CALLBACKS */
+    //
+    /** ENDOF STORE CALLBACKS */
+
+    /** REACTIVE VARIABLES */
+    //
+    /** ENDOF REACTIVE VARIABLES */
+
+    /** HELPER FUNCTIONS */
+    //
+    /** ENDOF HELPER FUNCTIONS */
+
+    /** EVENT HANDLERS */
+    function handleRefreshButtonClick(_e: MouseEvent) {
         onClick();
         buttonElement.classList.remove('before');
         setTimeout(() => {
             buttonElement.classList.add('before');
         }, 500);
     }
+    /** ENDOF EVENT HANDLERS */
 </script>
 
-<button class="before" bind:this={buttonElement} on:click={handleClick} style="width: {size}; height: 100%;">
+<button class="before" bind:this={buttonElement} on:click={handleRefreshButtonClick} style="width: {size}; height: 100%;">
 	<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 	<svg
 		version="1.1"

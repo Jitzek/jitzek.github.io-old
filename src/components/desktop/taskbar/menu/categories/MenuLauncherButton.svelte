@@ -1,19 +1,50 @@
 <script lang="ts">
-	import type { Program as ProgramObject } from '$objects/shared/program/Program';
+	/** IMPORTS */
+	// "svelte"
+	//
 
+	// "components"
+	//
+
+	// "objects"
+	import type { Program as ProgramObject } from '$objects/shared/program/Program';
+	//
+
+	// "stores"
 	import { hideContextMenu, showContextMenu } from '$stores/desktop/ContextMenuStore';
 	import { hideMenu } from '$stores/desktop/MenuStore';
 	import {
 		addProgramShortcut,
 		containsProgramShortcut,
-		removeProgramShortcut,
-		taskbarStore
+		removeProgramShortcut
 	} from '$stores/desktop/TaskbarStore';
+	//
 
+	/** ENDOF IMPORTS*/
+
+	/** EXPORTS */
 	export let program: ProgramObject;
 	export let activated: boolean = false;
+	/** ENDOF EXPORTS */
 
-	function handleContextMenu(e: MouseEvent) {
+	/** VARIABLE DECLARATION */
+	//
+	/** ENDOF VARIABLE DECLERATION */
+
+	/** STORE CALLBACKS */
+	//
+	/** ENDOF STORE CALLBACKS */
+
+	/** REACTIVE VARIABLES */
+	//
+	/** ENDOF REACTIVE VARIABLES */
+
+	/** HELPER FUNCTIONS */
+	//
+	/** ENDOF HELPER FUNCTIONS */
+
+	/** EVENT HANDLERS */
+	function handleMenuLauncherButtonContextMenu(e: MouseEvent) {
 		e.preventDefault();
 		showContextMenu(e.clientX, e.clientY, [
 			{
@@ -40,23 +71,24 @@
 		]);
 	}
 
-	function handleClick() {
+	function handleMenuLauncherButtonClick() {
 		program.createProcess().bringToTop();
 		hideMenu();
 	}
 
-	function handleDragStart(e: DragEvent) {
-		e.dataTransfer.setData("program_id", program.id.toString());
+	function handleMenuLauncherButtonDragStart(e: DragEvent) {
+		e.dataTransfer.setData('program_id', program.id.toString());
 	}
+	/** ENDOF EVENT HANDLERS */
 </script>
 
 <button
 	class:activated
 	class="menu-launcher-button"
-	on:click={handleClick}
-	on:contextmenu={handleContextMenu}
+	on:click={handleMenuLauncherButtonClick}
+	on:contextmenu={handleMenuLauncherButtonContextMenu}
 	draggable={true}
-	on:dragstart={handleDragStart}
+	on:dragstart={handleMenuLauncherButtonDragStart}
 >
 	<div class="menu-launcher-button-content">
 		<img src={program.icon} alt={program.name} />

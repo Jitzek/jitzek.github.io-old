@@ -1,17 +1,50 @@
 <script lang="ts">
-import { onMount } from "svelte";
+	/** IMPORTS */
+	// "svelte"
+	import { onMount } from 'svelte';
+	//
 
+	// "components"
+	//
 
+	// "objects"
+	//
+
+	// "stores"
+	//
+
+	/** ENDOF IMPORTS*/
+
+    /** EXPORTS */
 	export let name: string;
 	export let icon: string;
 	export let activated: boolean = false;
+    /** ENDOF EXPORTS */
 
+	/** VARIABLE DECLARATION */
 	let categoryButtonElement: HTMLElement;
-
+	
 	onMount(() => {
 		// Disable image dragging
 		categoryButtonElement.ondragstart = () => false;
 	});
+	/** ENDOF VARIABLE DECLERATION */
+
+    /** STORE CALLBACKS */
+    //
+    /** ENDOF STORE CALLBACKS */
+
+    /** REACTIVE VARIABLES */
+    //
+    /** ENDOF REACTIVE VARIABLES */
+
+    /** HELPER FUNCTIONS */
+    //
+    /** ENDOF HELPER FUNCTIONS */
+
+    /** EVENT HANDLERS */
+    //
+    /** ENDOF EVENT HANDLERS */
 </script>
 
 <button bind:this={categoryButtonElement} class:activated class="menu-launcher-button" on:click>

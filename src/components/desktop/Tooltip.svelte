@@ -1,16 +1,47 @@
 <script lang="ts">
-	import type { Theme } from '$objects/shared/Theme';
+	/** IMPORTS */
+	// "svelte"
+	//
 
-	import { theme as theme_store } from '$stores/shared/ThemeStore';
-	let theme: Theme;
-	theme_store.subscribe((new_theme) => (theme = new_theme));
+	// "components"
+	//
 
+	// "objects"
+	//
+
+	// "stores"
+	//
+
+	/** ENDOF IMPORTS*/
+
+    /** EXPORTS */
 	export let tooltip: string = '';
-	// top, bottom, left or right
+	/**
+	 * "top", "bottom", "left" or "right"
+	 */
 	export let position: string = 'top';
 	export let width: string = 'max-content';
+    /** ENDOF EXPORTS */
 
+	/** VARIABLE DECLARATION */
 	let tooltipElement: HTMLDivElement;
+	/** ENDOF VARIABLE DECLERATION */
+
+    /** STORE CALLBACKS */
+	//
+    /** ENDOF STORE CALLBACKS */
+
+    /** REACTIVE VARIABLES */
+    //
+    /** ENDOF REACTIVE VARIABLES */
+
+    /** HELPER FUNCTIONS */
+    //
+    /** ENDOF HELPER FUNCTIONS */
+
+    /** EVENT HANDLERS */
+    //
+    /** ENDOF EVENT HANDLERS */
 </script>
 
 <div

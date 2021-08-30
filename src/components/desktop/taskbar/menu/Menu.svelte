@@ -1,30 +1,57 @@
 <script lang="ts">
+	/** IMPORTS */
+	// "svelte"
 	import { slide } from 'svelte/transition';
+	//
 
+	// "components"
 	import AboutMeButton from '$components/desktop/taskbar/menu/AboutMeButton.svelte';
 	import SwitchToMobileButton from '$components/desktop/taskbar/menu/global_options/SwitchToMobileButton.svelte';
 	import ChangeThemeSwitch from '$components/desktop/taskbar/menu/global_options/ChangeThemeSwitch.svelte';
 	import Categories from '$components/desktop/taskbar/menu/categories/Categories.svelte';
 	import Tooltip from '$components/desktop/Tooltip.svelte';
+	//
 
+	// "objects"
 	import { Theme } from '$objects/shared/Theme';
+	//
 
+	// "stores"
 	import { theme as theme_store } from '$stores/shared/ThemeStore';
 	import { showMenuStore } from '$stores/desktop/MenuStore';
+	//
 
-	let theme: Theme = Theme.Dark;
-	theme_store.subscribe((new_theme: Theme) => {
-		theme = new_theme;
-	});
+	/** ENDOF IMPORTS*/
 
-	// Offset from taskbar in Rem
+    /** EXPORTS */
+	/**
+	 * Offset from taskbar in Rem
+	 */
 	export let offset: number = 0;
-	
+    /** ENDOF EXPORTS */
+
+	/** VARIABLE DECLARATION */
+	let theme: Theme = Theme.Dark;
+	/** ENDOF VARIABLE DECLERATION */
+
+    /** STORE CALLBACKS */
+	theme_store.subscribe((new_theme: Theme) => theme = new_theme);
+    /** ENDOF STORE CALLBACKS */
+
+    /** REACTIVE VARIABLES */
+    //
+    /** ENDOF REACTIVE VARIABLES */
+
+    /** HELPER FUNCTIONS */
+    //
+    /** ENDOF HELPER FUNCTIONS */
+
+    /** EVENT HANDLERS */
 	function handleMenuDragOver(e: DragEvent) {
 		e.preventDefault();
 		e.dataTransfer.dropEffect = 'none';
 	}
-
+    /** ENDOF EVENT HANDLERS */
 </script>
 
 {#if $showMenuStore}

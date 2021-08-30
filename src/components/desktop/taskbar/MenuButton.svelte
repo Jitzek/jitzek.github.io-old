@@ -1,17 +1,49 @@
 <script lang="ts">
-	import { showMenuStore, toggleMenu } from "$stores/desktop/MenuStore";
+	/** IMPORTS */
+	// "svelte"
+	//
 
+	// "components"
+	//
+
+	// "objects"
+	//
+
+	// "stores"
+	import { showMenuStore, toggleMenu } from "$stores/desktop/MenuStore";
+	//
+
+	/** ENDOF IMPORTS*/
+
+    /** EXPORTS */
 	export let title: string = 'Start Menu';
 	export let activated: boolean = false;
+    /** ENDOF EXPORTS */
 
+	/** VARIABLE DECLARATION */
+    //
+	/** ENDOF VARIABLE DECLERATION */
+
+    /** STORE CALLBACKS */
 	showMenuStore.subscribe(_showMenu => activated = _showMenu);
+    /** ENDOF STORE CALLBACKS */
 
-	function handleClick() {
+    /** REACTIVE VARIABLES */
+    //
+    /** ENDOF REACTIVE VARIABLES */
+
+    /** HELPER FUNCTIONS */
+    //
+    /** ENDOF HELPER FUNCTIONS */
+
+    /** EVENT HANDLERS */
+	function handleMenuButtonClick(_e: MouseEvent) {
 		toggleMenu();
-	}
+	} 
+    /** ENDOF EVENT HANDLERS */
 </script>
 
-<button class:activated class="menu-button" on:click={handleClick}>
+<button class:activated class="menu-button" on:click={handleMenuButtonClick}>
 	<div class="menu-button-content">
 		<div class="menu-button-icon">
 			<slot />

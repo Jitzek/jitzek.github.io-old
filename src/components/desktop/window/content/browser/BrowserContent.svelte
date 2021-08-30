@@ -1,15 +1,33 @@
 <script lang="ts">
+	/** IMPORTS */
+	// "svelte"
+	import { onMount } from 'svelte';
+	//
+
+	// "components"
 	import RefreshButton from '$components/desktop/window/content/browser/RefreshButton.svelte';
 	import Address from '$components/desktop/window/content/browser/Address.svelte';
-	import { onMount } from 'svelte';
+	//
 
+	// "objects"
+	//
+
+	// "stores"
+	//
+
+	/** ENDOF IMPORTS*/
+
+    /** EXPORTS */
 	export let url: string;
 	export let title: string;
 	export let onSelection: Function = () => {};
+    /** ENDOF EXPORTS */
 
+	/** VARIABLE DECLARATION */
 	let iframeElement: HTMLIFrameElement;
 
 	let onSelectionSpamPrevention: boolean = false;
+
 	onMount(() => {
 		// Detect onClick within iframe element
 		// TODO: Find a more elegant solution
@@ -20,6 +38,24 @@
 			} else onSelectionSpamPrevention = false;
 		}, 100);
 	});
+	/** ENDOF VARIABLE DECLERATION */
+
+    /** STORE CALLBACKS */
+    //
+    /** ENDOF STORE CALLBACKS */
+
+    /** REACTIVE VARIABLES */
+    //
+    /** ENDOF REACTIVE VARIABLES */
+
+    /** HELPER FUNCTIONS */
+    //
+    /** ENDOF HELPER FUNCTIONS */
+
+    /** EVENT HANDLERS */
+    //
+    /** ENDOF EVENT HANDLERS */
+
 </script>
 
 <div class="web-page">

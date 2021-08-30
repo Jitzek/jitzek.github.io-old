@@ -1,19 +1,31 @@
 <script lang="ts">
+	/** IMPORTS */
+	// "svelte"
 	import { onMount } from 'svelte';
+	//
 
+	// "components"
 	import Launcher from '$components/desktop/taskbar/Launcher.svelte';
 	import MenuButton from '$components/desktop/taskbar/MenuButton.svelte';
 	import Menu from '$components/desktop/taskbar/menu/Menu.svelte';
 	import WhiskerMenu from '$components/shared/svg/whisker-menu.svelte';
+	//
 
+	// "objects"
 	import { changeCursor, Cursor } from '$objects/desktop/cursors';
 	import type { Program as ProgramObject } from '$objects/shared/program/Program';
 	import { convertRemToPixels } from '$objects/shared/conversions';
+	import { isStringAPositiveNumber } from '$objects/shared/typechecks';
+	//
 
+	// "stores"
 	import { getProgramById } from '$stores/shared/ProgramsStore';
 	import { addProgramShortcut, taskbarStore } from '$stores/desktop/TaskbarStore';
-	import { isStringAPositiveNumber } from '$objects/shared/typechecks';
+	//
 
+	/** ENDOF IMPORTS*/
+
+	/** EXPORTS */
 	export let rows: number = 1;
 	export let maxRows: number = 3;
 	// Total height in REM
@@ -21,7 +33,55 @@
 	// Row height in REM
 	export let rowHeight: number = 3.5;
 	export let z_index: number = 9;
+	/** ENDOF EXPORTS */
 
+	/** VARIABLE DECLARATION */
+	// Start of resize event (mouse down)
+	let startY: number = 0;
+	// The initial height at the start of the resize event (mouse down)
+	let initial: number = 0;
+	// true if the user is isResizing, false if not
+	let isResizing: boolean = false;
+
+	let taskbarContentElement: HTMLDivElement;
+
+	let heightInPx = 0;
+
+	class LauncherObject {
+		program: ProgramObject | null;
+		row: number;
+		ghost: boolean;
+	}
+	let launchers: Array<LauncherObject> = [];
+
+	const columnSize: string = `${rowHeight}rem`;
+
+	// This should be enough, having more columns doesn't seem to affect the styling.
+	let gridTemplateColumns: string = `repeat(${launchers.length}, ${columnSize})`;
+
+	onMount(() => {
+		// Set initial height in pixels
+		heightInPx = convertRemToPixels(height);
+
+		taskbarContentElement.ondragstart = () => false;
+	});
+	/** ENDOF VARIABLE DECLERATION */
+
+	/** STORE CALLBACKS */
+	taskbarStore.subscribe((taskbarStore) => {
+		launchers = [];
+		taskbarStore.programShortcuts.forEach((programShortcut) =>
+			launchers.push({
+				program: programShortcut.program,
+				row: 1,
+				ghost: false
+			})
+		);
+		rows = rows;
+	});
+	/** ENDOF STORE CALLBACKS */
+
+	/** REACTIVE VARIABLES */
 	$: {
 		height;
 		if (height < rowHeight) height = rowHeight;
@@ -35,79 +95,6 @@
 			rows = maxRows;
 			height = rows * rowHeight;
 		}
-	}
-
-	let taskbarContentElement: HTMLDivElement;
-
-	let heightInPx = 0;
-	onMount(() => {
-		// Set initial height in pixels
-		heightInPx = convertRemToPixels(height);
-
-		taskbarContentElement.ondragstart = () => false;
-	});
-
-	// Start of resize event (mouse down)
-	let start: number = 0;
-	// The initial height at the start of the resize event (mouse down)
-	let initial: number = 0;
-	// true if the user is resizing, false if not
-	let resizing: boolean = false;
-	function startResize(event: MouseEvent) {
-		resizing = true;
-		start = event.pageY;
-		initial = heightInPx;
-
-		changeCursor(Cursor.N_RESIZE);
-	}
-
-	function stopResize() {
-		resizing = false;
-		start = 0;
-		initial = 0;
-		heightInPx = convertRemToPixels(height);
-
-		changeCursor(Cursor.AUTO);
-	}
-
-	function resize(event: MouseEvent) {
-		// Only resize if the user is resizing (mouse move)
-		if (!resizing) return;
-
-		// Difference from start to end position (Y-axis)
-		const delta = start - event.pageY;
-		heightInPx = initial + delta;
-
-		// Determine whether enough pixels have been moved to add/remove a row
-		if (heightInPx > convertRemToPixels(height + rowHeight)) {
-			height += height + rowHeight <= rowHeight * maxRows ? rowHeight : 0;
-		} else if (heightInPx < convertRemToPixels(height - rowHeight)) {
-			height -= height - rowHeight >= rowHeight ? rowHeight : 0;
-		}
-		return;
-	}
-
-	class LauncherObject {
-		program: ProgramObject | null;
-		row: number;
-		ghost: boolean;
-	}
-	let launchers: Array<LauncherObject> = [];
-	taskbarStore.subscribe((taskbarStore) => {
-		launchers = [];
-		taskbarStore.programShortcuts.forEach((programShortcut) =>
-			launchers.push({
-				program: programShortcut.program,
-				row: 1,
-				ghost: false
-			})
-		);
-		rows = rows;
-	});
-
-	const columnSize: string = `${rowHeight}rem`;
-	$: {
-		rows;
 
 		// Filter out ghost launchers
 		launchers = launchers.filter((launcher) => !launcher.ghost);
@@ -130,11 +117,49 @@
 		// gridTemplateColumns = `repeat(${Math.round(launchers.length/rows)}, ${columnSize})`;
 	}
 
-	// This should be enough, having more columns doesn't seem to affect the styling.
-	let gridTemplateColumns: string = `repeat(${launchers.length}, ${columnSize})`;
 	$: {
 		launchers;
 		gridTemplateColumns = `repeat(${launchers.length}, ${columnSize})`;
+	}
+	/** ENDOF REACTIVE VARIABLES */
+
+	/** HELPER FUNCTIONS */
+	//
+	/** ENDOF HELPER FUNCTIONS */
+
+	/** EVENT HANDLERS */
+	function window_handleMouseUp() {
+		// Stop isResizing
+		isResizing = false;
+		startY = 0;
+		initial = 0;
+		heightInPx = convertRemToPixels(height);
+
+		changeCursor(Cursor.AUTO);
+	}
+	function window_handleMouseMove(event: MouseEvent) {
+		// Only resize if the user is isResizing (mouse move)
+		if (!isResizing) return;
+
+		// Difference from start to end position (Y-axis)
+		const delta = startY - event.pageY;
+		heightInPx = initial + delta;
+
+		// Determine whether enough pixels have been moved to add/remove a row
+		if (heightInPx > convertRemToPixels(height + rowHeight)) {
+			height += height + rowHeight <= rowHeight * maxRows ? rowHeight : 0;
+		} else if (heightInPx < convertRemToPixels(height - rowHeight)) {
+			height -= height - rowHeight >= rowHeight ? rowHeight : 0;
+		}
+		return;
+	}
+
+	function handleTaskbarBorderMouseDown(event: MouseEvent) {
+		isResizing = true;
+		startY = event.pageY;
+		initial = heightInPx;
+
+		changeCursor(Cursor.N_RESIZE);
 	}
 
 	function handleTaskbarContentDrop(e: DragEvent) {
@@ -148,12 +173,13 @@
 		e.preventDefault();
 		e.dataTransfer.dropEffect = 'move';
 	}
+	/** ENDOF EVENT HANDLERS */
 </script>
 
-<svelte:window on:mouseup={stopResize} on:mousemove={resize} />
+<svelte:window on:mouseup={window_handleMouseUp} on:mousemove={window_handleMouseMove} />
 <div class="taskbar" style="height: {height}rem; z-index: {z_index};">
 	<Menu offset={height} />
-	<div on:mousedown={startResize} class="border" />
+	<div on:mousedown={handleTaskbarBorderMouseDown} class="border" />
 	<div
 		bind:this={taskbarContentElement}
 		class="taskbar-content"

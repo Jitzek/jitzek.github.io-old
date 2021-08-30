@@ -1,7 +1,44 @@
 <script lang="ts">
+	/** IMPORTS */
+	// "svelte"
+	//
+
+	// "components"
+	//
+
+	// "objects"
+	//
+
+	// "stores"
+	//
+
+	/** ENDOF IMPORTS*/
+
+    /** EXPORTS */
 	export let name: string;
 	export let icon: string | null = null;
 	export let onClick: Function = () => {};
+    /** ENDOF EXPORTS */
+
+	/** VARIABLE DECLARATION */
+    //
+	/** ENDOF VARIABLE DECLERATION */
+
+    /** STORE CALLBACKS */
+    //
+    /** ENDOF STORE CALLBACKS */
+
+    /** REACTIVE VARIABLES */
+    //
+    /** ENDOF REACTIVE VARIABLES */
+
+    /** HELPER FUNCTIONS */
+    //
+    /** ENDOF HELPER FUNCTIONS */
+
+    /** EVENT HANDLERS */
+    //
+    /** ENDOF EVENT HANDLERS */
 </script>
 
 <button class="context-menu-option" on:click={onClick()}>

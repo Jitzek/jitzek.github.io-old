@@ -1,19 +1,38 @@
 <script lang="ts">
+	/** IMPORTS */
+	// "svelte"
 	import { slide } from 'svelte/transition';
+	//
 
+	// "components"
 	import MenuLauncherButton from '$components/desktop/taskbar/menu/categories/MenuLauncherButton.svelte';
 	import CategoryButton from '$components/desktop/taskbar/menu/categories/CategoryButton.svelte';
+	//
 
+	// "objects"
 	import type { Category as CategoryObject } from '$objects/shared/program/Category';
+	//
 
+	// "stores"
 	import { categoriesStore, categoryAll, categoryFavourites } from '$stores/shared/CategoriesStore';
 	import { programsStore } from '$stores/shared/ProgramsStore';
+	//
 
+	/** ENDOF IMPORTS*/
+
+    /** EXPORTS */
+    //
+    /** ENDOF EXPORTS */
+
+	/** VARIABLE DECLARATION */
 	class CategoryWrapper {
 		constructor(public category: CategoryObject, public activated: boolean) {}
 	}
 
 	let categoryWrappers: Array<CategoryWrapper> = [];
+	/** ENDOF VARIABLE DECLERATION */
+
+    /** STORE CALLBACKS */
 	categoriesStore.subscribe((categories) => {
 		let existingCategories = categoryWrappers.flatMap(
 			(categoryWrapper) => categoryWrapper.category
@@ -29,8 +48,18 @@
 			categories.find((category) => category.id === categoryWrapper.category.id)
 		);
 	});
+    /** ENDOF STORE CALLBACKS */
 
-	function toggleCategory(id: number) {
+    /** REACTIVE VARIABLES */
+    //
+    /** ENDOF REACTIVE VARIABLES */
+
+    /** HELPER FUNCTIONS */
+    //
+    /** ENDOF HELPER FUNCTIONS */
+
+    /** EVENT HANDLERS */
+	function handleGategoryButtonClick(_e: MouseEvent, id: number) {
 		categoryWrappers.forEach(
 			(categoryWrapper: CategoryWrapper) =>
 				(categoryWrapper.activated =
@@ -38,6 +67,7 @@
 		);
 		categoryWrappers = categoryWrappers;
 	}
+    /** ENDOF EVENT HANDLERS */
 </script>
 
 <div class="categories-container">
@@ -49,7 +79,7 @@
 				icon={category.icon}
 				name={category.name}
 				activated={activated}
-				on:click={() => toggleCategory(category.id)}
+				on:click={(e) => handleGategoryButtonClick(e, category.id)}
 			/>
 		{/each}
 	</div>

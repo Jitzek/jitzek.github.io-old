@@ -1,7 +1,6 @@
 <script lang="ts">
 	export let width: string = '3rem';
 	export let height: string = '100%';
-
 	export let isFullscreen: boolean;
 </script>
 

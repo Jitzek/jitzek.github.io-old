@@ -1,16 +1,47 @@
 <script lang="ts">
+	/** IMPORTS */
+	// "svelte"
+	//
+
+	// "components"
 	import Tooltip from '$components/desktop/Tooltip.svelte';
+	//
 
+	// "objects"
 	import type { Program as ProgramObject } from '$objects/shared/program/Program';
+	//
 
+	// "stores"
 	import { hideContextMenu, showContextMenu } from '$stores/desktop/ContextMenuStore';
 	import { hideMenu } from '$stores/desktop/MenuStore';
-import { removeProgramShortcut } from '$stores/desktop/TaskbarStore';
+	import { removeProgramShortcut } from '$stores/desktop/TaskbarStore';
+	//
 
+	/** ENDOF IMPORTS*/
+
+    /** EXPORTS */
 	export let program: ProgramObject;
 	export let row: number;
 	export let height: string;
+    /** ENDOF EXPORTS */
 
+	/** VARIABLE DECLARATION */
+    //
+	/** ENDOF VARIABLE DECLERATION */
+
+    /** STORE CALLBACKS */
+    //
+    /** ENDOF STORE CALLBACKS */
+
+    /** REACTIVE VARIABLES */
+    //
+    /** ENDOF REACTIVE VARIABLES */
+
+    /** HELPER FUNCTIONS */
+    //
+    /** ENDOF HELPER FUNCTIONS */
+
+    /** EVENT HANDLERS */
 	function handleContextMenu(e: MouseEvent) {
 		e.preventDefault();
 		showContextMenu(e.clientX, e.clientY, [
@@ -34,13 +65,14 @@ import { removeProgramShortcut } from '$stores/desktop/TaskbarStore';
 		]);
 	}
 
-	function onLauncherClick() {
+	function handleLauncherClick(_e: MouseEvent) {
 		hideMenu();
 		program.createProcess().bringToTop();
 	}
+    /** ENDOF EVENT HANDLERS */
 </script>
 
-<div style="grid-row: {row};" on:click={onLauncherClick} on:contextmenu={handleContextMenu}>
+<div style="grid-row: {row};" on:click={handleLauncherClick} on:contextmenu={handleContextMenu}>
 	<Tooltip tooltip={program.name} position="top">
 		<button class="launcher" style="height: {height}">
 			<img src={program.icon} alt={program.name} width="100%" height="auto" />

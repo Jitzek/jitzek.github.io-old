@@ -1,17 +1,39 @@
 <script lang="ts">
+	/** IMPORTS */
+	// "svelte"
+	//
+
+	// "components"
 	import { clickOutside } from '$components/shared/events/mouseOutside';
+	//
 
+	// "objects"
+	//
+
+	// "stores"
 	import { hideContextMenu } from '$stores/desktop/ContextMenuStore';
+	//
 
+	/** ENDOF IMPORTS*/
+
+    /** EXPORTS */
 	export let x: number;
 	export let y: number;
 	export let z_index: number;
+    /** ENDOF EXPORTS */
 
+	/** VARIABLE DECLARATION */
 	let innerWidth: number;
 	let innerHeight: number;
 
 	let contextMenuElement: HTMLElement;
+	/** ENDOF VARIABLE DECLERATION */
 
+    /** STORE CALLBACKS */
+    //
+    /** ENDOF STORE CALLBACKS */
+
+    /** REACTIVE VARIABLES */
 	$: {
 		[innerWidth, innerHeight, contextMenuElement];
 		if (contextMenuElement) {
@@ -19,10 +41,19 @@
 			contextMenuElement.style.top = `${innerHeight / 2 < y ? y - contextMenuElement.offsetHeight : y}px`;
 		}
 	}
+    /** ENDOF REACTIVE VARIABLES */
 
-	function onClickOutside(e) {
+    /** HELPER FUNCTIONS */
+    //
+    /** ENDOF HELPER FUNCTIONS */
+
+    /** EVENT HANDLERS */
+	function handleClickOutside(e) {
 		hideContextMenu();
 	}
+    /** ENDOF EVENT HANDLERS */
+
+
 </script>
 
 <svelte:window bind:innerWidth bind:innerHeight />
@@ -32,7 +63,7 @@
 	class="context-menu"
 	style="z-index: {z_index};"
 	use:clickOutside
-	on:clickoutside={(e) => onClickOutside(e)}
+	on:clickoutside={(e) => handleClickOutside(e)}
 >
 	<slot name="options" />
 </div>

@@ -1,12 +1,34 @@
 <script lang="ts">
-	import { Theme } from '$objects/shared/Theme';
-	
-	import { theme as theme_store } from '$stores/shared/ThemeStore';
-	let theme: Theme = Theme.Dark;
-	theme_store.subscribe((new_theme) => {
-		theme = new_theme;
-	});
+	/** IMPORTS */
+	// "svelte"
+	//
 
+	// "components"
+	//
+
+	// "objects"
+	import { Theme } from '$objects/shared/Theme';
+	//
+
+	// "stores"
+	import { theme as theme_store } from '$stores/shared/ThemeStore';
+	//
+
+	/** ENDOF IMPORTS*/
+
+    /** EXPORTS */
+    //
+    /** ENDOF EXPORTS */
+
+	/** VARIABLE DECLARATION */
+	let theme: Theme = Theme.Dark;
+	/** ENDOF VARIABLE DECLERATION */
+
+    /** STORE CALLBACKS */
+	theme_store.subscribe((new_theme) => theme = new_theme);
+    /** ENDOF STORE CALLBACKS */
+
+    /** REACTIVE VARIABLES */
 	$: {
 		theme;
 		switch (theme) {
@@ -25,6 +47,16 @@
 		checked;
 		checked ? theme_store.set(Theme.Dark) : theme_store.set(Theme.Light);
 	}
+    /** ENDOF REACTIVE VARIABLES */
+
+    /** HELPER FUNCTIONS */
+    //
+    /** ENDOF HELPER FUNCTIONS */
+
+    /** EVENT HANDLERS */
+    //
+    /** ENDOF EVENT HANDLERS */
+	
 </script>
 
 <div class="change-theme-container" on:click={() => (checked = !checked)}>
