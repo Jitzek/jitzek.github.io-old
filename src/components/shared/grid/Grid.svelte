@@ -90,7 +90,7 @@
 		let position = $gridStore.getGridPositionAtPosition(x, y);
 		// Check if the GridItem being dragged is dropped on an occupied spot
 		if (position && position.item != null) {
-			if (position.item == gridItemBeingDragged) return;
+			if (position.item == gridItem) return;
 			// Attempt to handle data transfer of dragged gridItems
 		} else {
 			// Attempt to place GridItem on grid
@@ -148,7 +148,7 @@
 		return;
 	}
 	function handleGridItemTouchEnd(x: number, y: number, item: GridItemObject) {
-		console.log("test");
+		console.log(`${x} ${y}`);
 		placeGridItemOnGrid(x, y, item);
 	}
 	/** ENDOF EVENT HANDLERS */

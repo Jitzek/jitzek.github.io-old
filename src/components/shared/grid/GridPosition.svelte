@@ -178,8 +178,8 @@
 			// Open program
 			gridPosition.item.program.createProcess().bringToTop();
 		}
-		deselectGridItem(gridPosition.item);
 		onTouchEnd(x, y, gridPosition.item);
+		deselectGridItem(gridPosition.item);
 	}
 
 	function handleDragStart(e: DragEvent) {

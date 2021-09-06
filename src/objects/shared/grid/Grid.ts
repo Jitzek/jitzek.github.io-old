@@ -107,7 +107,7 @@ export class Grid {
 	): GridPosition | null {
 		return this.gridPositions.filter(filter).reduce((prev, current) => {
 			return Math.abs(current.x - x) < Math.abs(prev.x - x) ||
-				Math.abs(current.y - y) < Math.abs(prev.y - y)
+				Math.abs(current.y - y) < Math.abs(prev.y - y) - convertRemToPixels(this.columnHeight)
 				? current
 				: prev;
 		});
