@@ -42,6 +42,21 @@
 		y: number,
 		item: GridItemObject
 	) => {};
+	export let onTouchStart: (x: number, y: number, item: GridItemObject) => void = (
+		x: number,
+		y: number,
+		item: GridItemObject
+	) => {};
+	export let onTouchMove: (x: number, y: number, item: GridItemObject) => void = (
+		x: number,
+		y: number,
+		item: GridItemObject
+	) => {};
+	export let onTouchEnd: (x: number, y: number, item: GridItemObject) => void = (
+		x: number,
+		y: number,
+		item: GridItemObject
+	) => {};
 	/** ENDOF EXPORTS */
 
 	/** VARIABLE DECLARATION */
@@ -94,6 +109,7 @@
         	As a workaround we can keep track of the end position by taking the last clientX and clientY of the dragover event.
     	*/
 		handleMove(e.clientX, e.clientY);
+		onDragMove(e.clientX, e.clientY, gridPosition.item);
 	}
 	function window_handleKeyDown(e: KeyboardEvent) {
 		shiftDown = e.shiftKey;
@@ -108,8 +124,6 @@
 		dragStartX = x;
 		dragStartY = y;
 		isDragging = true;
-
-		onDragStart(x, y, gridPosition.item);
 	}
 
 	let clientX: number;
@@ -119,11 +133,10 @@
 
 		clientX = x;
 		clientY = y;
-		onDragMove(x, y, gridPosition.item);
 	}
 
 	function handleMoveEnd(x: number, y: number) {
-		onDragEnd(x, y, gridPosition.item);
+		
 	}
 
 	function handleTouchStart(e: TouchEvent) {
@@ -131,42 +144,53 @@
 		touchMoving = false;
 		touchCanceled = false;
 		touchStart = +new Date();
-		handleMoveStart((e.target as HTMLElement).offsetLeft, (e.target as HTMLElement).offsetTop);
+		const x = (e.target as HTMLElement).offsetLeft;
+		const y = (e.target as HTMLElement).offsetTop;
+		handleMoveStart(x, y);
 		setTimeout(() => {
 			if (!touchCanceled && !touchMoving) {
 				selectGridItem(gridPosition.item);
 			}
 		}, touchTimeForOpen);
+		onTouchStart(x, y, gridPosition.item);
 	}
 
 	function handleTouchMove(e: TouchEvent) {
 		e.preventDefault();
 		touchMoving = true;
-		handleMove(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
+		const x = e.targetTouches[0].clientX;
+		const y = e.targetTouches[0].clientY;
+		handleMove(x, y);
+		onTouchMove(x, y, gridPosition.item);
 	}
 
 	function handleTouchEnd(e: TouchEvent) {
 		let touchEnd: number = +new Date();
 		touchCanceled = true;
+		const x = clientX;
+		const y = clientY;
 		if (touchMoving && gridPosition.item.selected) {
 			// This is currently bugged on Mozilla Firefox
 			// preventDefault() in contextmenu listener cancels touch event generation (sends touchcancel)
 			// https://bugzilla.mozilla.org/show_bug.cgi?id=1481923
-			handleMoveEnd(clientX, clientY);
+			handleMoveEnd(x, y);
 		} else if (!touchMoving && touchEnd - touchStart < touchTimeForOpen) {
 			// Open program
 			gridPosition.item.program.createProcess().bringToTop();
 		}
 		deselectGridItem(gridPosition.item);
+		onTouchEnd(x, y, gridPosition.item);
 	}
 
 	function handleDragStart(e: DragEvent) {
 		e.dataTransfer.setData('program_id', gridPosition.item.program.id.toString());
 		handleMoveStart(e.clientX, e.clientY);
+		onDragStart(e.clientX, e.clientY, gridPosition.item);
 	}
 
 	function handleDragEnd(e: DragEvent) {
 		handleMoveEnd(clientX, clientY);
+		onDragEnd(clientX, clientY, gridPosition.item);
 	}
 
 	function handleDrop(e: DragEvent) {

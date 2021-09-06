@@ -10,7 +10,8 @@ export class Grid {
 
     public gap: number;
     public widthOffset: number;
-    public heightOffset: number;
+    public topOffset: number;
+    public bottomOffset: number;
     public padding: number;
     public columnWidth: number;
     public columnHeight: number;
@@ -22,7 +23,7 @@ export class Grid {
         this.prevScreenWidth = screenWidth;
         this.prevScreenHeight = screenHeight;
         let rows = Math.floor(
-            (screenHeight - convertRemToPixels(this.padding + this.heightOffset)) /
+            (screenHeight - convertRemToPixels(this.padding + this.bottomOffset + this.topOffset)) /
             convertRemToPixels(this.columnHeight + this.gap)
         );
         let columnsPerRow = Math.round(

@@ -96,7 +96,7 @@
 
 <!-- <Wallpaper src={wallpaper} /> -->
 <div class="grid-container">
-	<Grid heightOffset={taskbarHeight} columnWidth={5} columnHeight={6} gap={1.5} padding={1} />
+	<Grid bottomOffset={taskbarHeight} columnWidth={5} columnHeight={6} gap={1.5} padding={1} />
 </div>
 <div class="windows-container">
 	<!-- 
@@ -148,5 +148,6 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		height: 100%;
 	}
 </style>

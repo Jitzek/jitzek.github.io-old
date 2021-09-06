@@ -1,6 +1,7 @@
 <script lang="ts">
 	/** IMPORTS */
 	// "svelte"
+	import { DeviceType, forceDeviceType } from "$stores/shared/DeviceTypeStore";
 	//
 
 	// "components"
@@ -35,11 +36,13 @@
     /** ENDOF HELPER FUNCTIONS */
 
     /** EVENT HANDLERS */
-    //
+    function handleSwitchToMobileButtonClick(_e: MouseEvent) {
+		forceDeviceType(DeviceType.MOBILE);
+	}
     /** ENDOF EVENT HANDLERS */
 </script>
 
-<button class="switch-to-mobile-button">
+<button class="switch-to-mobile-button" on:click={handleSwitchToMobileButtonClick}>
 	<img src="/images/desktop/menu/mobile.svg" alt="Mobile View" height="75%" width="auto"/>
 </button>
 

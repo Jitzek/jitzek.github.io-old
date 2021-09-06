@@ -29,11 +29,12 @@ export function removeGridItem(id: number) {
     });
 }
 
-export function setGridParameters(gap: number, widthOffset: number, heightOffset: number, padding: number, columnWidth: number, columnHeight: number) {
+export function setGridParameters(gap: number, widthOffset: number, topOffset: number, bottomOffset: number, padding: number, columnWidth: number, columnHeight: number) {
     _gridStore.update(_grid => {
         _grid.gap = gap;
         _grid.widthOffset = widthOffset;
-        _grid.heightOffset = heightOffset;
+        _grid.topOffset = topOffset;
+        _grid.bottomOffset = bottomOffset;
         _grid.padding = padding;
         _grid.columnWidth = columnWidth;
         _grid.columnHeight = columnHeight;

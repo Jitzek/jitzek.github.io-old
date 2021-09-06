@@ -7,6 +7,22 @@ export const mobile: Readable<boolean> = derived(
     $desktop => !$desktop
 );
 
+export enum DeviceType {
+    AUTO,
+    DESKTOP,
+    MOBILE
+}
+
+let forcedDeviceType: DeviceType = DeviceType.AUTO;
+let isListening: boolean = false;
+
+function handleMatchMediaChange(e: MediaQueryListEvent) {
+    if (forcedDeviceType != DeviceType.AUTO) {
+        return;
+    }
+    desktop.set(e.matches);
+}
+
 /**
  * 
  * @param args
@@ -17,15 +33,14 @@ export const mobile: Readable<boolean> = derived(
 export const setup: (
     args: { desktopQuery: string, listen: boolean }
 ) => void = ({ desktopQuery, listen }) => {
+    isListening = listen;
     // Make sure "window" is defined
     try {
         desktop.set(window.matchMedia(desktopQuery).matches);
         if (listen) {
             // Add an event listener
             // Fun fact: Getting the "matches" variable from the `MediaQueryListEvent` variable is called object de-structuring
-            window.matchMedia(desktopQuery).addEventListener("change", ({ matches }) => {
-                desktop.set(matches);
-            });
+            window.matchMedia(desktopQuery).addEventListener("change", handleMatchMediaChange);
             return;
         }
     }
@@ -35,3 +50,18 @@ export const setup: (
         \rMake sure window is assigned by calling this function within the \`onMount\` function.`)
     }
 };
+
+export function forceDeviceType(deviceType: DeviceType) {
+    forcedDeviceType = deviceType;
+    switch(forcedDeviceType) {
+        case DeviceType.DESKTOP:
+            desktop.set(true);
+            break;
+        case DeviceType.MOBILE:
+            desktop.set(false);
+            break;
+        case DeviceType.AUTO:
+        default:
+            break;
+    }
+}

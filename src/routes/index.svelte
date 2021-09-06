@@ -2,6 +2,7 @@
 	import { desktop, mobile } from '$stores/shared/DeviceTypeStore';
 	import Desktop from '$components/desktop/Desktop.svelte';
 	import { onMount } from 'svelte';
+	import Mobile from '$components/mobile/Mobile.svelte';
 
 	let mounted: boolean = false;
 	onMount(() => {
@@ -13,8 +14,8 @@
 	{#if $desktop}
 		<Desktop />
 	{:else if $mobile}
-		<Desktop />
+		<Mobile />
 	{/if}
 {:else}
-    <!-- Show OS loading -->
+	<!-- Show OS loading -->
 {/if}

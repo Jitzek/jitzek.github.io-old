@@ -29,7 +29,8 @@
 
 	/** EXPORTS */
 	export let widthOffset: number = 0;
-	export let heightOffset: number = 0;
+	export let topOffset: number = 0;
+	export let bottomOffset: number = 0;
 
 	// Column width in Rem
 	export let columnWidth: number = 3;
@@ -55,8 +56,26 @@
 
 	/** REACTIVE VARIABLES */
 	$: {
-		[screenWidth, screenHeight, gap, widthOffset, heightOffset, padding, columnWidth, columnHeight];
-		setGridParameters(gap, widthOffset, heightOffset, padding, columnWidth, columnHeight);
+		[
+			screenWidth,
+			screenHeight,
+			gap,
+			widthOffset,
+			topOffset,
+			bottomOffset,
+			padding,
+			columnWidth,
+			columnHeight
+		];
+		setGridParameters(
+			gap,
+			widthOffset,
+			topOffset,
+			bottomOffset,
+			padding,
+			columnWidth,
+			columnHeight
+		);
 		if (screenWidth && screenHeight) {
 			rearrangeGrid(screenWidth, screenHeight);
 		}
@@ -64,37 +83,39 @@
 	/** ENDOF REACTIVE VARIABLES */
 
 	/** HELPER FUNCTIONS */
-	//
+	function placeGridItemOnGrid(x: number, y: number, gridItem: GridItemObject) {
+		let offsetX = x - gridItem.position.x;
+		let offsetY = y - gridItem.position.y;
+
+		let position = $gridStore.getGridPositionAtPosition(x, y);
+		// Check if the GridItem being dragged is dropped on an occupied spot
+		if (position && position.item != null) {
+			if (position.item == gridItemBeingDragged) return;
+			// Attempt to handle data transfer of dragged gridItems
+		} else {
+			// Attempt to place GridItem on grid
+			$gridStore.gridItems
+				.filter((gridItem) => gridItem.selected)
+				.forEach((gridItem) => {
+					let or_gridPosition = $gridStore.gridPositions.find(
+						(position) => position.item != null && position.item.id == gridItem.id
+					);
+					let new_gridPosition = $gridStore.getClosestGridPositionToPosition(
+						or_gridPosition.x + offsetX,
+						or_gridPosition.y + offsetY,
+						(position: GridPositionObject) => position.item == null || position.item == gridItem
+					);
+					setPreferredPositionOfGridItem(gridItem, new_gridPosition.row, new_gridPosition.column);
+				});
+		}
+		gridItemBeingDragged = null;
+	}
 	/** ENDOF HELPER FUNCTIONS */
 
 	/** EVENT HANDLERS */
 	function handleGridDrop(e: DragEvent) {
 		if (gridItemBeingDragged != null) {
-			let offsetX = e.clientX - gridItemBeingDragged.position.x;
-			let offsetY = e.clientY - gridItemBeingDragged.position.y;
-
-			let position = $gridStore.getGridPositionAtPosition(e.clientX, e.clientY);
-			// Check if the GridItem being dragged is dropped on an occupied spot
-			if (position && position.item != null) {
-				if (position.item == gridItemBeingDragged) return;
-				// Attempt to handle data transfer of dragged gridItems
-			} else {
-				// Attempt to place GridItem on grid
-				$gridStore.gridItems
-					.filter((gridItem) => gridItem.selected)
-					.forEach((gridItem) => {
-						let or_gridPosition = $gridStore.gridPositions.find(
-							(position) => position.item != null && position.item.id == gridItem.id
-						);
-						let new_gridPosition = $gridStore.getClosestGridPositionToPosition(
-							or_gridPosition.x + offsetX,
-							or_gridPosition.y + offsetY,
-							(position: GridPositionObject) => position.item == null || position.item == gridItem
-						);
-						setPreferredPositionOfGridItem(gridItem, new_gridPosition.row, new_gridPosition.column);
-					});
-			}
-			gridItemBeingDragged = null;
+			placeGridItemOnGrid(e.clientX, e.clientY, gridItemBeingDragged);
 			return;
 		}
 
@@ -104,7 +125,6 @@
 			// Do nothing for now
 			return;
 		} else {
-			console.log(isStringAPositiveNumber(e.dataTransfer.getData('program_id').trim()));
 			if (!isStringAPositiveNumber(e.dataTransfer.getData('program_id').trim())) return;
 			let programId: number = Number(e.dataTransfer.getData('program_id'));
 			if (isNaN(programId)) return;
@@ -121,6 +141,16 @@
 	function handleGridItemDragEnd(x: number, y: number, item: GridItemObject) {
 		return;
 	}
+	function handleGridItemTouchStart(x: number, y: number, item: GridItemObject) {
+		gridItemBeingDragged = item;
+	}
+	function handleGridItemTouchMove(x: number, y: number, item: GridItemObject) {
+		return;
+	}
+	function handleGridItemTouchEnd(x: number, y: number, item: GridItemObject) {
+		console.log("test");
+		placeGridItemOnGrid(x, y, item);
+	}
 	/** ENDOF EVENT HANDLERS */
 </script>
 
@@ -128,7 +158,7 @@
 
 <div
 	class="grid"
-	style="grid-template-columns: {$gridStore.gridTemplateColumns}; gap: {$gridStore.gap}rem; padding: {$gridStore.padding}rem;"
+	style="grid-template-columns: {$gridStore.gridTemplateColumns}; gap: {$gridStore.gap}rem; padding: {$gridStore.padding}rem; margin-top: {$gridStore.topOffset}rem;"
 	on:mousedown={hideMenu}
 	on:drop={handleGridDrop}
 >
@@ -138,6 +168,9 @@
 			onDragStart={handleGridItemDragStart}
 			onDragMove={handleGridItemDragMove}
 			onDragEnd={handleGridItemDragEnd}
+			onTouchStart={handleGridItemTouchStart}
+			onTouchMove={handleGridItemTouchMove}
+			onTouchEnd={handleGridItemTouchEnd}
 		/>
 	{/each}
 </div>

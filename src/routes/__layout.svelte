@@ -20,14 +20,20 @@
 		theme_store.subscribe((new_theme) => {
 			document.documentElement.setAttribute('data-theme', new_theme);
 		});
+
+		document.getElementById("svelte").style.height = "100%";
 	});
 </script>
 
-<div bind:this="{wrapper}" style="font-family: {font}">
+<div class="layout-wrapper" bind:this="{wrapper}" style="font-family: {font};">
 	<slot />
 </div>
 
 <style lang="scss">
+	.layout-wrapper {
+		height: 100%;
+	}
+
 	:global(html[data-theme='dark']) {
 		--font-color: #eeeeee;
 		--font-color-secondary: #bbbbbb;
@@ -66,7 +72,7 @@
 		--accent-alert-color: hsla(0, 85%, 65%, 1);
 	}
 
-	:global(html) :global(body) {
+	:global(html), :global(body) {
 		margin: 0;
 		height: 100%;
 

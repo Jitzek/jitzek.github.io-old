@@ -9,7 +9,7 @@ export const categoriesStore: Writable<Array<Category>> = writable([
     categoryAll,
     categoryFavourites,
     new Category(Category.Name.CATEGORY_2, "/images/category-icons/utilities-terminal.svg"),
-    new Category(Category.Name.CATEGORY_1, "/images/category-icons/utilities-terminal.svg"),
+    new Category(Category.Name.CATEGORY_1, "/images/category-icons/utilities-terminal.svg")
 ]);
 categoriesStore.subscribe(categories => _categoriesStore = categories);
 
